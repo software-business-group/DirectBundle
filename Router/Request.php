@@ -117,7 +117,7 @@ class Request
             
             array_walk_recursive($decoded, array($this, 'parseRawToArray'));
             // @todo: check utf8 config option from bundle
-            array_walk_recursive($decoded, array($this, 'decode'));
+            //array_walk_recursive($decoded, array($this, 'decode'));
 
             foreach ($decoded as $call) {
                 $calls[] = new Call((array)$call, 'single');
