@@ -150,10 +150,16 @@ class Request
     {
         // parse a json string to an array
         if (is_string($value)) {
-            $json = json_decode($value,true);
+
+            $pos = substr($value,0,1);
+            if ($pos == '[' || $pos == '(' || $pos == '{') {
+                $json = json_decode($value);
+            } else {
+                $json = $value;
+            }
             
-            if ($json) {
-                $value = ($json);
+            if ($json) {                
+                $value = $json;
             }
         }
 
