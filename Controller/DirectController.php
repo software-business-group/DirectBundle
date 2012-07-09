@@ -58,4 +58,9 @@ class DirectController extends Controller
     public function setConfig($config) {
         $this->config = array_merge_recursive($config, array('basic' => array('url' => $this->get('router')->generate('ExtDirectBundle_route'))));
     }
+    
+    public function getConfig()
+    {
+        return $this->config;
+    }
 }
