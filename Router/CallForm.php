@@ -10,7 +10,7 @@ class CallForm extends Call
      * 
      * @param array $call
      */
-    private function initialize($call)
+    public function initialize($call)
     {
 
         $this->action   = $call['extAction']; unset($call['extAction']);

@@ -136,7 +136,7 @@ class Call
      * 
      * @param array $call
      */
-    private function initialize($call)
+    public function initialize($call)
     {
         $this->action = $call['action'];
         $this->method = $call['method'];
