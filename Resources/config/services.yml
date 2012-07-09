@@ -1,0 +1,18 @@
+parameters:
+    ext_direct.controller.class: Ext\DirectBundle\Controller\DirectController
+    ext_direct.response_factory.class: Ext\DirectBundle\Response\ResponseFactory
+    ext_direct.controller_resolver.class : Ext\DirectBundle\Router\ControllerResolver
+    
+services:
+    ext_direct.controller:
+        class: %ext_direct.controller.class%
+        arguments: [ @service_container ]
+        
+    ext_direct.controller_resolver:
+        class: %ext_direct.controller_resolver.class%
+        arguments: [ @service_container, @controller_name_converter, @monolog.logger.request ]
+        
+    ext_direct:
+        class: %ext_direct.response_factory.class%
+        scope: request
+        arguments: [ @request, @ext_direct.controller_resolver ]
