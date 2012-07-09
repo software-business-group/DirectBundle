@@ -7,6 +7,7 @@ namespace Ext\DirectBundle\Api;
  * It provide the ExtDirect Api descriptor of exposed Controllers and methods.
  *
  * @author Otavio Fernandes <otavio@neton.com.br>
+ * @author Semyon Velichko <semyon@velichko.net>
  */
 class Api
 {

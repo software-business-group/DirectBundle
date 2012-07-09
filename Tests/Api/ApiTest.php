@@ -48,7 +48,7 @@ class ApiTest extends WebTestCase
     public function test__toString()
     {
         $client = $this->createClient();
-        $config = $this->get('ext_direct')->getConfig();
+        $config = $this->get('ext_direct.controller')->getConfig();
         
         $config['router']['rules'] += array('getDirectTest' => array('defaults' =>
                                                 array('_controller' => 'ExtDirectBundle:Direct:getDirectTest', 'form' => false, 'params' => false)));

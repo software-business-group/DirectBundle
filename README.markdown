@@ -1,3 +1,3 @@
 For documentation, see:
 
-    Resources/doc/index.rst
+    Resources/doc/index.rus.rst
