@@ -1,5 +1,7 @@
 <?php
-namespace Neton\DirectBundle\Api;
+namespace Ext\DirectBundle\Api;
+
+use Symfony\Component\DependencyInjection\Loader\FileLoader;
 
 /**
  * ControllerApi encapsulate methods to get the Controller exposed Api.
@@ -111,6 +113,8 @@ class ControllerApi
      */
     private function getMethodApi($method)
     {
+        $class = $method->class;
+        
         $api = false;
 
         if (strlen($method->getDocComment()) > 0) {

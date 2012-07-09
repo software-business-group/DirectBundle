@@ -1,5 +1,5 @@
 <?php
-namespace Neton\DirectBundle\Api;
+namespace Ext\DirectBundle\Api;
 
 use Symfony\Component\Finder\Finder;
 /**

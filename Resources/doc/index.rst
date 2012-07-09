@@ -38,7 +38,7 @@ Register DirectBundle into your application kernel
     {
         $bundles = array(
             // ...,
-            new Neton\DirectBundle\DirectBundle(),
+            new Ext\DirectBundle\DirectBundle(),
             // ...,
         );
 

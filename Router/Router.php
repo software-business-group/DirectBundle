@@ -1,7 +1,8 @@
 <?php
-namespace Neton\DirectBundle\Router;
+namespace Ext\DirectBundle\Router;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Router is the ExtDirect Router class.
@@ -15,14 +16,14 @@ class Router
     /**
      * The ExtDirect Request object.
      * 
-     * @var Neton\DirectBundle\Request
+     * @var Ext\DirectBundle\Request
      */
     protected $request;
     
     /**
      * The ExtDirect Response object.
      * 
-     * @var Neton\DirectBundle\Response
+     * @var Ext\DirectBundle\Response
      */
     protected $response;
     
@@ -42,7 +43,7 @@ class Router
     {
         $this->container = $container;
         $this->request = new Request($container->get('request'));
-        $this->response = new Response($this->request->getCallType());
+        $this->resolver = $this->container->get('ext_direct.controller_resolver');
     }
 
     /**
@@ -53,64 +54,30 @@ class Router
     public function route()
     {
         $batch = array();
-        
         foreach ($this->request->getCalls() as $call) {
             $batch[] = $this->dispatch($call);
         }
-
-        return $this->response->encode($batch);
+        return json_encode($batch);
     }
 
     /**
      * Dispatch a remote method call.
      * 
-     * @param  Neton\DirectBundle\Router\Call $call
+     * @param  Ext\DirectBundle\Router\Call $call
      * @return Mixed
      */
     private function dispatch($call)
     {
-        $controller = $this->resolveController($call->getAction());
-        $method = $call->getMethod()."Action";
+        $controller = $this->resolver->getControllerFromCall($call);
+        $request = $this->container->get('request');
 
-        if (!is_callable(array($controller, $method))) {
-            //todo: throw an execption method not callable
+        if (!is_callable($controller)) {
+            throw new NotFoundHttpException('Unable to find the controller for action "%s". Maybe you forgot to add the matching route in your routing configuration?', $call->getAction());
         }
-
-        if ('form' == $this->request->getCallType()) {
-            $result = $call->getResponse($controller->$method($call->getData(), $this->request->getFiles()));
-        } else {
-            $result = $call->getResponse($controller->$method($call->getData()));
-        }
-
-        return $result;
-    }
-
-    /**
-     * Resolve the called controller from action.
-     * 
-     * @param  string $action
-     * @return <type>
-     */
-    private function resolveController($action)
-    {
-        list($bundleName, $controllerName) = explode('_',$action);
-        $bundleName.= "Bundle";
         
-        $bundle = $this->container->get('kernel')->getBundle($bundleName);
-        $namespace = $bundle->getNamespace()."\\Controller";
-
-        $class = $namespace."\\".$controllerName."Controller";
-
-        try {
-            $controller = new $class();
-
-            if ($controller instanceof ContainerAware) {
-                $controller->setContainer($this->container);
-            }
-
-            return $controller;
-        } catch(Exception $e) {
-            // todo: handle exception
-        }
+        $arguments = $this->resolver->getArguments($request, $controller);
+        
+        $result = call_user_func_array($controller, $arguments);
+        return $call->getResponse($result);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Neton\DirectBundle\Api;
+namespace Ext\DirectBundle\Api;
 
 /**
  * Api is the ExtDirect Api class.
@@ -10,32 +10,23 @@ namespace Neton\DirectBundle\Api;
  */
 class Api
 {
-    /**
-     * The application container.
-     *
-     * @var Symfony\Component\DependencyInjection\Container
-     */
-    protected $container;
 
     /**
      * The ExtDirect JSON API description.
      * 
-     * @var JSON
+     * @var array
      */
-    protected $api;
+    protected $api = array('actions' => array());
+    
+    protected $config;
 
     /**
      * Initialize the API.
      */
-    public function __construct($container)
+    public function __construct($config)
     {
-        $this->container = $container;
-
-        if ($container->get('kernel')->isDebug()) {
-            $this->api = json_encode($this->createApi());
-        } else {            
-            $this->api = $this->getApiFromCache();
-        }        
+        $this->config = $config;
+        $this->createApi();
     }
 
     /**
@@ -45,70 +36,37 @@ class Api
      */
     public function  __toString()
     {        
-        return $this->api;
+        return json_encode(array_merge($this->config['basic'], $this->api));
     }
 
     /**
-     * Create the ExtDirect API based on controllers files.
+     * Create the ExtDirect API based on config.yml or direct.yml files.
      *
      * @return string JSON description of Direct API
      */
     protected function createApi()
     {
-        $bundles = $this->getControllers();
-
-        $actions = array();        
-
-        foreach ($bundles as $bundle => $controllers ) {
-            $bundleShortName = str_replace('Bundle', '', $bundle);
-            
-            foreach ($controllers as $controller) {
-                $api = new ControllerApi($this->container, $controller);
-
-                if ($api->isExposed()) {
-                    $actions[$bundleShortName."_".$api->getActionName()] = $api->getApi();
-                }
-            }
-        }
-
-        return array(
-            'url' => $this->container->get('request')->getBaseUrl().
-                     $this->container->getParameter('direct.api.route_pattern'),
-            'type' => $this->container->getParameter('direct.api.type'),
-            'namespace' => $this->container->getParameter('direct.api.namespace'),
-            'id' => $this->container->getParameter('direct.api.id'),
-            'actions' => $actions
-        );
-    }
-
-    /**
-     * Return the cached ExtDirect API.
-     *
-     * @return string JSON description of Direct API
-     */
-    protected function getApiFromCache()
-    {
-        //@todo: implement the cache mechanism
-        return json_encode($this->createApi());
-    }
-
-    /**
-     * Get all controllers from all bundles.
-     *
-     * @return array Controllers list
-     */
-    protected function getControllers()
-    {
-        $controllers = array();
-        $finder = new ControllerFinder();
+        $api = array();
         
-        foreach ($this->container->get('kernel')->getBundles() as $bundle) {
-            $found = $finder->getControllers($bundle);
-            if (!empty ($found)) {
-                $controllers[$bundle->getName()] = $found;
+        foreach($this->config['router']['rules'] as $rule) {
+            if(!preg_match('/^([\w]+)Bundle:([\w]+):([\w]+)$/', $rule['defaults']['_controller'], $match)) {
+                throw new \InvalidArgumentException();
             }
+            list($all, $shortBundleName, $controllerName, $methodName) = $match;
+            
+            $key = sprintf('%s_%s', $shortBundleName, $controllerName);
+            
+            if(!array_key_exists($key, $api) or !is_array($api[$key]))
+                $api[$key] = array();
+                
+            $methodParams = array('name' => $methodName, 'len' => (integer)$rule['defaults']['params']);
+            
+            if($rule['defaults']['form'])
+                $methodParams['formHandler'] = true;
+            
+            $api[$key][] = $methodParams;
         }
-
-        return $controllers;
-    }    
+        
+        $this->api['actions'] = $api;
+    }
 }

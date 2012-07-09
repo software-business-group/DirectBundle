@@ -1,5 +1,7 @@
 <?php
-namespace Neton\DirectBundle\Router;
+namespace Ext\DirectBundle\Router;
+
+use Ext\DirectBundle\Response\ResponseInterface;
 
 /**
  * Call encapsule an single ExtDirect call.
@@ -63,15 +65,15 @@ class Call
      * @param array  $call
      * @param string $type
      */
-    public function __construct($call, $type)
+    public function __construct($call, Request $request)
     {
-        $this->callType = $type;
-        
-        if ('single' == $type) {
-            $this->initializeFromSingle($call);
-        } else {
-            $this->initializeFromForm($call);
-        }
+        $this->request = $request;
+        $this->initialize($call);
+    }
+    
+    public function getRequest()
+    {
+        return $this->request;
     }
 
     /**
@@ -113,13 +115,20 @@ class Call
      */
     public function getResponse($result)
     {
-        return array(
-          'type' => 'rpc',
-          'tid' => $this->tid,
-          'action' => $this->action,
-          'method' => $this->method,
-          'result' => $result
-        );
+        $return = 
+            array('type' => 'rpc',
+                  'tid' => $this->tid,
+                  'action' => $this->action,
+                  'method' => $this->method);
+            
+        if($result instanceof ResponseInterface)
+        {
+            $return['result'] = $result->extract();
+        } else {
+            $return['result'] = $result;
+        }
+        
+        return $return;
     }
     
     /**
@@ -127,31 +136,15 @@ class Call
      * 
      * @param array $call
      */
-    private function initializeFromSingle($call)
+    private function initialize($call)
     {
         $this->action = $call['action'];
         $this->method = $call['method'];
         $this->type   = $call['type'];
         $this->tid    = $call['tid'];
-        $this->data   = (array)$call['data'][0];
-    }
-
-    /**
-     * Initialize the call properties from a form call.
-     * 
-     * @param array $call
-     */
-    private function initializeFromForm($call)
-    {
-
-        $this->action   = $call['extAction']; unset($call['extAction']);
-        $this->method   = $call['extMethod']; unset($call['extMethod']);
-        $this->type     = $call['extType']; unset($call['extType']);
-        $this->tid      = $call['extTID']; unset($call['extTID']);
-        $this->upload = $call['extUpload']; unset($call['extUpload']);
-
-        foreach ($call as $key => $value) {
-            $this->data[$key] = $value;
-        }
+        $this->data   = array();
+        
+        if(is_array($call['data']) && !empty($call['data']))
+            $this->data   = array_shift($call['data']);
     }
 }

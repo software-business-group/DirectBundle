@@ -1,5 +1,7 @@
 <?php
-namespace Neton\DirectBundle\Router;
+namespace Ext\DirectBundle\Router;
+
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 /**
  * Request encapsule the ExtDirect request call.
@@ -56,24 +58,13 @@ class Request
      * 
      * @param Symfony\Component\HttpFoundation\Request $request
      */
-    public function __construct($request)
-    {        
+    public function __construct(HttpRequest $request)
+    {
         // store the symfony request object
         $this->request = $request;
-        $this->rawPost = isset($GLOBALS['HTTP_RAW_POST_DATA']) ?  $GLOBALS['HTTP_RAW_POST_DATA'] : array();
-        $this->post = $_POST;
-        $this->files = $_FILES;
-        $this->callType = !empty ($_POST) ? 'form' : 'batch';
-    }
-
-    /**
-     * Return the type of Direct call.
-     *
-     * @return string
-     */
-    public function getCallType()
-    {
-        return $this->callType;
+        $this->rawPost = $request->getContent();
+        $this->post = $request->request->all();
+        $this->files = $request->files->all();
     }
 
     /**
@@ -109,9 +100,9 @@ class Request
     {
         $calls = array();
 
-        if ('form' == $this->callType) {
-            $calls[] = new Call($this->post, 'form');
-        } else {
+        if ((bool)$this->request->request->keys()) {
+            $calls[] = new CallForm($this->post, $this);
+        } elseif ($this->rawPost) {
             $decoded = json_decode($this->rawPost);
             $decoded = !is_array($decoded) ? array($decoded) : $decoded;
             
@@ -120,24 +111,11 @@ class Request
             //array_walk_recursive($decoded, array($this, 'decode'));
 
             foreach ($decoded as $call) {
-                $calls[] = new Call((array)$call, 'single');
+                $calls[] = new Call((array)$call, $this);
             }
         }
         
         return $calls;
-    }
-
-    /**
-     * Force the utf8 decodification from all string values.
-     * 
-     * @param mixed $value
-     * @param string $key
-     */
-    public function decode(&$value, &$key)
-    {
-        if (is_string($value)) {
-            $value = utf8_decode($value);
-        }
     }
 
     /**

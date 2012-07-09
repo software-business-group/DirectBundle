@@ -1,8 +1,8 @@
 <?php
-namespace Neton\DirectBundle\Tests\Controller;
+namespace Ext\DirectBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Neton\DirectBundle\Controller\DirectController;
+use Ext\DirectBundle\Controller\DirectController;
 
 /**
  * Test class DirectBundle Direct controller.
@@ -30,5 +30,10 @@ class DirectControllerTest extends WebTestCase
         // test actions in direc api
         // @todo: improve this test
         $this->assertTrue($crawler->filter('html:contains("actions")')->count() > 0);
+    }
+    
+    public function testApiContent()
+    {
+        
     }
 }
