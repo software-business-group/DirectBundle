@@ -19,7 +19,7 @@ class Response implements ResponseInterface
     protected $factroy;
     
     protected $data = array();
-    protected $success;
+    protected $success = true;
     protected $total;
     
     public function setFactory(ResponseFactory $factory)
