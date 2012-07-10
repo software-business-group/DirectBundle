@@ -35,6 +35,9 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('namespace')
                         ->defaultValue('Actions')
                     ->end()
+                    ->scalarNode('error_template')
+                        ->defaultValue('ExtDirectBundle::extjs_errors.html.twig')
+                    ->end()
                 ->end()
         ->end();
         

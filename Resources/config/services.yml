@@ -15,4 +15,4 @@ services:
     ext_direct:
         class: %ext_direct.response_factory.class%
         scope: request
-        arguments: [ @request, @ext_direct.controller_resolver ]
+        arguments: [ @request, @ext_direct.controller_resolver, @service_container ]

@@ -4,18 +4,20 @@ namespace Ext\DirectBundle\Response;
 
 use Symfony\Component\Form\Form;
 
-class FormError implements ResponseInterface
+class Error extends Response implements ResponseInterface
 {
     
-    protected $errors = array();
+    protected $success = false;
     
-    public function setContent(Form $form)
-    {        
-        if(!($errors instanceof Form))
-            throw new \InvalidArgumentException('setContent($form) must be instance of Form');
-        
-            
-        
-        return $this;
+    public function formatResponse(array $data)
+    {
+        $config = $this->getMethodConfig();
+        $msg = $this->factory
+            ->getContainer()
+            ->get('ext_direct.controller')
+            ->render($this->config['basic']['error_template'], array('errors' => $data))
+            ->getContent();
+        return array($config['reader']['successProperty'] => $this->success, 'msg' => $msg);
     }
+    
 }

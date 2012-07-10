@@ -3,7 +3,9 @@
 namespace Ext\DirectBundle\Response;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ext\DirectBundle\Router\ControllerResolver;
+
 
 class ResponseFactory
 {
@@ -11,14 +13,16 @@ class ResponseFactory
     protected $request;
     protected $response;
     protected $dispatcher;
+    protected $container;
     protected $config;
     protected $data;
     protected $resolver;
     
-    public function __construct(Request $request, ControllerResolver $resolver)
+    public function __construct(Request $request, ControllerResolver $resolver, ContainerInterface $container)
     {
         $this->request = $request;
         $this->resolver = $resolver;
+        $this->container = $container;
     }
     
     public function setConfig(array $config)
@@ -49,6 +53,11 @@ class ResponseFactory
     public function getResolver()
     {
         return $this->resolver;
+    }
+    
+    public function getContainer()
+    {
+        return $this->container;
     }
     
 }

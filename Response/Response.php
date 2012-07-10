@@ -44,8 +44,9 @@ class Response implements ResponseInterface
     public function formatResponse(array $root)
     {
         $data = array();
-        $method = $this->factory->getResolver()->getCall()->getMethod();
-        $config = $this->config['router']['rules'][$method]['reader'];
+        
+        $config = $this->getMethodConfig();
+        $config = $config['reader'];
         
         if($config['root'])
         {
@@ -79,6 +80,12 @@ class Response implements ResponseInterface
     {
         $this->dispatcher->addSubscriber($subscriber);
         return $this;
+    }
+    
+    public function getMethodConfig()
+    {
+        $method = $this->factory->getResolver()->getCall()->getMethod();
+        return $this->config['router']['rules'][$method];
     }
 
 }
