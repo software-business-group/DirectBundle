@@ -40,8 +40,9 @@ class ResponseFactory
     {
         $this->response = $response;
         $this->response->setFactory($this);
-        if($data)
+        if($data !== null)
             $this->response->setContent($data);
+        
         return $this->response;
     }
     

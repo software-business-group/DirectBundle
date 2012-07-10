@@ -11,7 +11,7 @@ class Error extends Response implements ResponseInterface
     
     public function formatResponse(array $data)
     {
-        $config = $this->getMethodConfig();
+        $config = $this->factory->getResolver()->getMethodConfig();
         $msg = $this->factory
             ->getContainer()
             ->get('ext_direct.controller')
