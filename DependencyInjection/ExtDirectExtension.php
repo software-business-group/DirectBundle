@@ -29,6 +29,8 @@ class ExtDirectExtension extends Extension
         
         $container->getDefinition('ext_direct.controller')
             ->addMethodCall('setConfig', array($config));
+        $container->getDefinition('ext_direct.controller_resolver')
+            ->addMethodCall('setConfig', array($config));
         $container->getDefinition('ext_direct')
             ->addMethodCall('setConfig', array($config));
     }

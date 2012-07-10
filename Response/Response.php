@@ -45,7 +45,7 @@ class Response implements ResponseInterface
     {
         $data = array();
         
-        $config = $this->getMethodConfig();
+        $config = $this->factory->getResolver()->getMethodConfig();
         $config = $config['reader'];
         
         if($config['root'])
@@ -81,11 +81,4 @@ class Response implements ResponseInterface
         $this->dispatcher->addSubscriber($subscriber);
         return $this;
     }
-    
-    public function getMethodConfig()
-    {
-        $method = $this->factory->getResolver()->getCall()->getMethod();
-        return $this->config['router']['rules'][$method];
-    }
-
 }

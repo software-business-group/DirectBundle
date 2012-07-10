@@ -58,6 +58,8 @@ class Call
      * @var boolean
      */
     protected $upload;
+    
+    protected $bundle;
 
     /**
      * Initialize an ExtDirect call.
@@ -147,4 +149,5 @@ class Call
         if(is_array($call['data']) && !empty($call['data']))
             $this->data   = array_shift($call['data']);
     }
+    
 }

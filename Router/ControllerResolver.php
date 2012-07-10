@@ -3,15 +3,20 @@ namespace Ext\DirectBundle\Router;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver as BaseControllerResolver;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpFoundation\Request as HttpFoundation_Request;
+
 
 class ControllerResolver extends BaseControllerResolver {
     
     private $call;
+    private $bundle;
     private $controller;
+    private $config;
+    private $methodConfigKey;
     
     public function __construct(ContainerInterface $container, ControllerNameParser $parser, LoggerInterface $logger = null)
     {
@@ -22,6 +27,7 @@ class ControllerResolver extends BaseControllerResolver {
     public function setCall(Call $call)
     {
         $this->call = $call;
+        return $this;
     }
     
     public function getCall()
@@ -29,13 +35,62 @@ class ControllerResolver extends BaseControllerResolver {
         return $this->call;
     }
     
+    public function setBundle(Bundle $bundle)
+    {
+        $this->bundle = $bundle;
+        return $this;
+    }
+    
+    public function getBundle()
+    {
+        return $this->bundle;
+    }
+    
+    public function setConfig($config)
+    {
+        $this->config = $config;
+        return $this;
+    }
+    
+    public function getConfig()
+    {
+        return $this->config;
+    }
+    
+    public function setMethodConfigKey($key)
+    {
+        $this->methodConfigKey = $key;
+    }
+    
+    public function getMethodConfigKey()
+    {
+        return $this->methodConfigKey;
+    }
+    
+    public function getMethodConfig()
+    {
+        if($this->getMethodConfigKey())
+            return $this->config['router']['rules'][$this->getMethodConfigKey()];
+    }
+    
     public function getControllerFromCall(Call $call)
     {
         $this->setCall($call);
         
         list($bundle, $controller) = explode('_', $call->getAction());
+        $fullPath = sprintf('%1$sBundle:%2$s:%3$s', $bundle, $controller, $call->getMethod());
+        
+        foreach($this->config['router']['rules'] as $key => $rule)
+        {
+            if(isset($rule['defaults']) && isset($rule['defaults']['_controller']) && $rule['defaults']['_controller'] === $fullPath)
+                $this->setMethodConfigKey($key);
+        }
+        
+        if(!$this->getMethodConfigKey())
+            throw new \BadMethodCallException(sprintf('%1$s does not configured, check config.yml', $fullPath));
         
         $bundle = $this->kernel->getBundle(sprintf('%sBundle', $bundle));
+        $this->setBundle($bundle);
         
         $controller = sprintf('%s\\Controller\\%sController::%sAction', $bundle->getNamespace(), $controller, $call->getMethod());
 
