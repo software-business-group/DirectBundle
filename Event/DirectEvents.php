@@ -1,6 +1,9 @@
 <?php
 namespace Ext\DirectBundle\Event;
 
+/**
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 final class DirectEvents
 {
     

@@ -9,7 +9,9 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpFoundation\Request as HttpFoundation_Request;
 
-
+/**
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 class ControllerResolver extends BaseControllerResolver {
     
     private $call;

@@ -6,7 +6,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ext\DirectBundle\Router\ControllerResolver;
 
-
+/**
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 class ResponseFactory
 {
     

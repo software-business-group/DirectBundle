@@ -10,6 +10,7 @@ use Symfony\Component\Config\FileLocator;
  * DirectExtension is an extension for the ExtDirect.
  *
  * @author Otavio Fernandes <otavio@neton.com.br>
+ * @author Semyon Velichko <semyon@velichko.net>
  */
 class ExtDirectExtension extends Extension
 {

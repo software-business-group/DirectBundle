@@ -4,6 +4,9 @@ namespace Ext\DirectBundle\Response;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 interface ResponseInterface
 {
     

@@ -15,7 +15,9 @@ use Ext\DirectBundle\Tests\Binder as Test;
 use Ext\DirectBundle\Router\Router;
 use Ext\DirectBundle\Response\Basic;
 
-
+/**
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 class DirectController extends Controller
 {
     

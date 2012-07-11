@@ -4,6 +4,9 @@ namespace Ext\DirectBundle\Response;
 
 use Symfony\Component\Validator\ConstraintViolationList;
 
+/**
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 class ValidatorError extends Error implements ResponseInterface
 {   
     public function setContent($errors)

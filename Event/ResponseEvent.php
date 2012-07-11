@@ -5,7 +5,9 @@ namespace Ext\DirectBundle\Event;
 use Symfony\Component\EventDispatcher\Event;
 use Ext\DirectBundle\Response\ResponseInterface;
 
-
+/**
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 class ResponseEvent extends Event
 {
     private $response;

@@ -11,6 +11,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Ext\DirectBundle\Event\DirectEvents;
 use Ext\DirectBundle\Event\ResponseEvent;
 
+/**
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 class AbstractQuery extends Response implements ResponseInterface
 {
     

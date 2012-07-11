@@ -4,6 +4,9 @@ namespace Ext\DirectBundle\Response;
 
 use Symfony\Component\Form\Form;
 
+/**
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 class Error extends Response implements ResponseInterface
 {
     
