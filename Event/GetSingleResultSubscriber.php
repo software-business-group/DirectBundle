@@ -8,7 +8,7 @@ use Doctrine\ORM\AbstractQuery as ORMAbstractQuery;
 /**
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class IfMaxResultsEqualOneSubscriber implements EventSubscriberInterface
+class GetSingleResultSubscriber implements EventSubscriberInterface
 {
 
     public static function getSubscribedEvents()
@@ -20,8 +20,7 @@ class IfMaxResultsEqualOneSubscriber implements EventSubscriberInterface
     {
         $data = $event->getData();
         
-        if(1 === $data->getMaxResults())
-            $data->setHydrationMode(ORMAbstractQuery::HYDRATE_SINGLE_SCALAR);
+        $data = $data->setMaxResults(1)->getSingleResult(ORMAbstractQuery::HYDRATE_ARRAY);
         
         $event->setData($data);
     }
