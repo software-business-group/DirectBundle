@@ -14,16 +14,23 @@ class FormError extends Error implements ResponseInterface
         if(!($form instanceof Form))
             throw new \InvalidArgumentException('setContent($form) must be instance of Form');
         
-        $this->data = $form->getErrors();
+        $this->data = $this->compileError($form->getErrors());
         
         foreach($form->getChildren() as $children)
         {
-            foreach($children->getErrors() as $error)
-            {
-                $this->data[] = array('message' => str_replace(array_keys($error->getMessageParameters()), array_values($error->getMessageParameters()),
-                    $error->getMessageTemplate()));
-            }
+            $this->data = array_merge($this->data, $this->compileError($children->getErrors()));
         }
         return $this;
+    }
+    
+    public function compileError($errors)
+    {
+        $return = array();
+        foreach($errors as $error)
+        {
+            $return[] = array('message' =>
+                str_replace(array_keys($error->getMessageParameters()), array_values($error->getMessageParameters()), $error->getMessageTemplate()));
+        }
+        return $return;
     }
 }
