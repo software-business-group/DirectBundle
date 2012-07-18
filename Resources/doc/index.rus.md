@@ -17,7 +17,7 @@ DirectBundle -- это реализация ExtDirect спецификации �
     
 ##### Либо добавив субмодуль в ваш текущий проект #####
 
-    $ git submodule add git://github.com/ghua/DirectBundle.git vendors/bundles/Ext/DirectBundle
+    $ git submodule add git://github.com/ghua/DirectBundle.git vendor/bundles/Ext/DirectBundle
     
 ### Добавляем namespace в autoloader ###
 
