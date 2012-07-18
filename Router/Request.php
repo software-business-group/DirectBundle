@@ -2,6 +2,7 @@
 namespace Ext\DirectBundle\Router;
 
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use Ext\DirectBundle\Exception\InvalidJsonException;
 
 /**
  * Request encapsule the ExtDirect request call.
@@ -62,7 +63,9 @@ class Request
     {
         // store the symfony request object
         $this->request = $request;
-        $this->rawPost = $request->getContent();
+        $this->rawPost = str_replace(array('[undefined]'),
+                                     array('null'),
+                                     $request->getContent());
         $this->post = $request->request->all();
         $this->files = $request->files->all();
     }
@@ -110,6 +113,9 @@ class Request
             // @todo: check utf8 config option from bundle
             //array_walk_recursive($decoded, array($this, 'decode'));
 
+            if(!is_null($decoded) || !is_array($decoded))
+                throw new InvalidJsonException(sprintf('I can\'t parse input json: "%s"', $this->rawPost));
+            
             foreach ($decoded as $call) {
                 $calls[] = new Call((array)$call, $this);
             }
