@@ -113,7 +113,7 @@ class Request
             // @todo: check utf8 config option from bundle
             //array_walk_recursive($decoded, array($this, 'decode'));
 
-            if(!is_null($decoded) || !is_array($decoded))
+            if(is_null($decoded) || !is_array($decoded))
                 throw new InvalidJsonException(sprintf('I can\'t parse input json: "%s"', $this->rawPost));
             
             foreach ($decoded as $call) {
