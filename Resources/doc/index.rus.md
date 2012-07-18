@@ -418,6 +418,7 @@ _Дополнительную информацию по событиям луч�
     namespace Acme\DemoBundle\Controller;
     
     use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+    use Symfony\Component\HttpFoundation\Request;
     use Ext\DirectBundle\Response\Response;
     use Ext\DirectBundle\Response\ValidatorError;
     class DemoController extends Controller
