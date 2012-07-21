@@ -460,3 +460,49 @@ _Дополнительную информацию по событиям луч�
     }
 
 В данном примере специально ошибки извлекаются из сервиса validator, формат ответа будет аналогичен ответу из предыдущего раздела.
+
+Разработка
+---------
+
+#### Тестирование ####
+Для тестирования добавьте в config_test.yml:
+
+    ext_direct:
+      router:
+        rules:
+            testArrayResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testArrayResponse, params: true }
+        
+            testObjectResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testObjectResponse, params: true }
+            
+            testResponseWithConfiguredReader:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testResponseWithConfiguredReader, params: true }
+                reader: { root: root, successProperty: successProperty, totalProperty: totalProperty }
+                
+            testFormHandlerResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testFormHandlerResponse, params: true, form: true }
+                reader: { root: data }
+            
+            testFormValidationResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testFormValidationResponse, params: true, form: true }
+
+            testFormEntityValidationResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testFormEntityValidationResponse, params: true, form: true }
+
+Также в конфигурации phpunit.xml нужно добавить:
+      
+      <directory>../vendor/bundles/Ext/DirectBundle/Tests</directory>
+
+Результат запуска тестов должен быть примерно следующим:
+
+    $ phpunit -v
+    PHPUnit 3.6.10 by Sebastian Bergmann.
+
+    Configuration read from symfony2sandbox/app/phpunit.xml
+
+    .......
+
+    Time: 1 second, Memory: 46.75Mb
+
+    OK (7 tests, 78 assertions)

@@ -140,10 +140,14 @@ class Call
      */
     public function initialize($call)
     {
-        $this->action = $call['action'];
-        $this->method = $call['method'];
-        $this->type   = $call['type'];
-        $this->tid    = $call['tid'];
+        foreach(array('action', 'method', 'type', 'tid') as $key)
+        {
+            if(!isset($call[$key]))
+                throw new \Ext\DirectBundle\Exception\InvalidJsonException(sprintf('%s key does not exist', $key));
+            
+            $this->$key = $call[$key];
+        }
+        
         $this->data   = array();
         
         if(is_array($call['data']) && !empty($call['data']))

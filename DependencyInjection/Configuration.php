@@ -26,6 +26,9 @@ class Configuration implements ConfigurationInterface
         // more information on that topic.
 
         $rootNode->children()
+            ->scalarNode('error_template')
+                        ->defaultValue('ExtDirectBundle::extjs_errors.html.twig')
+                    ->end()
             ->arrayNode('basic')
                 ->addDefaultsIfNotSet()
                 ->children()
@@ -34,9 +37,6 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->scalarNode('namespace')
                         ->defaultValue('Actions')
-                    ->end()
-                    ->scalarNode('error_template')
-                        ->defaultValue('ExtDirectBundle::extjs_errors.html.twig')
                     ->end()
                 ->end()
         ->end();

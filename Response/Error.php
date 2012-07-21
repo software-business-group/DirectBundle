@@ -18,7 +18,7 @@ class Error extends Response implements ResponseInterface
         $msg = $this->factory
             ->getContainer()
             ->get('ext_direct.controller')
-            ->render($this->config['basic']['error_template'], array('errors' => $data))
+            ->render($this->config['error_template'], array('errors' => $data))
             ->getContent();
         return array($config['reader']['successProperty'] => $this->success, 'msg' => $msg);
     }

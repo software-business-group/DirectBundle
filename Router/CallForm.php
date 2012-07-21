@@ -15,13 +15,19 @@ class CallForm extends Call
      */
     public function initialize($call)
     {
-
-        $this->action   = $call['extAction']; unset($call['extAction']);
-        $this->method   = $call['extMethod']; unset($call['extMethod']);
-        $this->type     = $call['extType']; unset($call['extType']);
-        $this->tid      = $call['extTID']; unset($call['extTID']);
-        $this->upload   = $call['extUpload']; unset($call['extUpload']);
-
+        foreach(array('action' => 'extAction',
+                      'method' => 'extMethod',
+                      'type' => 'extType',
+                      'tid' => 'extTID',
+                      'upload' => 'extUpload') as $key => $value)
+        {
+            if(!isset($call[$value]))
+                throw new \Ext\DirectBundle\Exception\InvalidJsonException(sprintf('%s key does not exist', $value));
+            
+            $this->$key = $call[$value];
+            unset($call[$value]);
+        }
+        
         foreach ($call as $key => $value) {
             $this->data[$key] = $value;
         }
