@@ -1,25 +1,25 @@
 DirectBundle
 ============
 
-DirectBundle -- это реализация ExtDirect спецификации для symfony2.
-Тестировалось на: symfony 2.0.16, doctrine 2.2.2.
+DirectBundle is an implementation of ExtDirect specification for symfony2.
+Tested on: symfony 2.0.16, doctrine 2.2.2.
 
-Установка
+Installation
 ---------
 
-Лучший способ установки это добавив субмодуль, в ваш git репозиторий.
+##### By adding a submodule to your current project #####
+The best way to install is by adding a submodule to your git repository.
 
-##### Добавьте в файл deps #####
+    $ git submodule add git://github.com/ghua/DirectBundle.git vendor/bundles/Ext/DirectBundle
+
+##### Using deps file #####
+Alternative way, add to deps file:
 
     [ExtDirectBundle]
     git=git://github.com/ghua/DirectBundle.git
     target=/bundles/Ext/DirectBundle
     
-##### Либо добавив субмодуль в ваш текущий проект #####
-
-    $ git submodule add git://github.com/ghua/DirectBundle.git vendor/bundles/Ext/DirectBundle
-    
-### Добавляем namespace в autoloader ###
+### Add namespace to autoloader ###
 
     <?php
     // app/autoload.php
@@ -29,7 +29,7 @@ DirectBundle -- это реализация ExtDirect спецификации �
         // ...
     ));
     
-### Регистрируем DirectBundle в AppKernel ###
+### Register DirectBundle in AppKernel ###
 
     <?php
     // app/AppKernel.php
@@ -45,15 +45,15 @@ DirectBundle -- это реализация ExtDirect спецификации �
         return $bundles;
     }
     
-### Пример конфигурации ###
+### Configuration Example ###
 
-  * basic - базовые параметры (необязательно);
-    * error_template - шаблон оформления массива ошибок валидации;
-  * defaults - основные параметры;
-    * _controller - ИмяУзла:Контроллер:метод;
-    * params - метод принимает параметры;
-    * form - метод formHandler;
-  * reader - аналог store.reader в extjs, поддерживается:
+* error_template - template of validation errors array;
+  * basic - basic parameters (optional);
+  * defaults - basic parameters;
+    * _controller - NodeName:Controller:method;
+    * params – method has parameters;
+    * form – formHandler method;
+  * reader – analogue of store.reader in extjs, it supports:
       * root, 
       * successProperty,
       * totalProperty.
@@ -81,14 +81,14 @@ DirectBundle -- это реализация ExtDirect спецификации �
                 defaults: { _controller: AcmeDemoBundle:Demo:createCustomer, params: true, form: true }
 </pre>
 
-Пример использования
+Example of Use
 --------------------
 
-#### Простой вариант ####
+#### Simple Version ####
 
-Для рассмотрения базового примера использования, рассмотрим задачу извлечения данных, допустим, чтобы заполнить хранилище (Ext.data.Store).
+To consider basic example of use, consider the problem of data extraction, for example, to fill the repository (Ext.data.Store).
 
-###### Контроллер (Symfony2) ######
+###### Controller (Symfony2) ######
 
     <?php
     namespace Acme\DemoBundle\Controller;
@@ -109,7 +109,7 @@ DirectBundle -- это реализация ExtDirect спецификации �
       }
     }
 
-###### Модель и хранилище (ExtJS) #######
+###### Model and Repository (ExtJS) #######
 
     Ext.define('ACME.model.Role', {
       extend: 'Ext.data.Model',
@@ -129,13 +129,15 @@ DirectBundle -- это реализация ExtDirect спецификации �
       autoLoad: true
     });
 
-#### Расширенные варианты #####
+#### Extended Versions #####
 
 ##### AbstractQuery #####
 
-Можно обойтись несколько иначе и передать в DirectBundle результат из getQuery() (AbstractQuery)
+You can do a little differently and transfer to DirectBundle the result from getQuery () (AbstractQuery)
 
-###### Контроллер (Symfony2) ######
+
+
+###### Controller (Symfony2) ######
     <?php
     namespace Acme\DemoBundle\Controller;
     
@@ -155,15 +157,15 @@ DirectBundle -- это реализация ExtDirect спецификации �
       }
     }
 
-##### KnpPaginator и прием параметров #####
+##### KnpPaginator and receipt of parameters #####
 
-Редко когда извлекаются и передаются все данные, без разбора. 
-Обычной задачей является пагинация, фильтрация, сортировка.
+All data indiscriminately is extracted and transferred rarely.
+Pagination, filtering, sorting are the common tasks.
 
-Конечно, разбитие на страницы можно реализовать самостоятельно и DirectBundle нисколько в этом не помеха.
-Но в моём проекте, для этой задачи, используется [KnpPaginator](https://github.com/KnpLabs/KnpPaginatorBundle).
+Of course, pagination can be implemented independently and DirectBundle is not a trouble.
+But in my project [KnpPaginator] is used for this task (https://github.com/KnpLabs/KnpPaginatorBundle).
 
-###### Контроллер (Symfony2) ######
+###### Controller (Symfony2) ######
     <?php
     namespace Acme\DemoBundle\Controller;
     
@@ -187,12 +189,13 @@ DirectBundle -- это реализация ExtDirect спецификации �
       }
     }
     
-Рассмотрим внимательно параметры данного метода.
-Они являются не обязательными, т.к. вызов метода происходит через предварительный ReflectionMethod::getParameters.
-Это значит, что если параметр определен и его возможно передать, он будет передан.
+Let’s consider carefully the parameters of this method.
+They are not mandatory, because method call is carried out via preliminary ReflectionMethod::getParameters.
+This means that if the parameter is defined and it can be sent, it will be sent.
 
-**_Дополнение!_ Возвращаемый из findCustomers AbstractQuery должен быть с установленным HydrationMode равным HYDRATE_ARRAY.
-Выполняется это путем вызова метода setHydrationMode().**
+**_Addition!_ AbstractQuery returned from findCustomers should have HydrationMode equal to HYDRATE_ARRAY.
+This is done by calling setHydrationMode().** method.
+
 
 ###### CustomerRepository ######
     <?php
@@ -213,7 +216,7 @@ DirectBundle -- это реализация ExtDirect спецификации �
       }
     }
 
-###### Пример запроса из ExtJS (JSON) ######
+###### Example of request from ExtJS (JSON) ######
     {
       "action":"AcmeDemo_Demo",
       "method":"getCustomers",
@@ -230,22 +233,23 @@ DirectBundle -- это реализация ExtDirect спецификации �
       "tid":1
     }
     
-Соответственно любой ключ из массива data может быть передан как параметр метода.
+Accordingly, any key from data array can be sent as a parameter of the method.
 
-###### Дополнительные параметры #######
-Существуют еще несколько возможных параметров:
+###### Additional Parameters #######
+There are several possible parameters:
 
-* Request $request -- оригинал объекта Symfony\Component\HttpFoundation\Request, для данного запроса;
-* $\_data - весь оригинальный массив переданных параметров;
-* $\_list - тот же самый $\_data только для пакетной обработки, к примеру изменение нескольких строк в grid, $_list будет содержать массив из нескольких $\_data.
+* Request $request – original of Symfony\Component\HttpFoundation\Request object, for this request;
+* $\_data – all original array of sent parameters;
+* $\_list – the same $\_data but for batch processing, for example changing several lines in grid, $_list will have an array from several $\_data.
 
-##### События #####
-Есть возможность добавить обработку событий. На данный момент обработчик Ext\DirectBundle\Response\AbstractQuery поддерживает: PRE\_QUERY\_EXECUTE и POST\_QUERY\_EXECUTE, а основанный на нем Ext\DirectBundle\Response\KnpPaginator, поддерживает только последний.
-_Дополнительную информацию по событиям лучше смотреть непосредственно в исходном коде Ext\DirectBundle\Response\AbstractQuery::execute()._
+##### Events #####
+It is possible to add event handling. At this moment handler Ext\DirectBundle\Response\AbstractQuery supports: PRE\_QUERY\_EXECUTE and POST\_QUERY\_EXECUTE, and based on ot Ext\DirectBundle\Response\KnpPaginator supports only the latter.
+_See additional information on events in the source code of Ext\DirectBundle\Response\AbstractQuery::execute()._
 
-Ниже приведенный пример изменяет, уже извлеченные данные, перед передачей их в сеть.
 
-###### Пример события #######
+The example below changes already extracted data before passing them to the network.
+
+###### Event Example #######
     <?php
     namespace Acme\DemoBundle\Direct\EventListener;
 
@@ -281,12 +285,12 @@ _Дополнительную информацию по событиям луч�
     }
 
 
-##### Обработка form submit и возврат ошибок из формы #####
+##### Handling of form submit and return of errors from the form #####
 
-Рассмотрим задачу обработки submit из Ext.form.Panel.
-В примере кода, для extjs, определено окно отображения формы и сама форма с элементами.
+Let’s consider the task of handling submit from Ext.form.Panel.
+In code sample for extjs, a window of form displaying and the form itself with the elements is defined.
 
-###### Форма (ExtJS) ######
+###### Form (ExtJS) ######
     Ext.define('ACME.view.customer.New', {
       extend: 'Ext.window.Window',
       alias : 'widget.customernewwindow',
@@ -338,19 +342,19 @@ _Дополнительную информацию по событиям луч�
       }]
     });
 
-###### Пример submit запроса (POST) ######
+###### Example of submit request (POST) ######
     country_id  5
-    extAction	AcmeDemo_Demo
+    extAction  AcmeDemo_Demo
     extMethod	createCustomer
     extTID	11
     extType	rpc
     extUpload	false
     id	
-    name	Амин
+    name	Admin
     role_ids[]	3
     role_ids[]	1
 
-###### Контроллер (Symfony2) ######
+###### Conroller (Symfony2) ######
     <?php
     namespace Acme\DemoBundle\Controller;
     
@@ -384,10 +388,11 @@ _Дополнительную информацию по событиям луч�
       }
     }
 
-Переданные параметры, кроме служебных, будут переданы в $\_data. Этот массив можно прямо передать в $form->bind(), для обработки формы.
-В примере форма определена как служба. Это необходимо для работы [трансформеров](http://symfony.com/doc/current/cookbook/form/data_transformers.html).
+Sent parameters except supporting ones will be sent to $\_data. This array can be directly passed to $form-> bind(), to handle the form.
+The form is defined as a service in the example. This is necessary for operation of [Transformers] (http://symfony.com/doc/current/cookbook/form/data_transformers.html).
 
-Если валидация формы прошла успешно, производится ответ передающий success: true.
+
+If form validation is successful, the response is sent: success: true.
     
     [
       {"type":"rpc",
@@ -397,8 +402,8 @@ _Дополнительную информацию по событиям луч�
        "result":{"success":true}}
     ]
 
-В случае наличия ошибок, можно передать ответ содержащий success: false и msg с текстом ошибки.
-    
+In case of errors, you can send a response containing success: false and msg with the text of error.
+  
     [
       {"type":"rpc",
        "tid":"18",
@@ -408,12 +413,12 @@ _Дополнительную информацию по событиям луч�
                  "msg":"<ul>\n<li>This value should not be blank<\/li>\n<li>This value is not valid<\/li>\n<\/ul>"}}
     ]
 
-##### Синхронизация хранилища и возврат ошибок из сервиса Validator #####
+##### Storage synchronization and return of errors of Validator service #####
 
-Существует задача синхронизации хранилища это бывает связано с изменением сразу нескольких строк.
-Подобную задачу тоже можно решить, используя DirectBundle.
+There is a task of storage synchronization; it is associated with a change of several lines at once.
+Similar task can also be solved using DirectBundle.
 
-###### Контроллер (Symfony2) ######
+###### Controller (Symfony2) ######
     <?php
     namespace Acme\DemoBundle\Controller;
     
@@ -459,4 +464,50 @@ _Дополнительную информацию по событиям луч�
         return new Response(502);
     }
 
-В данном примере специально ошибки извлекаются из сервиса validator, формат ответа будет аналогичен ответу из предыдущего раздела.
+In this example, the errors are specially retrieved from validator service, the response format will be similar to the response of the previous section.
+
+Development
+---------
+
+#### Testing ####
+For testing add to config_test.yml:
+
+    ext_direct:
+      router:
+        rules:
+            testArrayResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testArrayResponse, params: true }
+        
+            testObjectResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testObjectResponse, params: true }
+            
+            testResponseWithConfiguredReader:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testResponseWithConfiguredReader, params: true }
+                reader: { root: root, successProperty: successProperty, totalProperty: totalProperty }
+                
+            testFormHandlerResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testFormHandlerResponse, params: true, form: true }
+                reader: { root: data }
+            
+            testFormValidationResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testFormValidationResponse, params: true, form: true }
+
+            testFormEntityValidationResponse:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testFormEntityValidationResponse, params: true, form: true }
+
+Also you should add to the configuration of phpunit.xml the following:
+      
+      <directory>../vendor/bundles/Ext/DirectBundle/Tests</directory>
+
+The result of running the tests should be approximately as follows:
+
+    $ phpunit -v
+    PHPUnit 3.6.10 by Sebastian Bergmann.
+
+    Configuration read from symfony2sandbox/app/phpunit.xml
+
+    .......
+
+    Time: 1 second, Memory: 46.75Mb
+
+    OK (7 tests, 78 assertions)
