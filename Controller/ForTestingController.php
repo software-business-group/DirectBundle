@@ -75,5 +75,10 @@ class ForTestingController extends Controller
                 ->createResponse(new ValidatorError(), $errors);
         }      
     }
+    
+    public function testExceptionAction()
+    {
+        throw new \Exception('Exception from testExceptionAction');
+    }
 
 }

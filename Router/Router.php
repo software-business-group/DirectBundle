@@ -4,12 +4,15 @@ namespace Ext\DirectBundle\Router;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use Ext\DirectBundle\Response\Exception as ExceptionResponse;
+
 /**
  * Router is the ExtDirect Router class.
  *
  * It provide the ExtDirect Router mechanism.
  *
  * @author Otavio Fernandes <otavio@neton.com.br>
+ * @author Semyon Velichko <semyon@velichko.net>
  */
 class Router
 {
@@ -77,7 +80,19 @@ class Router
         
         $arguments = $this->resolver->getArguments($request, $controller);
         
-        $result = call_user_func_array($controller, $arguments);
+        if(in_array($this->container->get('kernel')->getEnvironment(), array('dev', 'test')))
+        {
+            try {
+                $result = call_user_func_array($controller, $arguments);
+            } catch (\Exception $e)
+            {
+                $result = new ExceptionResponse($e);
+                $call->setType('exception');
+            }
+        } else {
+            $result = call_user_func_array($controller, $arguments);
+        }
+        
         return $call->getResponse($result);
     }
 }

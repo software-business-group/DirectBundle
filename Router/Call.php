@@ -2,11 +2,13 @@
 namespace Ext\DirectBundle\Router;
 
 use Ext\DirectBundle\Response\ResponseInterface;
+use Ext\DirectBundle\Response\Exception as ExceptionResponse;
 
 /**
  * Call encapsule an single ExtDirect call.
  *
  * @author Otavio Fernandes <otavio@neton.com.br>
+ * @author Semyon Velichko <semyon@velichko.net>
  */
 class Call
 {
@@ -29,7 +31,7 @@ class Call
      * 
      * @var string
      */
-    protected $type;
+    protected $type = 'rpc';
 
     /**
      * The ExtDirect transaction id.
@@ -107,7 +109,24 @@ class Call
     {
         return $this->data;
     }
+    
+    /**
+     * Set the request type.
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 
+    /**
+     * Get the request type.
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
     /**
      * Return a result wrapper to ExtDirect method call.
@@ -118,11 +137,14 @@ class Call
     public function getResponse($result)
     {
         $return = 
-            array('type' => 'rpc',
+            array('type' => $this->type,
                   'tid' => $this->tid,
                   'action' => $this->action,
                   'method' => $this->method);
             
+        if('exception' === $this->type && $result instanceof ExceptionResponse)
+            return array_merge($result->extract(), $return);
+
         if($result instanceof ResponseInterface)
         {
             $return['result'] = $result->extract();
