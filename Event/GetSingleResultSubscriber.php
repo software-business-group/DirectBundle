@@ -22,7 +22,7 @@ class GetSingleResultSubscriber implements EventSubscriberInterface
         
         $data = $data->setMaxResults(1)->getSingleResult(ORMAbstractQuery::HYDRATE_ARRAY);
         
-        $event->setData(array_shift($data));
+        $event->setData($data);
     }
     
 }
