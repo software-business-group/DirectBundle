@@ -18,7 +18,6 @@ class AbstractQuery extends Response implements ResponseInterface
 {
     
     protected $query;
-    protected $singleAsRoot = false;
     
     public function setContent($query)
     {
