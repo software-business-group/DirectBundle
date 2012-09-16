@@ -50,7 +50,7 @@ Alternative way, add to deps file:
 * error_template - template of validation errors array;
   * basic - basic parameters (optional);
   * defaults - basic parameters;
-    * _controller - NodeName:Controller:method or или service\_name:methodName;
+    * _controller - NodeName:Controller:method or service\_name:methodName;
     * params – method has parameters;
     * form – formHandler method;
   * reader – analogue of store.reader in extjs, it supports:
