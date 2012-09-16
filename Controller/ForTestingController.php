@@ -2,6 +2,7 @@
 
 namespace Ext\DirectBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ext\DirectBundle\Response\Response;
 use Ext\DirectBundle\Response\FormError;
 use Ext\DirectBundle\Response\ValidatorError;
@@ -81,4 +82,17 @@ class ForTestingController extends Controller
         throw new \Exception('Exception from testExceptionAction');
     }
 
+    public function __construct($container = null)
+    {
+        if($container instanceof ContainerInterface)
+            $this->container = $container;
+    }
+    
+    public function testActionAsService($_data)
+    {
+        return $this->container->get('ext_direct')
+            ->createResponse(new Response(), $_data)
+            ->setSuccess(true);
+    }
+    
 }

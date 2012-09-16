@@ -2,6 +2,7 @@ parameters:
     ext_direct.controller.class: Ext\DirectBundle\Controller\DirectController
     ext_direct.response_factory.class: Ext\DirectBundle\Response\ResponseFactory
     ext_direct.controller_resolver.class : Ext\DirectBundle\Router\ControllerResolver
+    ext_direct_test_service.class: Ext\DirectBundle\Controller\ForTestingController
     
 services:
     ext_direct.controller:
@@ -16,3 +17,7 @@ services:
         class: %ext_direct.response_factory.class%
         scope: request
         arguments: [ @request, @ext_direct.controller_resolver, @service_container ]
+        
+    ext_direct_test_service:
+        class: %ext_direct_test_service.class%
+        arguments: [ @service_container ]

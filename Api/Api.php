@@ -20,6 +20,9 @@ class Api
     protected $api = array('actions' => array());
     
     protected $config;
+    
+    const Bundle_Action_Regex = '/^([\w]+)Bundle:([\w]+):([\w]+)$/i';
+    const Service_Regex = '/^([\w]+):([\w]+)$/i';
 
     /**
      * Initialize the API.
@@ -50,13 +53,15 @@ class Api
         $api = array();
         
         foreach($this->config['router']['rules'] as $rule) {
-            if(!preg_match('/^([\w]+)Bundle:([\w]+):([\w]+)$/', $rule['defaults']['_controller'], $match)) {
+            if(preg_match($this::Bundle_Action_Regex, $rule['defaults']['_controller'], $match)) {
+                list($all, $shortBundleName, $controllerName, $methodName) = $match;
+                $key = sprintf('%s_%s', $shortBundleName, $controllerName);
+            } elseif(preg_match($this::Service_Regex, $rule['defaults']['_controller'], $match)) {
+                list($all, $key, $methodName) = $match;
+            } else {
                 throw new \InvalidArgumentException();
             }
-            list($all, $shortBundleName, $controllerName, $methodName) = $match;
-            
-            $key = sprintf('%s_%s', $shortBundleName, $controllerName);
-            
+
             if(!array_key_exists($key, $api) or !is_array($api[$key]))
                 $api[$key] = array();
                 

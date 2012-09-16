@@ -25,12 +25,16 @@ class ApiTest extends ControllerTest
         $config['router']['rules'] += array('getFormTest' => array('defaults' =>
                                                 array('_controller' => 'ExtDirectBundle:Direct:getFormTest', 'form' => true, 'params' => true)));
         
+        $config['router']['rules'] += array('getServiceTest' => array('defaults' =>
+                                                array('_controller' => 'ext_direct_api_test_service:getServiceTest', 'form' => true, 'params' => true)));
+        
         $api = new Api($config);
         $apiString = $api->__toString();
         $apiJson = json_decode($apiString);
         
         $this->assertObjectHasAttribute('actions', $apiJson);
         $this->assertObjectHasAttribute('ExtDirect_Direct', $apiJson->actions);
+        $this->assertObjectHasAttribute('ext_direct_test_service', $apiJson->actions);
         $this->assertObjectHasAttribute('len', $apiJson->actions->ExtDirect_Direct[0]);
         $this->assertEquals(0, $apiJson->actions->ExtDirect_Direct[0]->len);
         
@@ -38,5 +42,11 @@ class ApiTest extends ControllerTest
         $this->assertObjectHasAttribute('formHandler', $apiJson->actions->ExtDirect_Direct[1]);
         $this->assertEquals(1, $apiJson->actions->ExtDirect_Direct[1]->len);
         $this->assertEquals(1, $apiJson->actions->ExtDirect_Direct[1]->formHandler);
+        
+        $this->assertObjectHasAttribute('len', $apiJson->actions->ext_direct_api_test_service[0]);
+        $this->assertObjectHasAttribute('formHandler', $apiJson->actions->ext_direct_api_test_service[0]);
+        $this->assertEquals(1, $apiJson->actions->ext_direct_api_test_service[0]->len);
+        $this->assertEquals(1, $apiJson->actions->ext_direct_api_test_service[0]->formHandler);
+
     }
 }

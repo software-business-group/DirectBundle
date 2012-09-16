@@ -259,5 +259,41 @@ class GeneralTest extends ControllerTest
         $this->assertRegExp('/This value should not be blank/', $arrayResult['result']['msg']);
         $this->assertRegExp('/This value should be 0 or more/', $arrayResult['result']['msg']);
     }
+    
+    public function testActionAsService()
+    {
+        $postRawArray = array('action' => 'ext_direct_test_service',
+                             'method' => 'testActionAsService',
+                             'data' => array(array('page' => rand(1,10), 'start' => rand(10,20), 'limit' => rand(100,9999))),
+                             'type' => 'rpc',
+                             'tid' => rand(1, 10));
+        $postRawData = json_encode($postRawArray);
+        
+        $client = static::createClient();
+        $crawler = $client->request('POST',
+                                    $this->get('router')->generate('ExtDirectBundle_route'),
+                                    array(),
+                                    array(),
+                                    array(),
+                                    $postRawData);
+        
+        
+        $jsonResult = $client->getResponse()->getContent();
+        $arrayResult = json_decode($jsonResult, true);
+        $this->assertInternalType('array', $arrayResult);
+        $this->assertArrayHasKey(0, $arrayResult);
+        $arrayResult = array_shift($arrayResult);
+        
+        $this->assertArrayHasKey('result', $arrayResult);
+        
+        $this->assertArrayHasKey('page', $arrayResult['result']);
+        $this->assertEquals($postRawArray['data'][0]['page'], $arrayResult['result']['page']);
+        
+        $this->assertArrayHasKey('start', $arrayResult['result']);
+        $this->assertEquals($postRawArray['data'][0]['start'], $arrayResult['result']['start']);
+        
+        $this->assertArrayHasKey('limit', $arrayResult['result']);
+        $this->assertEquals($postRawArray['data'][0]['limit'], $arrayResult['result']['limit']);  
+    }
 }
 

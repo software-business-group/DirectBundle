@@ -63,7 +63,7 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('_controller')
                                             ->validate()
                                                 ->ifTrue(function($v) {
-                                                    return !preg_match('/^[\w]+:[\w]+:[\w]+$/i', $v);
+                                                    return !preg_match('/^[\w]+(:[\w]+)?:[\w]+$/i', $v);
                                                 })
                                                 ->thenInvalid('This %s format is not supported')
                                             ->end()

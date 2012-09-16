@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpFoundation\Request as HttpFoundation_Request;
+use Ext\DirectBundle\Api\Api;
 
 /**
  * @author Semyon Velichko <semyon@velichko.net>
@@ -79,8 +80,15 @@ class ControllerResolver extends BaseControllerResolver {
     {
         $this->setCall($call);
         
-        list($bundle, $controller) = explode('_', $call->getAction());
-        $fullPath = sprintf('%1$sBundle:%2$s:%3$s', $bundle, $controller, $call->getMethod());
+        $explodeResult = explode('_', $call->getAction());
+        
+        if(count($explodeResult) <> 2)
+        {
+            $fullPath = sprintf('%1$s:%2$s', $call->getAction(), $call->getMethod());
+        } else {
+            list($bundle, $controller) = $explodeResult;
+            $fullPath = sprintf('%1$sBundle:%2$s:%3$s', $bundle, $controller, $call->getMethod());
+        }
         
         foreach($this->config['router']['rules'] as $key => $rule)
         {
@@ -91,21 +99,27 @@ class ControllerResolver extends BaseControllerResolver {
         if(!$this->getMethodConfigKey())
             throw new \BadMethodCallException(sprintf('%1$s does not configured, check config.yml', $fullPath));
         
-        $bundle = $this->kernel->getBundle(sprintf('%sBundle', $bundle));
-        $this->setBundle($bundle);
+        try {
+            $controller = $this->container->get($call->getAction());
+            $method = $call->getMethod();
+        } catch(\Exception $e)
+        {
+            $bundle = $this->kernel->getBundle(sprintf('%sBundle', $bundle));
+            $this->setBundle($bundle);
         
-        $controller = sprintf('%s\\Controller\\%sController::%sAction', $bundle->getNamespace(), $controller, $call->getMethod());
+            $controller = sprintf('%s\\Controller\\%sController::%sAction', $bundle->getNamespace(), $controller, $call->getMethod());
 
-        if (is_array($controller) || (is_object($controller) && method_exists($controller, '__invoke'))) {
-            return $controller;
+            if (is_array($controller) || (is_object($controller) && method_exists($controller, '__invoke'))) {
+                return $controller;
+            }
+
+            if (false === strpos($controller, ':') && method_exists($controller, '__invoke')) {
+                return new $controller;
+            }
+
+            list($controller, $method) = $this->createController($controller);
         }
-
-        if (false === strpos($controller, ':') && method_exists($controller, '__invoke')) {
-            return new $controller;
-        }
-
-        list($controller, $method) = $this->createController($controller);
-
+        
         if (!method_exists($controller, $method)) {
             throw new \InvalidArgumentException(sprintf('Method "%s::%s" does not exist.', get_class($controller), $method));
         }

@@ -50,7 +50,7 @@ Alternative way, add to deps file:
 * error_template - template of validation errors array;
   * basic - basic parameters (optional);
   * defaults - basic parameters;
-    * _controller - NodeName:Controller:method;
+    * _controller - NodeName:Controller:method or или service\_name:methodName;
     * params – method has parameters;
     * form – formHandler method;
   * reader – analogue of store.reader in extjs, it supports:
@@ -79,6 +79,9 @@ Alternative way, add to deps file:
                 
             createCustomer:
                 defaults: { _controller: AcmeDemoBundle:Demo:createCustomer, params: true, form: true }
+                
+            chat:
+                defaults: { _controller: chat_service:chat, params: true, form: true }
 </pre>
 
 Example of Use
@@ -466,6 +469,48 @@ Similar task can also be solved using DirectBundle.
 
 In this example, the errors are specially retrieved from validator service, the response format will be similar to the response of the previous section.
 
+##### Exceptions #####
+
+For assist in the development, router can catch exceptions from symfony2 controller.
+Example:
+
+###### Conroller (Symfony2) ######
+
+    public function testExceptionAction()
+    {
+        throw new \Exception('Exception from testExceptionAction');
+    }
+    
+###### ExtJS application ######
+
+    Ext.Direct.on('exception', function(e) {
+        Ext.Msg.show({
+            title: 'Exception!',
+            msg: e.message + ' ' + e.where,
+            buttons: Ext.Msg.OK,
+            icon: Ext.MessageBox.ERROR
+        });
+    });
+    
+Result of calling testException method will be ejection exception:
+
+    [
+        {
+         "message":"exception 'Exception' with message 'Exception from testExceptionAction'",
+         "where":"in \/home\/gh\/dev\/symfony2sandbox\/vendor\/bundles\/Ext\/DirectBundle\/Controller\/ForTestingController.php: 81",
+         "type":"exception",
+         "tid":3,
+         "action":
+         "ExtDirect_ForTesting",
+         "method":"testException"
+        }
+    ]
+    
+ExtJS can display an error message or do something else.
+
+_Warning! This mode can use only in the develop. In production mode, exceptions are handled by symfony.
+By default response is HTTP code 500, with the message: Internal Server Error._
+
 Development
 ---------
 
@@ -494,6 +539,12 @@ For testing add to config_test.yml:
 
             testFormEntityValidationResponse:
                 defaults: { _controller: ExtDirectBundle:ForTesting:testFormEntityValidationResponse, params: true, form: true }
+                
+            testServiceAction:
+                defaults: { _controller: ext_direct_test_service:testActionAsService, params: true }
+                
+            testException:
+                defaults: { _controller: ExtDirectBundle:ForTesting:testException }
 
 Also you should add to the configuration of phpunit.xml the following:
       
