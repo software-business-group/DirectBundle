@@ -1,0 +1,21 @@
+{
+    "name": "ghua/ext-direct-bundle",
+    "type": "symfony-bundle",
+    "description": "ExtDirect implementation for Symfony2",
+    "keywords": ["extjs", "extdirect", "symfony2", "bundle"],
+    "homepage": "https://github.com/ghua/DirectBundle",
+    "authors": [
+        {
+            "name": "Semyon Velichko",
+            "email": "semyon@velichko.net"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "2.*",
+        "knplabs/knp-paginator-bundle": "2.*"
+    },
+    "autoload": {
+        "psr-0": { "Ext\DirectBundle": "" }
+    },
+    "target-dir": "Ext\DirectBundle"
+}
