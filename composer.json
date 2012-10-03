@@ -15,7 +15,7 @@
         "knplabs/knp-paginator-bundle": "2.*"
     },
     "autoload": {
-        "psr-0": { "Ext\DirectBundle": "" }
+        "psr-0": { "Ext\\DirectBundle": "" }
     },
-    "target-dir": "Ext\DirectBundle"
+    "target-dir": "Ext/DirectBundle"
 }

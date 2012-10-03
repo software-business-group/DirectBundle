@@ -18,6 +18,13 @@ DirectBundle -- это реализация ExtDirect спецификации �
     git=git://github.com/ghua/DirectBundle.git
     target=/bundles/Ext/DirectBundle
     
+##### Через composer ######
+    {
+        require: {
+            "ghua/ext-direct-bundle": "dev-master"
+        }
+    }
+    
 ### Добавляем namespace в autoloader ###
 
     <?php

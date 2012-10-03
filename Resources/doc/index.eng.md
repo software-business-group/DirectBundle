@@ -19,6 +19,13 @@ Alternative way, add to deps file:
     git=git://github.com/ghua/DirectBundle.git
     target=/bundles/Ext/DirectBundle
     
+#### Using composer #####
+    {
+        require: {
+            "ghua/ext-direct-bundle": "dev-master"
+        }
+    }
+    
 ### Add namespace to autoloader ###
 
     <?php
