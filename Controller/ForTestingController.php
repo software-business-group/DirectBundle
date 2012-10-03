@@ -41,7 +41,10 @@ class ForTestingController extends Controller
     {
         $Entity = new Test();
 
-        $form = $this->createForm(new TestType(), $Entity);
+        $form = $this->createFormBuilder($Entity, array('csrf_protection' => false))
+            ->add('name')
+            ->add('count')
+            ->getForm();
         $_data = array_intersect_key($_data, $form->getChildren());
         $form->bind($_data);
 
@@ -60,7 +63,10 @@ class ForTestingController extends Controller
     {
         $Entity = new Test();
 
-        $form = $this->createForm(new TestType(), $Entity);
+        $form = $this->createFormBuilder($Entity, array('csrf_protection' => false))
+            ->add('name')
+            ->add('count')
+            ->getForm();
         $_data = array_intersect_key($_data, $form->getChildren());
         $form->bind($_data);
         

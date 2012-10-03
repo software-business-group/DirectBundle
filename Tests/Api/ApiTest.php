@@ -34,7 +34,7 @@ class ApiTest extends ControllerTest
         
         $this->assertObjectHasAttribute('actions', $apiJson);
         $this->assertObjectHasAttribute('ExtDirect_Direct', $apiJson->actions);
-        $this->assertObjectHasAttribute('ext_direct_test_service', $apiJson->actions);
+        $this->assertObjectHasAttribute('ext_direct_api_test_service', $apiJson->actions);
         $this->assertObjectHasAttribute('len', $apiJson->actions->ExtDirect_Direct[0]);
         $this->assertEquals(0, $apiJson->actions->ExtDirect_Direct[0]->len);
         
