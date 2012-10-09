@@ -51,6 +51,11 @@ DirectBundle -- это реализация ExtDirect спецификации �
         return $bundles;
     }
     
+### Модифицируем app/config/routing.yml ###
+
+    ext_direct:
+        resource: "@ExtDirectBundle/Resources/config/routing.yml"
+    
 ### Пример конфигурации ###
 
   * error_template - шаблон оформления массива ошибок валидации;

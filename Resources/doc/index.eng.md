@@ -51,6 +51,11 @@ Alternative way, add to deps file:
         // ...
         return $bundles;
     }
+
+### Modify app/config/routing.yml ###
+
+    ext_direct:
+        resource: "@ExtDirectBundle/Resources/config/routing.yml"
     
 ### Configuration Example ###
 
