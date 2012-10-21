@@ -52,7 +52,7 @@ class Request
      * 
      * @var array
      */
-    protected $files;
+    protected $files = array();
 
     /**
      * Initialize the object.
@@ -67,7 +67,9 @@ class Request
                                      array('null'),
                                      $request->getContent());
         $this->post = $request->request->all();
-        $this->files = $request->files->all();
+        
+        foreach($request->files->keys() as $key)
+            $this->files[$key] = $request->files->get($key, array());
     }
 
     /**

@@ -26,7 +26,7 @@ class DirectController extends Controller
     public function __construct(ContainerInterface $container) {
             $this->container = $container;
             $this->response = new HttpFoundation\Response();
-            $this->response->headers->set('Content-Type', 'application/json');
+            $this->response->headers->set('Content-Type', 'text/html');
     }
 
     /**
@@ -40,6 +40,7 @@ class DirectController extends Controller
         $api = new Api($this->config);
 
         $this->response->setContent(sprintf('Ext.ns("%1$s"); %1$s.REMOTING_API = %2$s;', $this->config['basic']['namespace'], $api));
+        $this->response->headers->set('Content-Type', 'text/javascript');
         return $this->response;
     }
     

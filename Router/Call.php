@@ -53,13 +53,6 @@ class Call
      * @var string
      */
     protected $callType;
-
-    /**
-     * The ExtDirect upload reference.
-     * 
-     * @var boolean
-     */
-    protected $upload;
     
     protected $bundle;
 
