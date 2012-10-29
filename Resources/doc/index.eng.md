@@ -96,6 +96,15 @@ Alternative way, add to deps file:
                 defaults: { _controller: chat_service:chat, params: true, form: true }
 </pre>
 
+### Add to the template ###
+
+        <script type="text/javascript" src="{{ url('ExtDirectBundle_api')}}"></script>
+
+Add a extdirect provider in your ExtJS application:
+
+        Ext.direct.Manager.addProvider(Ext.app.REMOTING_API);
+
+
 Example of Use
 --------------------
 

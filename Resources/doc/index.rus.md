@@ -100,7 +100,7 @@ DirectBundle -- это реализация ExtDirect спецификации �
 
 В вашем базовом шаблоне, добавьте:
 
-        <script type="text/javascript" src="/api.js"></script>
+        <script type="text/javascript" src="{{ url('ExtDirectBundle_api')}}"></script>
 
 В ExtJS приложении добавьте параметры подключения ExtDirect:
 
