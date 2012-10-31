@@ -4,6 +4,7 @@
     "description": "ExtDirect implementation for Symfony2",
     "keywords": ["extjs", "extdirect", "symfony2", "bundle"],
     "homepage": "https://github.com/ghua/DirectBundle",
+    "license": "MIT",
     "authors": [
         {
             "name": "Semyon Velichko",
