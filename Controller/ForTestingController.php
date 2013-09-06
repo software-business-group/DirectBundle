@@ -45,7 +45,8 @@ class ForTestingController extends Controller
             ->add('name')
             ->add('count')
             ->getForm();
-        $_data = array_intersect_key($_data, $form->getChildren());
+        $all = $form->all();
+        $_data = array_intersect_key($_data, $all);
         $form->bind($_data);
 
         if($form->isValid())
@@ -67,7 +68,7 @@ class ForTestingController extends Controller
             ->add('name')
             ->add('count')
             ->getForm();
-        $_data = array_intersect_key($_data, $form->getChildren());
+        $_data = array_intersect_key($_data, $form->all());
         $form->bind($_data);
         
         $errors = $this->get('validator')->validate($Entity);

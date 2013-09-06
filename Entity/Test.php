@@ -15,8 +15,7 @@ class Test
     
     /**
      * @Assert\NotBlank()
-     * @Assert\Min(0)
-     * @Assert\Max(100)
+     * @Assert\Range(min= 0 , max = 100)
      */
     private $count;
     
