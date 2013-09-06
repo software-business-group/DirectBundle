@@ -12,7 +12,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 
 use Ext\DirectBundle\Tests\Binder as Test;
-use Ext\DirectBundle\Router\Router;
+use Ext\DirectBundle\Router\RouterDepricated;
 use Ext\DirectBundle\Response\Basic;
 
 /**
@@ -53,7 +53,7 @@ class DirectController extends Controller
     public function route(HttpFoundation\Request $request)
     {
         // instantiate the router object
-        $router = new Router($this->container);
+        $router = new RouterDepricated($this->container);
         $this->response->setContent($router->route());
         return $this->response;
     }
