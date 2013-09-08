@@ -7,7 +7,9 @@ use Ext\DirectBundle\Response\Response;
 use Ext\DirectBundle\Response\FormError;
 use Ext\DirectBundle\Response\ValidatorError;
 use Ext\DirectBundle\Entity\Test;
-use Ext\DirectBundle\Form\Type\TestType;
+use Ext\DirectBundle\Annotation\Route;
+use Ext\DirectBundle\Annotation\Reader;
+use Ext\DirectBundle\Annotation\Writer;
 
 class ForTestingController extends Controller
 {
@@ -100,6 +102,17 @@ class ForTestingController extends Controller
         return $this->container->get('ext_direct')
             ->createResponse(new Response(), $_data)
             ->setSuccess(true);
+    }
+
+    /**
+     * @Route(isWithParams = true)
+     * @Reader(type = "xml", root = "read", successProperty = "successProperty", totalProperty = "totalProperty")
+     * @Writer(type = "xml", root = "write")
+     * @param $_data
+     */
+    public function annotationAction($_data)
+    {
+
     }
     
 }

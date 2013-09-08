@@ -3,6 +3,8 @@ parameters:
     ext_direct.response_factory.class: Ext\DirectBundle\Response\ResponseFactory
     ext_direct.controller_resolver.class : Ext\DirectBundle\Router\ControllerResolver
     ext_direct_test_service.class: Ext\DirectBundle\Controller\ForTestingController
+    ext_direct.router.class: Ext\DirectBundle\Router\Router
+    ext_direct.annotation.driver.class: Ext\DirectBundle\Annotation\Driver
     
 services:
     ext_direct.controller:
@@ -21,3 +23,10 @@ services:
     ext_direct_test_service:
         class: %ext_direct_test_service.class%
         arguments: [ @service_container ]
+
+    ext_direct.router:
+        class: %ext_direct.router.class%
+
+    ext_direct.annotation.driver:
+        class: %ext_direct.annotation.driver.class%
+        arguments: [ @ext_direct.router, @annotation_reader ]

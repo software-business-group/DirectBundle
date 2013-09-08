@@ -181,6 +181,30 @@ class Rule
 
     /**
      * @param $key
+     * @return bool
+     */
+    public function hasWriterParam($key)
+    {
+        return isset($this->reader[$key]);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @throws \InvalidArgumentException
+     */
+    public function setWriterParam($key, $value)
+    {
+        if(!array_key_exists($key, $this->writer))
+            throw new \InvalidArgumentException(
+                sprintf('This (%s) reader param does not supported', $key)
+            );
+
+        $this->writer[$key] = $value;
+    }
+
+    /**
+     * @param $key
      * @return mixed
      * @throws \InvalidArgumentException
      */
