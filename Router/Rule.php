@@ -124,7 +124,7 @@ class Rule
     }
 
     /**
-     * @param boolean $isWithParams
+     * @param $isWithParams
      */
     public function setIsWithParams($isWithParams)
     {
@@ -132,7 +132,7 @@ class Rule
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsWithParams()
     {

@@ -24,8 +24,8 @@ testServiceAction:
 testException:
     defaults: { _controller: ExtDirectBundle:ForTesting:testException }
 
-testYamlLoader:
-    resource: "@ExtDirectBundle/Tests/Router/Loader/routing.yml"
+testYamlExtendedLoader:
+    resource: "@ExtDirectBundle/Tests/Router/Loader/routing_ext.yml"
 
 testClassLoader:
     resource: "@ExtDirectBundle/Controller/ForTestingController.php"

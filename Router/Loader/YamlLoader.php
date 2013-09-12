@@ -23,10 +23,16 @@ class YamlLoader implements LoaderInterface
      */
     private $parser;
 
-    public function __construct(Router $router)
+    /**
+     * @var FileLoader
+     */
+    private $loader;
+
+    public function __construct(Router $router, FileLoader $loader)
     {
         $this->parser = new YamlParser();
         $this->router = $router;
+        $this->loader = $loader;
     }
 
     /**
@@ -45,28 +51,48 @@ class YamlLoader implements LoaderInterface
         return $this->router;
     }
 
-    public function load($resource)
+    /**
+     * @return \Ext\DirectBundle\Router\Loader\FileLoader
+     */
+    public function getLoader()
+    {
+        return $this->loader;
+    }
+
+    /**
+     * @param $resource
+     * @param null $type
+     * @return bool
+     */
+    public function load($resource, $type = null)
     {
         $content = $this->loadFile($resource);
 
         if(!is_array($content))
-            return array();
+            return false;
 
         foreach($content as $key => $params)
             $this->processParams($key, $params);
+
+        return true;
     }
 
     /**
      * @param $key
      * @param array $params
+     * @return mixed
      * @throws \InvalidArgumentException
      */
     private function processParams($key, array $params)
     {
-        if(!array_key_exists('defaults', $params))
+        if(isset($params['resource']))
+            return $this->getLoader()
+                ->load($params['resource'], (isset($params['type'])?$params['type']:null));
+
+        if(!isset($params['defaults']))
             throw new \InvalidArgumentException('The defaults params not defined');
 
-        $Rule = $this->processDefaults($key, $params);
+        $Rule = $this->processDefaults($key, $params['defaults']);
 
         if(isset($params['reader']))
             $this->processReader($Rule, $params['reader']);
