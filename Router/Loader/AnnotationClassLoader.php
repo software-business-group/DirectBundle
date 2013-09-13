@@ -3,6 +3,7 @@
 namespace Ext\DirectBundle\Router\Loader;
 
 use Doctrine\Common\Annotations\Reader;
+use Ext\DirectBundle\Router\Router;
 
 /**
  * Class ControllerAnnotationLoader
@@ -13,16 +14,31 @@ class AnnotationClassLoader implements LoaderInterface
 {
 
     /**
+     * @var Router
+     */
+    private $router;
+
+    /**
      * @var \Doctrine\Common\Annotations\Reader
      */
     private $reader;
 
     /**
+     * @param Router $router
      * @param Reader $reader
      */
-    public function __construct(Reader $reader)
+    public function __construct(Router $router, Reader $reader)
     {
+        $this->router = $router;
         $this->reader = $reader;
+    }
+
+    /**
+     * @return \Ext\DirectBundle\Router\Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
     }
 
     /**
@@ -33,6 +49,9 @@ class AnnotationClassLoader implements LoaderInterface
         return $this->reader;
     }
 
+    /**
+     * @param $resource
+     */
     public function load($resource)
     {
 

@@ -61,10 +61,9 @@ class YamlLoader implements LoaderInterface
 
     /**
      * @param $resource
-     * @param null $type
      * @return bool
      */
-    public function load($resource, $type = null)
+    public function load($resource)
     {
         $content = $this->loadFile($resource);
 

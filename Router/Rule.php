@@ -120,7 +120,7 @@ class Rule
      */
     public function getIsFormHandler()
     {
-        return $this->isFormHandler;
+        return $this->isFormHandler === true;
     }
 
     /**
@@ -136,7 +136,7 @@ class Rule
      */
     public function getIsWithParams()
     {
-        return $this->isWithParams;
+        return $this->isWithParams === true;
     }
 
     /**

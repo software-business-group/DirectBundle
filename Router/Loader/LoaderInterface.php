@@ -6,6 +6,6 @@ interface LoaderInterface
 {
 
     public function supports($resource, $type = null);
-    public function load($resource, $type = null);
+    public function load($resource);
 
 }
