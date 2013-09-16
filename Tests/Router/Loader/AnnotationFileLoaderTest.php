@@ -49,7 +49,7 @@ class AnnotationFileLoaderTest extends WebTestCase
         $this->router = new Router();
         $this->fileLoader = new FileLoader($this->getRouter(), $this->get('file_locator'));
         $this->annotationClassLoader = new AnnotationClassLoader($this->getRouter(), $this->get('annotation_reader'));
-        $this->annotationFileLoader = new AnnotationFileLoader($this->get('file_locator'), $this->getAnnotationClassLoader());
+        $this->annotationFileLoader = new AnnotationFileLoader($this->getAnnotationClassLoader());
 
         $this->getFileLoader()->addLoader($this->getAnnotationFileLoader());
     }
@@ -118,7 +118,9 @@ class AnnotationFileLoaderTest extends WebTestCase
 
     public function testLoadByAnnotationFile()
     {
-        return $this->getAnnotationFileLoader()->load();
+        $file = $this->get('file_locator')->locate('@ExtDirectBundle/Controller/ForTestingController.php');
+        $this->getAnnotationFileLoader()->load($file);
+        return;
     }
 
 }

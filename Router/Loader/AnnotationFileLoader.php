@@ -26,7 +26,9 @@ class AnnotationFileLoader implements LoaderInterface
     public function load($resource)
     {
         if ($class = $this->findClass($resource))
-            $this->getLoader()->load($resource);
+            return $this->getLoader()->load($resource);
+
+        return false;
     }
 
     /**
@@ -53,8 +55,8 @@ class AnnotationFileLoader implements LoaderInterface
      */
     private function findClass($resource)
     {
-        $namespace = null;
-        $class = null;
+        $namespace = false;
+        $class = false;
 
         $content = file_get_contents($resource);
         $tokens = token_get_all($content);
@@ -63,13 +65,31 @@ class AnnotationFileLoader implements LoaderInterface
         {
             $token = $tokens[$n];
 
-            if($namespace === null && $token[0] === T_NAMESPACE)
+            if($namespace === false && $token[0] === T_NAMESPACE)
+            {
+                $namespace = null;
+                continue;
+            }
+
+            if($namespace === null && $token[0] === T_STRING)
+            {
                 $namespace = $token[1];
+                continue;
+            }
 
-            if($class === $class && $token[0] === T_CLASS)
+            if($class === false && $token[0] === T_CLASS)
+            {
+                $class = null;
+                continue;
+            }
+
+            if($class === null && $token[0] === T_STRING)
+            {
                 $class = $token[1];
+                continue;
+            }
 
-            if($namespace && $class)
+            if(is_string($namespace) && is_string($class))
                 return $namespace . $class;
         }
 
