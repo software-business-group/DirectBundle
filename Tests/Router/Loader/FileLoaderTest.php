@@ -62,7 +62,11 @@ class FileLoaderTest extends WebTestCase
         $this->router = new Router();
         $this->fileLoader = new FileLoader($this->getRouter(), $this->get('file_locator'));
         $this->ymlLoader = new YamlLoader($this->getRouter(), $this->getFileLoader());
-        $this->annotationClassLoader = new AnnotationClassLoader($this->getRouter(), $this->get('annotation_reader'));
+        $this->annotationClassLoader = new AnnotationClassLoader(
+            $this->getRouter(),
+            $this->get('annotation_reader'),
+            $this->get('ext_direct.controller_resolver')
+        );
         $this->annotationFileLoader = new AnnotationFileLoader($this->get('file_locator'), $this->getAnnotationClassLoader());
 
         $this->getFileLoader()->addLoader($this->getYmlLoader());

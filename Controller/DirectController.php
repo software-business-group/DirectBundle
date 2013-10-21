@@ -34,7 +34,7 @@ class DirectController extends Controller
      * 
      * @return HttpFoundation\Response 
      */
-    public function getApi()
+    public function getApiAction()
     {        
         // instantiate the api object
         $api = new Api($this->config);
@@ -43,14 +43,14 @@ class DirectController extends Controller
         $this->response->headers->set('Content-Type', 'text/javascript');
         return $this->response;
     }
-    
+
     /**
      * Route the ExtDirect calls.
      *
-     * @param HttpFoundation\Request
+     * @param HttpFoundation\Request $request
      * @return HttpFoundation\Response
      */
-    public function route(HttpFoundation\Request $request)
+    public function routeAction(HttpFoundation\Request $request)
     {
         // instantiate the router object
         $router = new RouterDepricated($this->container);

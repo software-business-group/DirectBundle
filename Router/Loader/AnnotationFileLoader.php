@@ -23,6 +23,10 @@ class AnnotationFileLoader implements LoaderInterface
         $this->loader = $loader;
     }
 
+    /**
+     * @param $resource
+     * @return bool|\Symfony\Component\Routing\RouteCollection
+     */
     public function load($resource)
     {
         if ($class = $this->findClass($resource))
@@ -53,7 +57,7 @@ class AnnotationFileLoader implements LoaderInterface
      * @param $resource
      * @return string|bool
      */
-    private function findClass($resource)
+    public function findClass($resource)
     {
         $namespace = false;
         $class = false;
@@ -64,36 +68,36 @@ class AnnotationFileLoader implements LoaderInterface
         for($n = 0; $n < count($tokens); $n++)
         {
             $token = $tokens[$n];
+            if(!is_array($token))
+                continue;
 
             if($namespace === false && $token[0] === T_NAMESPACE)
-            {
-                $namespace = null;
-                continue;
-            }
+                $namespace = true;
 
-            if($namespace === null && $token[0] === T_STRING)
+            if($namespace === true && $token[0] === T_STRING)
             {
-                $namespace = $token[1];
-                continue;
+                $namespace = '';
+                do {
+                    $token = $tokens[$n++];
+                    if(is_array($token))
+                        $namespace .= $token[1];
+                } while(
+                    is_array($token)
+                        &&
+                    in_array($token[0], array(T_STRING, T_NS_SEPARATOR)));
             }
 
             if($class === false && $token[0] === T_CLASS)
-            {
-                $class = null;
-                continue;
-            }
+                $class = true;
 
-            if($class === null && $token[0] === T_STRING)
-            {
+            if($class === true && $token[0] === T_STRING)
                 $class = $token[1];
-                continue;
-            }
 
             if(is_string($namespace) && is_string($class))
-                return $namespace . $class;
+                return $namespace . '\\' . $class;
         }
 
-        return;
+        return false;
     }
 
 }

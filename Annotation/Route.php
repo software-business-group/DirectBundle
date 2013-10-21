@@ -13,6 +13,11 @@ class Route extends Base
 {
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
      * @var boolean
      */
     private $isWithParams;
@@ -21,6 +26,22 @@ class Route extends Base
      * @var boolean
      */
     private $isFormHandler;
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
     /**
      * @param mixed $isFormHandler

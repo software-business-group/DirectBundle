@@ -11,7 +11,7 @@ use Ext\DirectBundle\Annotation\Route;
 use Ext\DirectBundle\Annotation\Reader;
 use Ext\DirectBundle\Annotation\Writer;
 
-class ForTestingController extends Controller
+class TestController extends Controller
 {
     
     public function testArrayResponseAction($_data)
@@ -105,14 +105,24 @@ class ForTestingController extends Controller
     }
 
     /**
-     * @Route(isWithParams = true)
+     * @Route(name="annotation_action_with_name", isWithParams = true)
      * @Reader(type = "xml", root = "read", successProperty = "successProperty", totalProperty = "totalProperty")
      * @Writer(type = "xml", root = "write")
      * @param $_data
      */
-    public function annotationAction($_data)
+    public function annotationWithNameAction($_data)
     {
 
     }
+
+    /**
+     * @Route(name="annotation_action_without_name", isFormHandler = true)
+     * @param $_data
+     */
+    public function annotationWithoutName($_data)
+    {
+
+    }
+
     
 }

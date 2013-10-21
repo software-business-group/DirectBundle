@@ -171,6 +171,9 @@ class Rule
      */
     public function setReaderParam($key, $value)
     {
+        if(is_null($value))
+            return;
+
         if(!array_key_exists($key, $this->reader))
             throw new \InvalidArgumentException(
                 sprintf('This (%s) reader param does not supported', $key)

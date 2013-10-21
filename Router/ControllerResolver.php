@@ -59,23 +59,29 @@ class ControllerResolver extends BaseControllerResolver {
     {
         return $this->config;
     }
-    
+
     public function setMethodConfigKey($key)
     {
         $this->methodConfigKey = $key;
     }
-    
+
     public function getMethodConfigKey()
     {
         return $this->methodConfigKey;
     }
-    
+
     public function getMethodConfig()
     {
         if($this->getMethodConfigKey())
             return $this->config['router']['rules'][$this->getMethodConfigKey()];
     }
-    
+
+    /**
+     * @param Call $call
+     * @return array
+     * @throws \InvalidArgumentException
+     * @throws \BadMethodCallException
+     */
     public function getControllerFromCall(Call $call)
     {
         $this->setCall($call);
@@ -127,7 +133,7 @@ class ControllerResolver extends BaseControllerResolver {
         return array($controller, $method);
     }
     
-   protected function doGetArguments(HttpFoundation_Request $request, $controller, array $parameters)
+    protected function doGetArguments(HttpFoundation_Request $request, $controller, array $parameters)
     {
         if(!$this->call) {
             throw new \LogicException('$this->call is null, run setCall(Call $call) or getControllerFromCall(Call $call) before use getArguments()');
@@ -162,6 +168,26 @@ class ControllerResolver extends BaseControllerResolver {
         }
 
         return $arguments;
+    }
+
+    /**
+     * @param \ReflectionMethod $method
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    public function getActionForRouter(\ReflectionMethod $method)
+    {
+        if(!preg_match('/^(.+)\\\(.+)Bundle\\\Controller\\\(.+)Controller$/', $method->class, $cMatch))
+            throw new \InvalidArgumentException();
+        unset($cMatch[0]);
+
+        if(!preg_match('/^(.+)Action$/', $method->name, $mMatch))
+            throw new \InvalidArgumentException();
+
+        $cMatch[4] = $cMatch[3];
+        $cMatch[3] = '_';
+
+        return implode('', $cMatch) . '.' . $mMatch[1];
     }
     
 }

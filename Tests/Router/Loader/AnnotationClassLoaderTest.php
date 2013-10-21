@@ -6,14 +6,10 @@ use Ext\DirectBundle\Router\Loader\AnnotationClassLoader;
 use Ext\DirectBundle\Router\Loader\AnnotationFileLoader;
 use Ext\DirectBundle\Router\Loader\FileLoader;
 use Ext\DirectBundle\Router\Router;
+use Ext\DirectBundle\Router\Rule;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-/**
- * Class AnnotationFileLoaderTest
- * @package Ext\DirectBundle\Tests\Router\Loader
- * @author Semyon Velichko <semyon@velichko.net>
- */
-class AnnotationFileLoaderTest extends WebTestCase
+class AnnotationClassLoaderTest extends WebTestCase
 {
 
     /**
@@ -27,19 +23,9 @@ class AnnotationFileLoaderTest extends WebTestCase
     private $router;
 
     /**
-     * @var FileLoader
-     */
-    private $fileLoader;
-
-    /**
      * @var AnnotationClassLoader
      */
     private $annotationClassLoader;
-
-    /**
-     * @var AnnotationFileLoader
-     */
-    private $annotationFileLoader;
 
     protected function setUp()
     {
@@ -47,11 +33,7 @@ class AnnotationFileLoaderTest extends WebTestCase
         static::$kernel->boot();
 
         $this->router = new Router();
-        $this->fileLoader = new FileLoader($this->getRouter(), $this->get('file_locator'));
         $this->annotationClassLoader = new AnnotationClassLoader($this->getRouter(), $this->get('annotation_reader'));
-        $this->annotationFileLoader = new AnnotationFileLoader($this->getAnnotationClassLoader());
-
-        $this->getFileLoader()->addLoader($this->getAnnotationFileLoader());
     }
 
     /**
@@ -69,22 +51,6 @@ class AnnotationFileLoaderTest extends WebTestCase
     public function getRouter()
     {
         return $this->router;
-    }
-
-    /**
-     * @return \Ext\DirectBundle\Router\Loader\FileLoader
-     */
-    public function getFileLoader()
-    {
-        return $this->fileLoader;
-    }
-
-    /**
-     * @return AnnotationFileLoader
-     */
-    public function getAnnotationFileLoader()
-    {
-        return $this->annotationFileLoader;
     }
 
     /**
@@ -116,13 +82,19 @@ class AnnotationFileLoaderTest extends WebTestCase
         return $this->getRules()[$key];
     }
 
-    public function testFindClassAnnotationFile()
+    public function getLoadAnnotationClass()
     {
-        $file = $this->get('file_locator')->locate('@ExtDirectBundle/Controller/TestController.php');
-        $this->assertEquals(
-            'Ext\DirectBundle\Controller\ForTestingController',
-            $this->getAnnotationFileLoader()->findClass($file)
+        return array(
+            array('Ext\DirectBundle\Controller\ForTestingController')
         );
+    }
+
+    /**
+     * @dataProvider getLoadAnnotationClass
+     */
+    public function testLoadAnnotationFromClass($class)
+    {
+        $this->getAnnotationClassLoader()->load($class);
     }
 
 }

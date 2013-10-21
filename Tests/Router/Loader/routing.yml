@@ -28,4 +28,4 @@ testYamlExtendedLoader:
     resource: "@ExtDirectBundle/Tests/Router/Loader/routing_ext.yml"
 
 testClassLoader:
-    resource: "@ExtDirectBundle/Controller/ForTestingController.php"
+    resource: "@ExtDirectBundle/Controller/TestController.php"
