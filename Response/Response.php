@@ -84,4 +84,10 @@ class Response implements ResponseInterface
         $this->dispatcher->addSubscriber($subscriber);
         return $this;
     }
+
+    public function addEventListener($eventName, $callable)
+    {
+        $this->dispatcher->addListener($eventName, $callable);
+        return $this;
+    }
 }
