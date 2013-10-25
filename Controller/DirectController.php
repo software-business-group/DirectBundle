@@ -16,18 +16,12 @@ use Ext\DirectBundle\Router\RouterDepricated;
 use Ext\DirectBundle\Response\Basic;
 
 /**
+ * Class DirectController
+ * @package Ext\DirectBundle\Controller
  * @author Semyon Velichko <semyon@velichko.net>
  */
 class DirectController extends Controller
 {
-    
-    private $config = array();
-    
-    public function __construct(ContainerInterface $container) {
-            $this->container = $container;
-            $this->response = new HttpFoundation\Response();
-            $this->response->headers->set('Content-Type', 'text/html');
-    }
 
     /**
      * Generate the ExtDirect API.
@@ -66,4 +60,5 @@ class DirectController extends Controller
     {
         return $this->config;
     }
+
 }

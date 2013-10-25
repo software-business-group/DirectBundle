@@ -2,7 +2,6 @@
 
 namespace Ext\DirectBundle\Router\Loader;
 
-use Ext\DirectBundle\Router\Router;
 use Symfony\Component\Config\FileLocatorInterface;
 
 class FileLoader
@@ -11,22 +10,15 @@ class FileLoader
     private $loaders = array();
 
     /**
-     * @var Router
-     */
-    private $router;
-
-    /**
      * @var \Symfony\Component\Config\FileLocatorInterface
      */
     private $locator;
 
     /**
-     * @param Router $router
      * @param FileLocatorInterface $locator
      */
-    public function __construct(Router $router, FileLocatorInterface $locator)
+    public function __construct(FileLocatorInterface $locator)
     {
-        $this->router = $router;
         $this->locator = $locator;
     }
 
@@ -53,14 +45,6 @@ class FileLoader
     private function getLoader($index)
     {
         return $this->loaders[$index];
-    }
-
-    /**
-     * @return Router
-     */
-    private function getRouter()
-    {
-        return $this->router;
     }
 
     /**

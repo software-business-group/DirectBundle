@@ -6,17 +6,12 @@ use Ext\DirectBundle\Router\Loader\AnnotationClassLoader;
 use Ext\DirectBundle\Router\Loader\AnnotationFileLoader;
 use Ext\DirectBundle\Router\Loader\FileLoader;
 use Ext\DirectBundle\Router\Loader\YamlLoader;
-use Ext\DirectBundle\Router\Router;
+use Ext\DirectBundle\Router\RouteCollection;
 use Ext\DirectBundle\Router\Rule;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Ext\DirectBundle\Tests\TestTemplate;
 
-class FileLoaderTest extends WebTestCase
+class FileLoaderTest extends TestTemplate
 {
-
-    /**
-     * @var
-     */
-    static $kernel;
 
     /**
      * @var string
@@ -24,9 +19,9 @@ class FileLoaderTest extends WebTestCase
     private $resource;
 
     /**
-     * @var Router
+     * @var RouteCollection
      */
-    private $router;
+    private $collection;
 
     /**
      * @var FileLoader
@@ -48,49 +43,33 @@ class FileLoaderTest extends WebTestCase
      */
     private $annotationFileLoader;
 
-    /**
-     * @var array
-     */
-    private $rules = array();
-
-    protected function setUp()
+    public function setUp()
     {
-        static::$kernel = static::createKernel();
-        static::$kernel->boot();
+        parent::setUp();
 
         $this->resource = ( __DIR__ . '/routing.yml' );
-        $this->router = new Router();
-        $this->fileLoader = new FileLoader($this->getRouter(), $this->get('file_locator'));
-        $this->ymlLoader = new YamlLoader($this->getRouter(), $this->getFileLoader());
+        $this->collection = new RouteCollection();
+        $this->fileLoader = new FileLoader($this->get('file_locator'));
+        $this->ymlLoader = new YamlLoader($this->getRouteCollection(), $this->getFileLoader());
         $this->annotationClassLoader = new AnnotationClassLoader(
-            $this->getRouter(),
+            $this->getRouteCollection(),
             $this->get('annotation_reader'),
             $this->get('ext_direct.controller_resolver')
         );
-        $this->annotationFileLoader = new AnnotationFileLoader($this->get('file_locator'), $this->getAnnotationClassLoader());
+        $this->annotationFileLoader = new AnnotationFileLoader($this->getAnnotationClassLoader());
 
         $this->getFileLoader()->addLoader($this->getYmlLoader());
         $this->getFileLoader()->addLoader($this->getAnnotationFileLoader());
 
         $this->getYmlLoader()->load($this->getResource());
-        $this->rules = $this->getRouter()->all();
     }
 
     /**
-     * @param $serviceId
-     * @return mixed
+     * @return \Ext\DirectBundle\Router\RouteCollection
      */
-    public function get($serviceId)
+    public function getRouteCollection()
     {
-        return static::$kernel->getContainer()->get($serviceId);
-    }
-
-    /**
-     * @return \Ext\DirectBundle\Router\Router
-     */
-    public function getRouter()
-    {
-        return $this->router;
+        return $this->collection;
     }
 
     /**
@@ -133,36 +112,15 @@ class FileLoaderTest extends WebTestCase
         return $this->annotationClassLoader;
     }
 
-    /**
-     * @return array
-     */
-    public function getRules()
-    {
-        return $this->rules;
-    }
-
-    /**
-     * @param $key
-     * @return Rule
-     * @throws \InvalidArgumentException
-     */
-    private function getRuleByKey($key)
-    {
-        if(!isset($this->getRules()[$key]))
-            throw new \InvalidArgumentException();
-
-        return $this->getRules()[$key];
-    }
-
     public function testLoadFromRootYaml()
     {
-        $rules = $this->getRules();
+        $collection = $this->getRouteCollection();
 
         // testArrayResponse
-        $this->assertArrayHasKey('testArrayResponse', $rules);
-        $Rule = $this->getRuleByKey('testArrayResponse');
+        $this->assertTrue($collection->has('testArrayResponse'));
+        $Rule = $collection->get('testArrayResponse');
         $this->assertEquals(
-            $Rule->getDefaults()['controller'],
+            $Rule->getController(),
             'ExtDirectBundle:ForTesting:testArrayResponse'
         );
         $this->assertTrue($Rule->getIsWithParams());
@@ -173,10 +131,10 @@ class FileLoaderTest extends WebTestCase
         $this->assertEquals('total', $Rule->getReader()['totalProperty']);
 
         // testObjectResponse
-        $this->assertArrayHasKey('testObjectResponse', $rules);
-        $Rule = $this->getRuleByKey('testObjectResponse');
+        $this->assertTrue($collection->has('testObjectResponse'));
+        $Rule = $collection->get('testObjectResponse');
         $this->assertEquals(
-            $Rule->getDefaults()['controller'],
+            $Rule->getController(),
             'ExtDirectBundle:ForTesting:testObjectResponse'
         );
         $this->assertTrue($Rule->getIsWithParams());
@@ -187,10 +145,10 @@ class FileLoaderTest extends WebTestCase
         $this->assertEquals('total', $Rule->getReader()['totalProperty']);
 
         // testResponseWithConfiguredReader
-        $this->assertArrayHasKey('testResponseWithConfiguredReader', $rules);
-        $Rule = $this->getRuleByKey('testResponseWithConfiguredReader');
+        $this->assertTrue($collection->has('testResponseWithConfiguredReader'));
+        $Rule = $collection->get('testResponseWithConfiguredReader');
         $this->assertEquals(
-            $Rule->getDefaults()['controller'],
+            $Rule->getController(),
             'ExtDirectBundle:ForTesting:testResponseWithConfiguredReader'
         );
         $this->assertTrue($Rule->getIsWithParams());
@@ -201,10 +159,10 @@ class FileLoaderTest extends WebTestCase
         $this->assertEquals('totalProperty', $Rule->getReader()['totalProperty']);
 
         // testFormHandlerResponse
-        $this->assertArrayHasKey('testFormHandlerResponse', $rules);
-        $Rule = $this->getRuleByKey('testFormHandlerResponse');
+        $this->assertTrue($collection->has('testFormHandlerResponse'));
+        $Rule = $collection->get('testFormHandlerResponse');
         $this->assertEquals(
-            $Rule->getDefaults()['controller'],
+            $Rule->getController(),
             'ExtDirectBundle:ForTesting:testFormHandlerResponse'
         );
         $this->assertTrue($Rule->getIsWithParams());
@@ -215,10 +173,10 @@ class FileLoaderTest extends WebTestCase
         $this->assertEquals('total', $Rule->getReader()['totalProperty']);
 
         // testFormValidationResponse
-        $this->assertArrayHasKey('testFormValidationResponse', $rules);
-        $Rule = $this->getRuleByKey('testFormValidationResponse');
+        $this->assertTrue($collection->has('testFormValidationResponse'));
+        $Rule = $collection->get('testFormValidationResponse');
         $this->assertEquals(
-            $Rule->getDefaults()['controller'],
+            $Rule->getController(),
             'ExtDirectBundle:ForTesting:testFormValidationResponse'
         );
         $this->assertTrue($Rule->getIsWithParams());
@@ -229,10 +187,10 @@ class FileLoaderTest extends WebTestCase
         $this->assertEquals('total', $Rule->getReader()['totalProperty']);
 
         // testFormEntityValidationResponse
-        $this->assertArrayHasKey('testFormEntityValidationResponse', $rules);
-        $Rule = $this->getRuleByKey('testFormEntityValidationResponse');
+        $this->assertTrue($collection->has('testFormEntityValidationResponse'));
+        $Rule = $collection->get('testFormEntityValidationResponse');
         $this->assertEquals(
-            $Rule->getDefaults()['controller'],
+            $Rule->getController(),
             'ExtDirectBundle:ForTesting:testFormEntityValidationResponse'
         );
         $this->assertTrue($Rule->getIsWithParams());
@@ -243,10 +201,10 @@ class FileLoaderTest extends WebTestCase
         $this->assertEquals('total', $Rule->getReader()['totalProperty']);
 
         // testServiceAction
-        $this->assertArrayHasKey('testFormEntityValidationResponse', $rules);
-        $Rule = $this->getRuleByKey('testFormEntityValidationResponse');
+        $this->assertTrue($collection->has('testFormEntityValidationResponse'));
+        $Rule = $collection->get('testFormEntityValidationResponse');
         $this->assertEquals(
-            $Rule->getDefaults()['controller'],
+            $Rule->getController(),
             'ExtDirectBundle:ForTesting:testFormEntityValidationResponse'
         );
         $this->assertTrue($Rule->getIsWithParams());
@@ -257,10 +215,10 @@ class FileLoaderTest extends WebTestCase
         $this->assertEquals('total', $Rule->getReader()['totalProperty']);
 
         // testException
-        $this->assertArrayHasKey('testException', $rules);
-        $Rule = $this->getRuleByKey('testException');
+        $this->assertTrue($collection->has('testException'));
+        $Rule = $collection->get('testException');
         $this->assertEquals(
-            $Rule->getDefaults()['controller'],
+            $Rule->getController(),
             'ExtDirectBundle:ForTesting:testException'
         );
         $this->assertFalse($Rule->getIsWithParams());
@@ -273,11 +231,13 @@ class FileLoaderTest extends WebTestCase
 
     public function testLoadFromExternalYaml()
     {
+        $collection = $this->getRouteCollection();
+
         // testRouteFromExtYaml
-        $this->assertArrayHasKey('testRouteFromExtYaml', $this->getRules());
-        $Rule = $this->getRuleByKey('testRouteFromExtYaml');
+        $this->assertTrue($collection->has('testRouteFromExtYaml'));
+        $Rule = $collection->get('testRouteFromExtYaml');
         $this->assertEquals(
-            $Rule->getDefaults()['controller'],
+            $Rule->getController(),
             'ExtDirectBundle:ForTesting:testArrayResponse'
         );
         $this->assertFalse($Rule->getIsWithParams());
@@ -287,5 +247,7 @@ class FileLoaderTest extends WebTestCase
         $this->assertEquals('success', $Rule->getReader()['successProperty']);
         $this->assertEquals('total', $Rule->getReader()['totalProperty']);
     }
+
+
 
 }

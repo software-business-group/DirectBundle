@@ -119,7 +119,7 @@ class TestController extends Controller
      * @Route(name="annotation_action_without_name", isFormHandler = true)
      * @param $_data
      */
-    public function annotationWithoutName($_data)
+    public function annotationWithoutNameAction($_data)
     {
 
     }

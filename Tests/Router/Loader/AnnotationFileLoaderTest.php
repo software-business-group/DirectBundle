@@ -4,124 +4,121 @@ namespace Ext\DirectBundle\Tests\Router\Loader;
 
 use Ext\DirectBundle\Router\Loader\AnnotationClassLoader;
 use Ext\DirectBundle\Router\Loader\AnnotationFileLoader;
-use Ext\DirectBundle\Router\Loader\FileLoader;
-use Ext\DirectBundle\Router\Router;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Ext\DirectBundle\Router\RouteCollection;
+use Ext\DirectBundle\Tests\TestTemplate;
 
 /**
  * Class AnnotationFileLoaderTest
  * @package Ext\DirectBundle\Tests\Router\Loader
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class AnnotationFileLoaderTest extends WebTestCase
+class AnnotationFileLoaderTest extends TestTemplate
 {
 
     /**
-     * @var
+     * @var RouteCollection
      */
-    static $kernel;
-
-    /**
-     * @var Router
-     */
-    private $router;
-
-    /**
-     * @var FileLoader
-     */
-    private $fileLoader;
-
-    /**
-     * @var AnnotationClassLoader
-     */
-    private $annotationClassLoader;
+    private $collection;
 
     /**
      * @var AnnotationFileLoader
      */
-    private $annotationFileLoader;
+    private $loader;
 
-    protected function setUp()
+    /**
+     * @var AnnotationClassLoader
+     */
+    private $classLoader;
+
+    public function setUp()
     {
-        static::$kernel = static::createKernel();
-        static::$kernel->boot();
+        parent::setUp();
 
-        $this->router = new Router();
-        $this->fileLoader = new FileLoader($this->getRouter(), $this->get('file_locator'));
-        $this->annotationClassLoader = new AnnotationClassLoader($this->getRouter(), $this->get('annotation_reader'));
-        $this->annotationFileLoader = new AnnotationFileLoader($this->getAnnotationClassLoader());
-
-        $this->getFileLoader()->addLoader($this->getAnnotationFileLoader());
+        $this->collection = new RouteCollection();
+        $this->classLoader = new AnnotationClassLoader(
+            $this->getRouteCollection(),
+            $this->get('annotation_reader'),
+            $this->get('ext_direct.controller_resolver')
+        );
+        $this->loader = new AnnotationFileLoader($this->getClassLoader());
     }
 
     /**
-     * @param $serviceId
-     * @return mixed
+     * @return \Ext\DirectBundle\Router\RouteCollection
      */
-    public function get($serviceId)
+    public function getRouteCollection()
     {
-        return static::$kernel->getContainer()->get($serviceId);
+        return $this->collection;
     }
 
     /**
-     * @return \Ext\DirectBundle\Router\Router
+     * @return \Ext\DirectBundle\Router\Loader\AnnotationClassLoader
      */
-    public function getRouter()
+    public function getClassLoader()
     {
-        return $this->router;
+        return $this->classLoader;
     }
 
     /**
-     * @return \Ext\DirectBundle\Router\Loader\FileLoader
+     * @return \Ext\DirectBundle\Router\Loader\AnnotationFileLoader
      */
-    public function getFileLoader()
+    public function getLoader()
     {
-        return $this->fileLoader;
-    }
-
-    /**
-     * @return AnnotationFileLoader
-     */
-    public function getAnnotationFileLoader()
-    {
-        return $this->annotationFileLoader;
-    }
-
-    /**
-     * @return AnnotationClassLoader
-     */
-    public function getAnnotationClassLoader()
-    {
-        return $this->annotationClassLoader;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRules()
-    {
-        return $this->rules;
-    }
-
-    /**
-     * @param $key
-     * @return Rule
-     * @throws \InvalidArgumentException
-     */
-    private function getRuleByKey($key)
-    {
-        if(!isset($this->getRules()[$key]))
-            throw new \InvalidArgumentException();
-
-        return $this->getRules()[$key];
+        return $this->loader;
     }
 
     public function testFindClassAnnotationFile()
     {
         $file = $this->get('file_locator')->locate('@ExtDirectBundle/Controller/TestController.php');
         $this->assertEquals(
-            'Ext\DirectBundle\Controller\ForTestingController',
-            $this->getAnnotationFileLoader()->findClass($file)
+            'Ext\DirectBundle\Controller\TestController',
+            $this->getLoader()->findClass($file)
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getSupportedResources()
+    {
+        return array(
+            array('ExtDirectBundle/Controller/TestController.php'),
+            array('ExtDirectBundle/Controller/TestController.php', 'annotation'),
+            array('ExtDirectBundle/Controller/TestController.inc', 'annotation')
+        );
+    }
+
+    /**
+     * @param $resource
+     * @param null|string $type
+     * @dataProvider getSupportedResources
+     */
+    public function testIsSupported($resource, $type = null)
+    {
+        $this->assertTrue(
+            $this->getLoader()->supports($resource, $type)
+        );
+    }
+
+    public function getNotSupportedResources()
+    {
+        return array(
+            array('ExtDirectBundle/Resources/config/routing.yml'),
+            array('ExtDirectBundle/Resources/config/routing.yml', 'yml'),
+            array('ExtDirectBundle/Resources/config/routing.php', 'xml'),
+            array('ExtDirectBundle/Resources/config/routing.xml'),
+        );
+    }
+
+    /**
+     * @param $resource
+     * @param null|string $type
+     * @dataProvider getNotSupportedResources
+     */
+    public function testIsNotSupported($resource, $type = null)
+    {
+        $this->assertFalse(
+            $this->getLoader()->supports($resource, $type)
         );
     }
 

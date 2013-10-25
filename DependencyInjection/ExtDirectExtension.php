@@ -27,9 +27,7 @@ class ExtDirectExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-        
-        $container->getDefinition('ext_direct.controller')
-            ->addMethodCall('setConfig', array($config));
+
         $container->getDefinition('ext_direct.controller_resolver')
             ->addMethodCall('setConfig', array($config));
         $container->getDefinition('ext_direct')

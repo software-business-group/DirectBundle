@@ -14,7 +14,7 @@ class GeneralTest extends ControllerTest
     // generic array response
     public function testGeneralArrayResponse()
     {
-        $postRawArray = array('action' => 'ExtDirect_ForTesting',
+        $postRawArray = array('action' => 'ExtDirect_Test',
                              'method' => 'testArrayResponse',
                              'data' => array(array('page' => rand(1,10), 'start' => rand(10,20), 'limit' => rand(100,9999))),
                              'type' => 'rpc',

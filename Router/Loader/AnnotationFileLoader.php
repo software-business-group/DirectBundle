@@ -30,7 +30,7 @@ class AnnotationFileLoader implements LoaderInterface
     public function load($resource)
     {
         if ($class = $this->findClass($resource))
-            return $this->getLoader()->load($resource);
+            return $this->getLoader()->load($class);
 
         return false;
     }
@@ -50,7 +50,7 @@ class AnnotationFileLoader implements LoaderInterface
      */
     public function supports($resource, $type = null)
     {
-        return 'annotation' === $type || preg_match('/^\.php$/', $resource);
+        return 'annotation' === $type || (preg_match('/\.php$/', $resource) && is_null($type));
     }
 
     /**

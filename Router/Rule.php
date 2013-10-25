@@ -17,9 +17,9 @@ class Rule
     private $alias;
 
     /**
-     * @var array
+     * @var $controller
      */
-    private $defaults = array();
+    private $controller;
 
     /**
      * @var array
@@ -50,15 +50,15 @@ class Rule
     private $isFormHandler;
 
     /**
-     * @param $alias
-     * @param $defaults
+     * @param string $alias
+     * @param string $controller
      * @param bool $isWithParams
      * @param bool $isFormHandler
      */
-    public function __construct($alias, $defaults, $isWithParams = true, $isFormHandler = false)
+    public function __construct($alias, $controller, $isWithParams = true, $isFormHandler = false)
     {
         $this->setAlias($alias);
-        $this->setDefaults($defaults);
+        $this->setController($controller);
         $this->setIsWithParams($isWithParams);
         $this->setIsFormHandler($isFormHandler);
     }
@@ -80,31 +80,19 @@ class Rule
     }
 
     /**
-     * @param $defaults
-     * @throws \InvalidArgumentException
+     * @param $controller
      */
-    public function setDefaults($defaults)
+    public function setController($controller)
     {
-        if(!isset($defaults['controller']))
-            throw new \InvalidArgumentException('The controller does not defined');
-
-        $this->defaults = $defaults;
+        $this->controller = $controller;
     }
 
     /**
-     * @return array
-     */
-    public function getDefaults()
-    {
-        return $this->defaults;
-    }
-
-    /**
-     * @return string|object
+     * @return string
      */
     public function getController()
     {
-        return $this->defaults['controller'];
+        return $this->controller;
     }
 
     /**

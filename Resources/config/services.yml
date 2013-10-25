@@ -12,16 +12,17 @@ services:
         class: Ext\DirectBundle\Controller\ForTestingController
         arguments: [ @service_container ]
 
-    ext_direct.router:
-        class: Ext\DirectBundle\Router\Router
+    ext_direct.route.collection:
+        class: Ext\DirectBundle\Router\RouteCollection
 
     ext_direct.file.loader:
         class: Ext\DirectBundle\Router\Loader\FileLoader
+        arguments: [ @file_locator  ]
 
     ext_direct.yml.loader:
         class: Ext\DirectBundle\Router\Loader\YamlLoader
-        arguments: [ @ext_direct.router, ]
+        arguments: [ ext_direct.route.collection  ]
 
     ext_direct.annotation_class.loader:
         class: Ext\DirectBundle\Router\Loader\AnnotationClass
-        arguments: [ @ext_direct.router, @annotation_reader ]
+        arguments: [ @ext_direct.route.collection, @annotation_reader ]

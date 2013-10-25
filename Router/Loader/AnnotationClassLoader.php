@@ -5,7 +5,7 @@ namespace Ext\DirectBundle\Router\Loader;
 use Doctrine\Common\Annotations\Reader as AnnotationsReader;
 use Ext\DirectBundle\Annotation\Route;
 use Ext\DirectBundle\Router\ControllerResolver;
-use Ext\DirectBundle\Router\Router;
+use Ext\DirectBundle\Router\RouteCollection;
 use Ext\DirectBundle\Router\Rule;
 use Ext\DirectBundle\Annotation\Reader;
 use Ext\DirectBundle\Annotation\Writer;
@@ -19,9 +19,9 @@ class AnnotationClassLoader implements LoaderInterface
 {
 
     /**
-     * @var Router
+     * @var RouteCollection
      */
-    private $router;
+    private $collection;
 
     /**
      * @var AnnotationsReader
@@ -34,22 +34,23 @@ class AnnotationClassLoader implements LoaderInterface
     private $resolver;
 
     /**
-     * @param Router $router
+     * @param RouteCollection $collection
      * @param AnnotationsReader $reader
      * @param ControllerResolver $resolver
      */
-    public function __construct(Router $router, AnnotationsReader $reader, ControllerResolver $resolver)
+    public function __construct(RouteCollection $collection, AnnotationsReader $reader, ControllerResolver $resolver)
     {
-        $this->router = $router;
+        $this->collection = $collection;
         $this->reader = $reader;
+        $this->resolver = $resolver;
     }
 
     /**
-     * @return Router
+     * @return RouteCollection
      */
-    public function getRouter()
+    public function getRouteCollection()
     {
-        return $this->router;
+        return $this->collection;
     }
 
     /**
@@ -101,8 +102,8 @@ class AnnotationClassLoader implements LoaderInterface
                 if(!$name)
                     $name = $this->getDefaultRouteName($annotation);
 
-                $alias = $this->getResolver()->getActionForRouter($annotation);
-                $Rule = new Rule($name, $alias, $annotation->getIsWithParams(), $annotation->getIsFormHandler());
+                $controller = $this->getResolver()->genAction($method);
+                $Rule = new Rule($name, $controller, $annotation->getIsWithParams(), $annotation->getIsFormHandler());
             }
 
             if($annotation instanceof Reader && isset($Rule))
@@ -115,7 +116,7 @@ class AnnotationClassLoader implements LoaderInterface
         }
 
         if(isset($Rule))
-            $this->getRouter()->add($Rule);
+            $this->getRouteCollection()->add($Rule);
     }
 
     /**
@@ -134,7 +135,7 @@ class AnnotationClassLoader implements LoaderInterface
      */
     public function supports($resource, $type = null)
     {
-        if($type === 'annotation')
+        if($type === 'class')
             return true;
 
         return false;

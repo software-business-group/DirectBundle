@@ -17,7 +17,6 @@ class ControllerResolver extends BaseControllerResolver {
     
     private $call;
     private $bundle;
-    private $controller;
     private $config;
     private $methodConfigKey;
     
@@ -33,7 +32,7 @@ class ControllerResolver extends BaseControllerResolver {
         return $this;
     }
     
-    public function getCall()
+    private function getCall()
     {
         return $this->call;
     }
@@ -44,7 +43,7 @@ class ControllerResolver extends BaseControllerResolver {
         return $this;
     }
     
-    public function getBundle()
+    private function getBundle()
     {
         return $this->bundle;
     }
@@ -60,17 +59,17 @@ class ControllerResolver extends BaseControllerResolver {
         return $this->config;
     }
 
-    public function setMethodConfigKey($key)
+    private function setMethodConfigKey($key)
     {
         $this->methodConfigKey = $key;
     }
 
-    public function getMethodConfigKey()
+    private function getMethodConfigKey()
     {
         return $this->methodConfigKey;
     }
 
-    public function getMethodConfig()
+    private function getMethodConfig()
     {
         if($this->getMethodConfigKey())
             return $this->config['router']['rules'][$this->getMethodConfigKey()];
@@ -175,7 +174,7 @@ class ControllerResolver extends BaseControllerResolver {
      * @return string
      * @throws \InvalidArgumentException
      */
-    public function getActionForRouter(\ReflectionMethod $method)
+    public function genAction(\ReflectionMethod $method)
     {
         if(!preg_match('/^(.+)\\\(.+)Bundle\\\Controller\\\(.+)Controller$/', $method->class, $cMatch))
             throw new \InvalidArgumentException();

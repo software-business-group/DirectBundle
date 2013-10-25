@@ -1,6 +1,8 @@
 <?php
 namespace Ext\DirectBundle\Api;
 
+use Ext\DirectBundle\Router\Router;
+
 /**
  * Api is the ExtDirect Api class.
  *
@@ -13,24 +15,69 @@ class Api
 {
 
     /**
-     * The ExtDirect JSON API description.
-     * 
-     * @var array
+     * @var string
      */
-    protected $api = array('actions' => array());
-    
-    protected $config;
-    
+    private $namespace;
+
+    /**
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @var Router
+     */
+    private $router;
+
     const Bundle_Action_Regex = '/^([\w]+)Bundle:([\w]+):([\w]+)$/i';
     const Service_Regex = '/^([\w]+):([\w]+)$/i';
 
     /**
-     * Initialize the API.
+     * @param mixed $namespace
      */
-    public function __construct($config)
+    public function setNamespace($namespace)
     {
-        $this->config = $config;
-        $this->createApi();
+        $this->namespace = $namespace;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getNamespace()
+    {
+        return $this->namespace;
+    }
+
+    /**
+     * @param mixed $rules
+     */
+    public function setRules($rules)
+    {
+        $this->rules = $rules;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getRules()
+    {
+        return $this->rules;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getType()
+    {
+        return $this->type;
     }
 
     /**
@@ -40,19 +87,21 @@ class Api
      */
     public function  __toString()
     {        
-        return json_encode(array_merge($this->config['basic'], $this->api));
+        return json_encode(array_merge(array(''), $this->createApi()));
     }
 
     /**
      * Create the ExtDirect API based on config.yml or direct.yml files.
      *
      * @return string JSON description of Direct API
+     * @return array
+     * @throws \InvalidArgumentException
      */
-    protected function createApi()
+    private function createApi()
     {
         $api = array();
         
-        foreach($this->config['router']['rules'] as $rule) {
+        foreach($this->rules['router']['rules'] as $rule) {
             if(preg_match($this::Bundle_Action_Regex, $rule['defaults']['_controller'], $match)) {
                 list($all, $shortBundleName, $controllerName, $methodName) = $match;
                 $key = sprintf('%s_%s', $shortBundleName, $controllerName);
@@ -73,6 +122,6 @@ class Api
             $api[$key][] = $methodParams;
         }
         
-        $this->api['actions'] = $api;
+        return $api;
     }
 }

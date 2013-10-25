@@ -1,7 +1,7 @@
 <?php
 
 namespace Ext\DirectBundle\Router\Loader;
-use Ext\DirectBundle\Router\Router;
+use Ext\DirectBundle\Router\RouteCollection;
 use Ext\DirectBundle\Router\Rule;
 use Symfony\Component\Yaml\Parser as YamlParser;
 
@@ -14,9 +14,9 @@ class YamlLoader implements LoaderInterface
 {
 
     /**
-     * @var \Ext\DirectBundle\Router\Router
+     * @var \Ext\DirectBundle\Router\RouteCollection
      */
-    private $router;
+    private $collection;
 
     /**
      * @var \Symfony\Component\Yaml\Parser
@@ -28,10 +28,10 @@ class YamlLoader implements LoaderInterface
      */
     private $loader;
 
-    public function __construct(Router $router, FileLoader $loader)
+    public function __construct(RouteCollection $collection, FileLoader $loader)
     {
         $this->parser = new YamlParser();
-        $this->router = $router;
+        $this->collection = $collection;
         $this->loader = $loader;
     }
 
@@ -44,11 +44,11 @@ class YamlLoader implements LoaderInterface
     }
 
     /**
-     * @return Router
+     * @return RouteCollection
      */
-    public function getRouter()
+    public function getRouteCollection()
     {
-        return $this->router;
+        return $this->collection;
     }
 
     /**
@@ -99,7 +99,7 @@ class YamlLoader implements LoaderInterface
         if(isset($params['writer']))
             $this->processWriter($Rule, $params['writer']);
 
-        $this->getRouter()
+        $this->getRouteCollection()
             ->add($Rule);
     }
 
@@ -117,15 +117,13 @@ class YamlLoader implements LoaderInterface
         if(!isset($params['_controller']))
             throw new \InvalidArgumentException('The _controller does not defined');
 
-        $defaults['controller'] = $params['_controller'];
-
         if(isset($params['params']))
             $isWithParams = $params['params'];
 
         if(isset($params['form']))
             $isFormHandler = $params['form'];
 
-        return new Rule($key, $defaults, $isWithParams, $isFormHandler);
+        return new Rule($key, $params['_controller'], $isWithParams, $isFormHandler);
     }
 
     /**
@@ -177,7 +175,7 @@ class YamlLoader implements LoaderInterface
 
     public function supports($resource, $type = null)
     {
-        if($type === 'yml' || preg_match('/\.yml$/', $resource))
+        if($type === 'yml' || $type === 'yaml' || preg_match('/\.yml$/', $resource))
             return true;
 
         return false;
