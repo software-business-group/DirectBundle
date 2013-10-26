@@ -116,7 +116,7 @@ class TestController extends Controller
     }
 
     /**
-     * @Route(name="annotation_action_without_name", isFormHandler = true)
+     * @Route()
      * @param $_data
      */
     public function annotationWithoutNameAction($_data)

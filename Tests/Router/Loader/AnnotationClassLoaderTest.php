@@ -3,98 +3,79 @@
 namespace Ext\DirectBundle\Tests\Router\Loader;
 
 use Ext\DirectBundle\Router\Loader\AnnotationClassLoader;
-use Ext\DirectBundle\Router\Loader\AnnotationFileLoader;
-use Ext\DirectBundle\Router\Loader\FileLoader;
-use Ext\DirectBundle\Router\Router;
+use Ext\DirectBundle\Router\RouteCollection;
 use Ext\DirectBundle\Router\Rule;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Ext\DirectBundle\Tests\TestTemplate;
 
-class AnnotationClassLoaderTest extends WebTestCase
+class AnnotationClassLoaderTest extends TestTemplate
 {
 
     /**
-     * @var
+     * @var RouteCollection
      */
-    static $kernel;
-
-    /**
-     * @var Router
-     */
-    private $router;
+    private $collection;
 
     /**
      * @var AnnotationClassLoader
      */
-    private $annotationClassLoader;
+    private $loader;
 
-    protected function setUp()
+    public function setUp()
     {
-        static::$kernel = static::createKernel();
-        static::$kernel->boot();
-
-        $this->router = new Router();
-        $this->annotationClassLoader = new AnnotationClassLoader($this->getRouter(), $this->get('annotation_reader'));
+        parent::setUp();
+        $this->collection = new RouteCollection();
+        $this->loader = new AnnotationClassLoader(
+            $this->getCollection(),
+            $this->get('annotation_reader'),
+            $this->get('ext_direct.controller_resolver')
+        );
     }
 
     /**
-     * @param $serviceId
-     * @return mixed
+     * @return \Ext\DirectBundle\Router\Loader\AnnotationClassLoader
      */
-    public function get($serviceId)
+    public function getLoader()
     {
-        return static::$kernel->getContainer()->get($serviceId);
+        return $this->loader;
     }
 
     /**
-     * @return \Ext\DirectBundle\Router\Router
+     * @return \Ext\DirectBundle\Router\RouteCollection
      */
-    public function getRouter()
+    public function getCollection()
     {
-        return $this->router;
-    }
-
-    /**
-     * @return AnnotationClassLoader
-     */
-    public function getAnnotationClassLoader()
-    {
-        return $this->annotationClassLoader;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRules()
-    {
-        return $this->rules;
-    }
-
-    /**
-     * @param $key
-     * @return Rule
-     * @throws \InvalidArgumentException
-     */
-    private function getRuleByKey($key)
-    {
-        if(!isset($this->getRules()[$key]))
-            throw new \InvalidArgumentException();
-
-        return $this->getRules()[$key];
+        return $this->collection;
     }
 
     public function getLoadAnnotationClass()
     {
         return array(
-            array('Ext\DirectBundle\Controller\ForTestingController')
+            array('Ext\DirectBundle\Controller\TestController')
         );
     }
 
     /**
      * @dataProvider getLoadAnnotationClass
      */
-    public function testLoadAnnotationFromClass($class)
+    public function testLoadAnnotationFromTestController($class)
     {
-        $this->getAnnotationClassLoader()->load($class);
+        $this->getLoader()->load($class);
+
+        $collection = $this->getLoader()->getRouteCollection();
+
+        $this->assertTrue($collection->has('annotationWithNameAction'));
+        $Rule = $collection->get('annotationWithNameAction');
+        $this->assertEquals('annotationWithNameAction', $Rule->getAlias());
+        $this->assertEquals('ExtDirect_Test.annotationWithName', $Rule->getController());
+        $this->assertEquals('xml', $Rule->getReaderParam('type'));
+        $this->assertEquals('read', $Rule->getReaderParam('root'));
+        $this->assertEquals('successProperty', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('totalProperty', $Rule->getReaderParam('totalProperty'));
+        $this->assertEquals('totalProperty', $Rule->getReaderParam('totalProperty'));
+
+
+
+        return;
     }
 
 }
