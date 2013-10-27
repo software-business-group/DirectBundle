@@ -26,3 +26,7 @@ services:
     ext_direct.annotation_class.loader:
         class: Ext\DirectBundle\Router\Loader\AnnotationClass
         arguments: [ @ext_direct.route.collection, @annotation_reader ]
+
+    ext_direct.api:
+        class: Ext\DirectBundle\Api\Api
+        arguments: [ @ext_direct.route.collection, @router ]

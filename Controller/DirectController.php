@@ -29,13 +29,8 @@ class DirectController extends Controller
      * @return HttpFoundation\Response 
      */
     public function getApiAction()
-    {        
-        // instantiate the api object
-        $api = new Api($this->config);
-
-        $this->response->setContent(sprintf('Ext.ns("%1$s"); %1$s.REMOTING_API = %2$s;', $this->config['basic']['namespace'], $api));
-        $this->response->headers->set('Content-Type', 'text/javascript');
-        return $this->response;
+    {
+        return new HttpFoundation\Response((string)$this->get('ext_direct.api'), 200, array('Content-Type' => 'text/javascript'));
     }
 
     /**
@@ -46,19 +41,7 @@ class DirectController extends Controller
      */
     public function routeAction(HttpFoundation\Request $request)
     {
-        // instantiate the router object
-        $router = new RouterDepricated($this->container);
-        $this->response->setContent($router->route());
-        return $this->response;
-    }
-    
-    public function setConfig($config) {
-        $this->config = array_merge_recursive($config, array('basic' => array('url' => $this->get('router')->generate('ExtDirectBundle_route'))));
-    }
-    
-    public function getConfig()
-    {
-        return $this->config;
+
     }
 
 }

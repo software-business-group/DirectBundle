@@ -1,7 +1,8 @@
 <?php
 namespace Ext\DirectBundle\Api;
 
-use Ext\DirectBundle\Router\Router;
+use Ext\DirectBundle\Router\RouteCollection;
+use Symfony\Component\Routing\Router;
 
 /**
  * Api is the ExtDirect Api class.
@@ -25,6 +26,11 @@ class Api
     private $type;
 
     /**
+     * @var RouteCollection
+     */
+    private $collection;
+
+    /**
      * @var Router
      */
     private $router;
@@ -32,36 +38,18 @@ class Api
     const Bundle_Action_Regex = '/^([\w]+)Bundle:([\w]+):([\w]+)$/i';
     const Service_Regex = '/^([\w]+):([\w]+)$/i';
 
+    public function __construct(RouteCollection $collection, Router $router)
+    {
+        $this->collection = $collection;
+        $this->router = $router;
+    }
+
     /**
      * @param mixed $namespace
      */
     public function setNamespace($namespace)
     {
         $this->namespace = $namespace;
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getNamespace()
-    {
-        return $this->namespace;
-    }
-
-    /**
-     * @param mixed $rules
-     */
-    public function setRules($rules)
-    {
-        $this->rules = $rules;
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getRules()
-    {
-        return $this->rules;
     }
 
     /**
@@ -73,11 +61,35 @@ class Api
     }
 
     /**
-     * @return mixed
+     * @return \Ext\DirectBundle\Router\RouteCollection
      */
-    private function getType()
+    public function getRouteCollection()
+    {
+        return $this->collection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->namespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * @return \Symfony\Component\Routing\Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
     }
 
     /**
@@ -87,7 +99,7 @@ class Api
      */
     public function  __toString()
     {        
-        return json_encode(array_merge(array(''), $this->createApi()));
+        return sprintf('Ext.ns("%1$s"); %1$s.REMOTING_API = ' . json_encode($this->createApi()), $this->getNamespace());
     }
 
     /**
@@ -97,31 +109,40 @@ class Api
      * @return array
      * @throws \InvalidArgumentException
      */
-    private function createApi()
+    public function createApi()
     {
-        $api = array();
+        $api = array(
+            'type' => $this->getType(),
+            'namespace' => $this->getNamespace(),
+            'url' => $this->getRouter()->generate('ExtDirectBundle_route')
+        );
+
+        $actions = array();
         
-        foreach($this->rules['router']['rules'] as $rule) {
-            if(preg_match($this::Bundle_Action_Regex, $rule['defaults']['_controller'], $match)) {
+        foreach($this->getRouteCollection() as $Rule) {
+            if(preg_match($this::Bundle_Action_Regex, $Rule->getController(), $match)) {
                 list($all, $shortBundleName, $controllerName, $methodName) = $match;
                 $key = sprintf('%s_%s', $shortBundleName, $controllerName);
-            } elseif(preg_match($this::Service_Regex, $rule['defaults']['_controller'], $match)) {
+            } elseif(preg_match($this::Service_Regex, $Rule->getController(), $match)) {
                 list($all, $key, $methodName) = $match;
             } else {
                 throw new \InvalidArgumentException();
             }
 
-            if(!array_key_exists($key, $api) or !is_array($api[$key]))
-                $api[$key] = array();
+            if(!array_key_exists($key, $actions) or !is_array($actions[$key]))
+                $actions[$key] = array();
                 
-            $methodParams = array('name' => $methodName, 'len' => (integer)$rule['defaults']['params']);
+            $methodParams = array('name' => $methodName, 'len' => (integer)$Rule->getIsWithParams());
             
-            if($rule['defaults']['form'])
+            if($Rule->getIsFormHandler())
                 $methodParams['formHandler'] = true;
-            
-            $api[$key][] = $methodParams;
+
+            $actions[$key][] = $methodParams;
         }
-        
+
+        $api['actions'] = $actions;
+
         return $api;
     }
 }
+

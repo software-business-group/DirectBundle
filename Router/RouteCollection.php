@@ -28,7 +28,7 @@ class RouteCollection implements \ArrayAccess, \Iterator, \Countable
     public function current()
     {
         $keys = array_keys($this->rules);
-        $this->rules[$keys[$this->position]];
+        return $this->rules[$keys[$this->position]];
     }
 
     public function rewind()
@@ -49,7 +49,7 @@ class RouteCollection implements \ArrayAccess, \Iterator, \Countable
     public function valid()
     {
         $keys = array_keys($this->rules);
-        return array_key_exists($this->rules, $keys[$this->position]);
+        return (array_key_exists($this->position, $keys) && array_key_exists($keys[$this->position], $this->rules));
     }
 
     /**

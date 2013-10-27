@@ -3,6 +3,7 @@
 namespace Ext\DirectBundle\Router\Loader;
 
 use Doctrine\Common\Annotations\Reader as AnnotationsReader;
+use Ext\DirectBundle\Annotation\Base;
 use Ext\DirectBundle\Annotation\Route;
 use Ext\DirectBundle\Router\ControllerResolver;
 use Ext\DirectBundle\Router\RouteCollection;
@@ -88,21 +89,20 @@ class AnnotationClassLoader implements LoaderInterface
     {
         $annotations = $this->getReader()->getMethodAnnotations($method);
 
-        $isProcessing = false;
-        for($n = 0; $n < count($annotations); $n++)
+        if(count($annotations) === 0)
+            return;
+
+        $this->sortAnnotations($annotations);
+
+        foreach($annotations as $annotation)
         {
-            $annotation = $annotations[$n];
             if($annotation instanceof Route)
             {
-                if(!$isProcessing)
-                    $n = 0;
-                $isProcessing = true;
-
-                $name = $method->name;
-                if(!$name)
-                    $name = $this->getDefaultRouteName($annotation);
-
                 $controller = $this->getResolver()->genAction($method);
+
+                $name = $annotation->getName();
+                if(!$name)
+                    $name = $this->getDefaultRouteName($controller);
                 $Rule = new Rule($name, $controller, $annotation->getIsWithParams(), $annotation->getIsFormHandler());
             }
 
@@ -113,6 +113,12 @@ class AnnotationClassLoader implements LoaderInterface
                 $Rule->setReaderTotalProperty($annotation->getTotalProperty());
                 $Rule->setReaderParam('type', $annotation->getType());
             }
+
+            if($annotation instanceof Writer && isset($Rule))
+            {
+                $Rule->setWriterParam('type', $annotation->getType());
+                $Rule->setWriterParam('root', $annotation->getRoot());
+            }
         }
 
         if(isset($Rule))
@@ -120,12 +126,37 @@ class AnnotationClassLoader implements LoaderInterface
     }
 
     /**
-     * @param Route $route
+     * @param $annotations
+     * @return bool
+     */
+    private function sortAnnotations(&$annotations)
+    {
+        return uasort($annotations, array($this, 'sortFunction'));
+    }
+
+    /**
+     * @param Base $a
+     * @param Base $b
+     * @return int
+     */
+    private function sortFunction(Base $a, Base $b)
+    {
+        if($a === $b)
+            return 0;
+
+        if($a instanceof Route)
+            return -1;
+
+        return 1;
+    }
+
+    /**
+     * @param string $controller
      * @return string
      */
-    private function getDefaultRouteName(Route $route)
+    private function getDefaultRouteName($controller)
     {
-        return '';
+        return str_replace('.', '_', $controller);
     }
 
     /**
@@ -135,7 +166,7 @@ class AnnotationClassLoader implements LoaderInterface
      */
     public function supports($resource, $type = null)
     {
-        if($type === 'class')
+        if($type === 'annotation')
             return true;
 
         return false;

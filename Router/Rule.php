@@ -149,7 +149,7 @@ class Rule
      */
     public function hasReaderParam($key)
     {
-        return isset($this->reader[$key]);
+        return array_key_exists($key, $this->reader);
     }
 
     /**
@@ -162,7 +162,7 @@ class Rule
         if(is_null($value))
             return;
 
-        if(!array_key_exists($key, $this->reader))
+        if(!$this->hasReaderParam($key))
             throw new \InvalidArgumentException(
                 sprintf('This (%s) reader param does not supported', $key)
             );
@@ -176,7 +176,7 @@ class Rule
      */
     public function hasWriterParam($key)
     {
-        return isset($this->reader[$key]);
+        return array_key_exists($key, $this->reader);
     }
 
     /**
@@ -186,9 +186,9 @@ class Rule
      */
     public function setWriterParam($key, $value)
     {
-        if(!array_key_exists($key, $this->writer))
+        if(!$this->hasWriterParam($key))
             throw new \InvalidArgumentException(
-                sprintf('This (%s) reader param does not supported', $key)
+                sprintf('This (%s) writer param does not supported', $key)
             );
 
         $this->writer[$key] = $value;
@@ -201,12 +201,27 @@ class Rule
      */
     public function getReaderParam($key)
     {
-        if($this->hasReaderParam($key))
+        if(!$this->hasReaderParam($key))
             throw new \InvalidArgumentException(
                 sprintf('This (%s) reader param  not exist', $key)
             );
 
         return $this->reader[$key];
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     * @throws \InvalidArgumentException
+     */
+    public function getWriterParam($key)
+    {
+        if(!$this->hasWriterParam($key))
+            throw new \InvalidArgumentException(
+                sprintf('This (%s) writer param  not exist', $key)
+            );
+
+        return $this->writer[$key];
     }
 
     /**

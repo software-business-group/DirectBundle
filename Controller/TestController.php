@@ -105,9 +105,9 @@ class TestController extends Controller
     }
 
     /**
-     * @Route(name="annotation_action_with_name", isWithParams = true)
      * @Reader(type = "xml", root = "read", successProperty = "successProperty", totalProperty = "totalProperty")
      * @Writer(type = "xml", root = "write")
+     * @Route(name="annotation_action_with_name", isWithParams = true)
      * @param $_data
      */
     public function annotationWithNameAction($_data)
@@ -116,6 +116,7 @@ class TestController extends Controller
     }
 
     /**
+     * @Writer(type = "xml", root = "write")
      * @Route()
      * @param $_data
      */

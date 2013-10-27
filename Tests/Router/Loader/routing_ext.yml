@@ -1,2 +1,2 @@
 testRouteFromExtYaml:
-    defaults: { _controller: ExtDirectBundle:ForTesting:testArrayResponse }
+    defaults: { _controller: ExtDirectBundle:Test:testArrayResponse }
