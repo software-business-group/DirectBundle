@@ -64,10 +64,14 @@ class Rule
     }
 
     /**
-     * @param string $alias
+     * @param $alias
+     * @throws \InvalidArgumentException
      */
     public function setAlias($alias)
     {
+        if(!is_string($alias))
+            throw new \InvalidArgumentException('Argument must be a string');
+
         $this->alias = $alias;
     }
 
@@ -81,9 +85,13 @@ class Rule
 
     /**
      * @param $controller
+     * @throws \InvalidArgumentException
      */
     public function setController($controller)
     {
+        if(!is_string($controller))
+            throw new \InvalidArgumentException('Argument must be a string');
+
         $this->controller = $controller;
     }
 

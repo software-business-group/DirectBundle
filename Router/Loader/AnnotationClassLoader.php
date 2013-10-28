@@ -156,7 +156,7 @@ class AnnotationClassLoader implements LoaderInterface
      */
     private function getDefaultRouteName($controller)
     {
-        return str_replace('.', '_', $controller);
+        return str_replace(':', '_', $controller);
     }
 
     /**

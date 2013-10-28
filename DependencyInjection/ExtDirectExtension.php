@@ -28,10 +28,10 @@ class ExtDirectExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $container->getDefinition('ext_direct.controller_resolver')
-            ->addMethodCall('setConfig', array($config));
-        $container->getDefinition('ext_direct')
-            ->addMethodCall('setConfig', array($config));
+        $container->getDefinition('ext_direct.api')
+            ->addMethodCall('setNamespace', array($config['basic']['namespace']))
+            ->addMethodCall('setType', array($config['basic']['type']));
+
     }
 
     /**

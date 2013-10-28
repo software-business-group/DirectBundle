@@ -40,7 +40,7 @@ class ControllerResolverTest extends ControllerTest
         );
         foreach($data as $result => $method)
         {
-            $this->assertEquals($result, $this->getResolver()->getActionForRouter($method));
+            $this->assertEquals($result, $this->getResolver()->genAction($method));
         }
     }
 }

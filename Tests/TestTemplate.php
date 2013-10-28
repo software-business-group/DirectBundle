@@ -56,10 +56,11 @@ class TestTemplate extends WebTestCase
     public function getRules()
     {
         $rules = array(
-            array(new Rule('formHandler', array('controller' => 'ExtDirect_Test.formHandler'), true, true)),
-            array(new Rule('formHandlerWithoutParams', array('controller' => 'ExtDirect_Test.formHandler'), true, false)),
-            array(new Rule('withParams', array('controller' => 'ExtDirect_Test.withParams'), true, false)),
-            array(new Rule('withoutParams', array('controller' => 'ExtDirect_Test.withoutParams'), false, false)),
+            array(new Rule('formHandler', 'ExtDirectBundle:Test:formHandler', true, true)),
+            array(new Rule('formHandlerWithoutParams', 'ExtDirectBundle:Test:formHandler2', true, false)),
+            array(new Rule('withParams', 'ExtDirectBundle:Test:withParams', true, false)),
+            array(new Rule('withoutParams', 'ExtDirectBundle:Test:withoutParams', false, false)),
+            array(new Rule('actionInOtherController', 'ExtDirectBundle:Other:action', false, false))
         );
 
         foreach($rules as $Rule)

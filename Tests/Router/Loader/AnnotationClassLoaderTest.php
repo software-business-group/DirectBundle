@@ -55,7 +55,7 @@ class AnnotationClassLoaderTest extends TestTemplate
         $this->assertTrue($this->collection->has('annotation_action_with_name'));
         $Rule = $this->collection->get('annotation_action_with_name');
         $this->assertEquals('annotation_action_with_name', $Rule->getAlias());
-        $this->assertEquals('ExtDirect_Test.annotationWithName', $Rule->getController());
+        $this->assertEquals('ExtDirectBundle:Test:annotationWithName', $Rule->getController());
         $this->assertEquals('xml', $Rule->getReaderParam('type'));
         $this->assertEquals('read', $Rule->getReaderParam('root'));
         $this->assertEquals('successProperty', $Rule->getReaderParam('successProperty'));
@@ -66,10 +66,10 @@ class AnnotationClassLoaderTest extends TestTemplate
 
     public function testLoadAnnotationWithoutName()
     {
-        $this->assertTrue($this->collection->has('ExtDirect_Test_annotationWithoutName'));
-        $Rule = $this->collection->get('ExtDirect_Test_annotationWithoutName');
-        $this->assertEquals('ExtDirect_Test_annotationWithoutName', $Rule->getAlias());
-        $this->assertEquals('ExtDirect_Test.annotationWithoutName', $Rule->getController());
+        $this->assertTrue($this->collection->has('ExtDirectBundle_Test_annotationWithoutName'));
+        $Rule = $this->collection->get('ExtDirectBundle_Test_annotationWithoutName');
+        $this->assertEquals('ExtDirectBundle_Test_annotationWithoutName', $Rule->getAlias());
+        $this->assertEquals('ExtDirectBundle:Test:annotationWithoutName', $Rule->getController());
         $this->assertEquals('json', $Rule->getReaderParam('type'));
         $this->assertNull($Rule->getReaderParam('root'));
         $this->assertEquals('success', $Rule->getReaderParam('successProperty'));

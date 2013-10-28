@@ -176,7 +176,7 @@ class ControllerResolver extends BaseControllerResolver {
      */
     public function genAction(\ReflectionMethod $method)
     {
-        if(!preg_match('/^(.+)\\\(.+)Bundle\\\Controller\\\(.+)Controller$/', $method->class, $cMatch))
+        if(!preg_match('/^(.+)\\\(.+Bundle)\\\Controller\\\(.+)Controller$/', $method->class, $cMatch))
             throw new \InvalidArgumentException();
         unset($cMatch[0]);
 
@@ -184,9 +184,9 @@ class ControllerResolver extends BaseControllerResolver {
             throw new \InvalidArgumentException();
 
         $cMatch[4] = $cMatch[3];
-        $cMatch[3] = '_';
+        $cMatch[3] = ':';
 
-        return implode('', $cMatch) . '.' . $mMatch[1];
+        return implode('', $cMatch) . ':' . $mMatch[1];
     }
     
 }
