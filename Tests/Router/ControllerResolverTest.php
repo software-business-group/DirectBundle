@@ -35,8 +35,8 @@ class ControllerResolverTest extends ControllerTest
     public function testGetActionForRouter()
     {
         $data = array(
-            'ExtDirect_Direct.route' => new \ReflectionMethod('Ext\DirectBundle\Controller\DirectController', 'routeAction'),
-            'ExtDirect_Test.annotationWithName' => new \ReflectionMethod('Ext\DirectBundle\Controller\TestController', 'annotationWithNameAction')
+            'ExtDirectBundle:Direct:route' => new \ReflectionMethod('Ext\DirectBundle\Controller\DirectController', 'routeAction'),
+            'ExtDirectBundle:Test:annotationWithName' => new \ReflectionMethod('Ext\DirectBundle\Controller\TestController', 'annotationWithNameAction')
         );
         foreach($data as $result => $method)
         {

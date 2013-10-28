@@ -30,3 +30,7 @@ services:
     ext_direct.api:
         class: Ext\DirectBundle\Api\Api
         arguments: [ @ext_direct.route.collection, @router ]
+
+    ext_direct.request_dispatcher:
+        class: Ext\DirectBundle\Request\RequestDispatcher
+        arguments: [ @ext_direct.controller_resolver, %kernel.debug% ]

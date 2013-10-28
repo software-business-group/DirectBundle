@@ -1,5 +1,5 @@
 <?php
-namespace Ext\DirectBundle\Router;
+namespace Ext\DirectBundle\Request;
 
 use Ext\DirectBundle\Response\ResponseInterface;
 use Ext\DirectBundle\Response\Exception as ExceptionResponse;
@@ -59,8 +59,8 @@ class Call
     /**
      * Initialize an ExtDirect call.
      * 
-     * @param array  $call
-     * @param string $type
+     * @param array $call
+     * @param Request $request
      */
     public function __construct($call, Request $request)
     {
@@ -152,6 +152,7 @@ class Call
      * Initialize the call properties from a single call.
      * 
      * @param array $call
+     * @throws \Ext\DirectBundle\Exception\InvalidJsonException
      */
     public function initialize($call)
     {

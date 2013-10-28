@@ -1,7 +1,7 @@
 <?php
 namespace Ext\DirectBundle\Router;
 
-
+use Ext\DirectBundle\Request\Call;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver as BaseControllerResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
