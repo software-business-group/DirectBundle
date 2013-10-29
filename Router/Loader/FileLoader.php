@@ -15,16 +15,23 @@ class FileLoader
     private $locator;
 
     /**
+     * @var CacheLoader
+     */
+    private $cache;
+
+    /**
      * @var string
      */
     private $initialResource;
 
     /**
      * @param FileLocatorInterface $locator
+     * @param CacheLoader $cache
      */
-    public function __construct(FileLocatorInterface $locator)
+    public function __construct(FileLocatorInterface $locator, CacheLoader $cache)
     {
         $this->locator = $locator;
+        $this->cache = $cache;
     }
 
     /**
@@ -59,6 +66,14 @@ class FileLoader
     public function getLocator()
     {
         return $this->locator;
+    }
+
+    /**
+     * @return \Ext\DirectBundle\Router\Loader\CacheLoader
+     */
+    private function getCache()
+    {
+        return $this->cache;
     }
 
     /**
@@ -106,7 +121,13 @@ class FileLoader
      */
     public function loadInitialResource()
     {
-        return $this->load($this->getInitialResource());
+        if(!$this->getCache()->load($this->getInitialResource()))
+        {
+            $this->load($this->getInitialResource());
+            $this->getCache()->write();
+        }
+
+        return true;
     }
 
 }

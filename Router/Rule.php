@@ -8,23 +8,23 @@ namespace Ext\DirectBundle\Router;
  * @package Ext\DirectBundle\Router
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class Rule
+class Rule extends Serializable
 {
 
     /**
      * @var string
      */
-    private $alias;
+    protected $alias;
 
     /**
      * @var $controller
      */
-    private $controller;
+    protected $controller;
 
     /**
      * @var array
      */
-    private $reader = array(
+    protected $reader = array(
         'type' => 'json',
         'root' => null,
         'successProperty' => 'success',
@@ -34,7 +34,7 @@ class Rule
     /**
      * @var array
      */
-    private $writer = array(
+    protected $writer = array(
         'type' => 'json',
         'root' => null
     );
@@ -42,12 +42,12 @@ class Rule
     /**
      * @var bool
      */
-    private $isWithParams;
+    protected $isWithParams;
 
     /**
      * @var bool
      */
-    private $isFormHandler;
+    protected $isFormHandler;
 
     /**
      * @param string $alias

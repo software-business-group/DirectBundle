@@ -9,18 +9,18 @@ use Ext\DirectBundle\Exception\RouteNotFoundException;
  * @package Ext\DirectBundle\Router
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class RouteCollection implements \ArrayAccess, \Iterator, \Countable
+class RouteCollection extends Serializable implements \ArrayAccess, \Iterator, \Countable
 {
 
     /**
      * @var int
      */
-    private $position = 0;
+    protected $position = 0;
 
     /**
      * @var array
      */
-    private $rules = array();
+    protected $rules = array();
 
     /**
      * @return Rule

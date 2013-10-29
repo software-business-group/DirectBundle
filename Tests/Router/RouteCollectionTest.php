@@ -43,4 +43,13 @@ class RouteCollectionTest extends TestTemplate
         $this->assertFalse($this->collection->has($Rule->getAlias()));
         $this->assertFalse($this->collection->offsetExists($Rule->getAlias()));
     }
+
+    public function testSerializeAndUnserialize()
+    {
+        foreach($this->getRules() as $Rule)
+            $this->collection->add($Rule[0]);
+
+        $unserCollection = unserialize(serialize($this->collection));
+        $this->assertEquals($this->collection, $unserCollection);
+    }
 } 

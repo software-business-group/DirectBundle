@@ -39,7 +39,7 @@ class YamlLoaderTest extends TestTemplate
         parent::setUp();
 
         $this->collection = new RouteCollection();
-        $this->fileLoader = new FileLoader($this->get('file_locator'));
+        $this->fileLoader = new FileLoader($this->get('file_locator'), $this->get('ext_direct.router.cache'));
         $this->yamlLoader = new YamlLoader($this->getRouteCollection(), $this->getFileLoader());
         $this->getFileLoader()->addLoader($this->getYamlLoader());
         $this->getYamlLoader()->load( __DIR__ . '/routing.yml' );
