@@ -5,140 +5,187 @@ use Ext\DirectBundle\Request\Call;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver as BaseControllerResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\HttpFoundation\Request as HttpFoundation_Request;
-use Ext\DirectBundle\Api\Api;
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
+use AppKernel;
 
 /**
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class ControllerResolver extends BaseControllerResolver {
-    
+class ControllerResolver extends BaseControllerResolver
+{
+
+    /**
+     * @var RouteCollection
+     */
+    private $collection;
+
+    /**
+     * @var Call
+     */
     private $call;
-    private $bundle;
-    private $config;
-    private $methodConfigKey;
     
-    public function __construct(ContainerInterface $container, ControllerNameParser $parser, LoggerInterface $logger = null)
+    public function __construct(
+        ContainerInterface $container,
+        ControllerNameParser $parser,
+        RouteCollection $collection,
+        LoggerInterface $logger = null)
     {
+        $this->collection = $collection;
+
         $this->kernel = $container->get('kernel');
         parent::__construct($container, $parser, $logger);
     }
-    
-    public function setCall(Call $call)
+
+    /**
+     * @return \Ext\DirectBundle\Router\RouteCollection
+     */
+    private function getRouteCollection()
+    {
+        return $this->collection;
+    }
+
+    /**
+     * @return ContainerInterface
+     */
+    private function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @return AppKernel
+     */
+    private function getKernel()
+    {
+        return $this->kernel;
+    }
+
+    /**
+     * @param \Ext\DirectBundle\Request\Call $call
+     */
+    public function setCall($call)
     {
         $this->call = $call;
-        return $this;
     }
-    
+
+    /**
+     * @return \Ext\DirectBundle\Request\Call
+     */
     private function getCall()
     {
         return $this->call;
     }
-    
-    public function setBundle(Bundle $bundle)
-    {
-        $this->bundle = $bundle;
-        return $this;
-    }
-    
-    private function getBundle()
-    {
-        return $this->bundle;
-    }
-    
-    public function setConfig($config)
-    {
-        $this->config = $config;
-        return $this;
-    }
-    
-    public function getConfig()
-    {
-        return $this->config;
-    }
 
-    private function setMethodConfigKey($key)
+    /**
+     * @param string $controller
+     * @return Rule
+     * @throws \BadMethodCallException
+     */
+    private function findRuleByController($controller)
     {
-        $this->methodConfigKey = $key;
-    }
-
-    private function getMethodConfigKey()
-    {
-        return $this->methodConfigKey;
-    }
-
-    private function getMethodConfig()
-    {
-        if($this->getMethodConfigKey())
-            return $this->config['router']['rules'][$this->getMethodConfigKey()];
+        foreach($this->getRouteCollection() as $key => $Rule)
+        {
+            if($Rule->getContoller() === $controller)
+                return $Rule;
+        }
+        throw new \BadMethodCallException(sprintf('%1$s does not configured, check config.yml', $controller));
     }
 
     /**
-     * @param Call $call
+     * @param Call $Call
+     * @return array
+     * @throw ServiceNotFoundException
+     */
+    private function createCallableFromServiceCall(Call $Call)
+    {
+        $fullPath = sprintf('%1$s:%2$s', $Call->getAction(), $Call->getMethod());
+        $this->findRuleByController($fullPath);
+
+        $controller = $this->getContainer()->get($Call->getAction());
+        $method = $Call->getMethod();
+
+        return $this->createCallable($controller, $method);
+    }
+
+    /**
+     * @param Call $Call
+     * @return array
+     */
+    private function createCallableFromControllerMethodCall(Call $Call)
+    {
+        $explodeResult = explode('_', $Call->getAction());
+
+        list($bundle, $controller) = $explodeResult;
+        $fullPath = sprintf('%1$sBundle:%2$s:%3$s', $bundle, $controller, $Call->getMethod());
+
+        $this->findRuleByController($fullPath);
+
+        $bundle = $this->getKernel()->getBundle(sprintf('%sBundle', $bundle));
+
+        $controller = sprintf('%s\\Controller\\%sController::%sAction', $bundle->getNamespace(), $controller, $Call->getMethod());
+
+        if (is_array($controller) || (is_object($controller) && method_exists($controller, '__invoke'))) {
+            return $controller;
+        }
+
+        if (false === strpos($controller, ':') && method_exists($controller, '__invoke')) {
+            return new $controller;
+        }
+
+        list($controller, $method) = $this->createController($controller);
+
+        return $this->createCallable($controller, $method);
+    }
+
+    /**
+     * @param Call $Call
      * @return array
      * @throws \InvalidArgumentException
      * @throws \BadMethodCallException
      */
-    public function getControllerFromCall(Call $call)
+    public function getControllerFromCall(Call $Call)
     {
-        $this->setCall($call);
-        
-        $explodeResult = explode('_', $call->getAction());
-        
+
+        $explodeResult = explode('_', $Call->getAction());
+
         if(count($explodeResult) <> 2)
-        {
-            $fullPath = sprintf('%1$s:%2$s', $call->getAction(), $call->getMethod());
-        } else {
-            list($bundle, $controller) = $explodeResult;
-            $fullPath = sprintf('%1$sBundle:%2$s:%3$s', $bundle, $controller, $call->getMethod());
-        }
-        
-        foreach($this->config['router']['rules'] as $key => $rule)
-        {
-            if(isset($rule['defaults']) && isset($rule['defaults']['_controller']) && $rule['defaults']['_controller'] === $fullPath)
-                $this->setMethodConfigKey($key);
-        }
-        
-        if(!$this->getMethodConfigKey())
-            throw new \BadMethodCallException(sprintf('%1$s does not configured, check config.yml', $fullPath));
-        
-        try {
-            $controller = $this->container->get($call->getAction());
-            $method = $call->getMethod();
-        } catch(\Exception $e)
-        {
-            $bundle = $this->kernel->getBundle(sprintf('%sBundle', $bundle));
-            $this->setBundle($bundle);
-        
-            $controller = sprintf('%s\\Controller\\%sController::%sAction', $bundle->getNamespace(), $controller, $call->getMethod());
+            return $this->createCallableFromServiceCall($Call);
 
-            if (is_array($controller) || (is_object($controller) && method_exists($controller, '__invoke'))) {
-                return $controller;
-            }
+        $this->createCallableFromControllerMethodCall($Call);
+    }
 
-            if (false === strpos($controller, ':') && method_exists($controller, '__invoke')) {
-                return new $controller;
-            }
-
-            list($controller, $method) = $this->createController($controller);
-        }
-        
+    /**
+     * @param $controller
+     * @param $method
+     * @return array
+     * @throws \BadMethodCallException
+     */
+    private function createCallable($controller, $method)
+    {
         if (!method_exists($controller, $method)) {
-            throw new \InvalidArgumentException(sprintf('Method "%s::%s" does not exist.', get_class($controller), $method));
+            throw new \BadMethodCallException(sprintf('Method "%s::%s" does not exist.', get_class($controller), $method));
         }
 
         return array($controller, $method);
     }
-    
-    protected function doGetArguments(HttpFoundation_Request $request, $controller, array $parameters)
+
+    /**
+     * @param HttpRequest $request
+     * @param $controller
+     * @param array $parameters
+     * @return array
+     * @throws \LogicException
+     * @throws \RuntimeException
+     */
+    protected function doGetArguments(HttpRequest $request, $controller, array $parameters)
     {
-        if(!$this->call) {
+        if(!$this->getCall()) {
             throw new \LogicException('$this->call is null, run setCall(Call $call) or getControllerFromCall(Call $call) before use getArguments()');
         }
         
-        $attributes = $this->call->getData();
+        $attributes = $this->getCall()->getData();
         $arguments = array();
         foreach ($parameters as $param) {
             if(in_array($param->getName(), array('_data', '_list'))) {

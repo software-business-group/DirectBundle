@@ -32,6 +32,12 @@ class ExtDirectExtension extends Extension
             ->addMethodCall('setNamespace', array($config['basic']['namespace']))
             ->addMethodCall('setType', array($config['basic']['type']));
 
+        $container->getDefinition('ext_direct.file.loader')
+            ->addMethodCall('load', array($config['rules']['resource']));
+
+        $container->getDefinition('ext_direct')
+            ->addMethodCall('setErrorTemplate', array($config['error_template']))
+            ->addMethodCall('setSuccessProperty', array($config['reader']['successProperty']));
     }
 
     /**

@@ -2,42 +2,78 @@
 
 namespace Ext\DirectBundle\Response;
 
+use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ext\DirectBundle\Router\ControllerResolver;
 
 /**
+ * Class ResponseFactory
+ * @package Ext\DirectBundle\Response
  * @author Semyon Velichko <semyon@velichko.net>
  */
 class ResponseFactory
 {
-    
-    protected $request;
-    protected $response;
-    protected $dispatcher;
-    protected $container;
-    protected $config;
-    protected $data;
-    protected $resolver;
-    
-    public function __construct(Request $request, ControllerResolver $resolver, ContainerInterface $container)
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var ResponseInterface
+     */
+    private $response;
+
+    /**
+     * @var ControllerResolver
+     */
+    private $resolver;
+
+    /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var \Symfony\Bundle\TwigBundle\TwigEngine
+     */
+    private $templating;
+
+    /**
+     * @var string
+     */
+    private $errorTemplate;
+
+    /**
+     * @var string
+     */
+    private $successProperty;
+
+    /**
+     * @param Request $request
+     * @param ControllerResolver $resolver
+     * @param EventDispatcher $eventDispatcher
+     * @param TwigEngine $templating
+     */
+    public function __construct(
+        Request $request,
+        ControllerResolver $resolver,
+        EventDispatcher $eventDispatcher,
+        TwigEngine $templating
+    )
     {
         $this->request = $request;
         $this->resolver = $resolver;
-        $this->container = $container;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->templating = $templating;
     }
-    
-    public function setConfig(array $config)
-    {
-        $this->config = $config;
-        return $this;
-    }
-    
-    public function getConfig()
-    {
-        return $this->config;
-    }
-    
+
+    /**
+     * @param ResponseInterface $response
+     * @param null $data
+     * @return ResponseInterface
+     */
     public function createResponse(ResponseInterface $response, $data = null)
     {
         $this->response = $response;
@@ -47,20 +83,85 @@ class ResponseFactory
         
         return $this->response;
     }
-    
-    public function getResponse()
+
+    /**
+     * @return \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    public function getEventDispatcher()
     {
-        return $this->response;
+        return $this->eventDispatcher;
     }
-    
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @return \Ext\DirectBundle\Router\ControllerResolver
+     */
     public function getResolver()
     {
         return $this->resolver;
     }
-    
-    public function getContainer()
+
+    /**
+     * @param mixed $response
+     */
+    public function setResponse($response)
     {
-        return $this->container;
+        $this->response = $response;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * @return \Symfony\Bundle\TwigBundle\TwigEngine
+     */
+    public function getTemplating()
+    {
+        return $this->templating;
+    }
+
+    /**
+     * @param string $errorTemplate
+     */
+    public function setErrorTemplate($errorTemplate)
+    {
+        $this->errorTemplate = $errorTemplate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorTemplate()
+    {
+        return $this->errorTemplate;
+    }
+
+    /**
+     * @param string $successProperty
+     */
+    public function setSuccessProperty($successProperty)
+    {
+        $this->successProperty = $successProperty;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuccessProperty()
+    {
+        return $this->successProperty;
     }
     
 }

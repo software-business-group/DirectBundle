@@ -11,6 +11,11 @@ use Ext\DirectBundle\Annotation\Route;
 use Ext\DirectBundle\Annotation\Reader;
 use Ext\DirectBundle\Annotation\Writer;
 
+/**
+ * Class TestController
+ * @package Ext\DirectBundle\Controller
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
 class TestController extends Controller
 {
     

@@ -6,7 +6,7 @@ services:
     ext_direct:
         class: Ext\DirectBundle\Response\ResponseFactory
         scope: request
-        arguments: [ @request, @ext_direct.controller_resolver, @service_container ]
+        arguments: [ @request, @ext_direct.controller_resolver, @event_dispatcher, @templating ]
         
     ext_direct_test_service:
         class: Ext\DirectBundle\Controller\ForTestingController
@@ -17,11 +17,19 @@ services:
 
     ext_direct.file.loader:
         class: Ext\DirectBundle\Router\Loader\FileLoader
-        arguments: [ @file_locator  ]
+        arguments: [ @file_locator ]
 
     ext_direct.yml.loader:
         class: Ext\DirectBundle\Router\Loader\YamlLoader
-        arguments: [ ext_direct.route.collection  ]
+        arguments: [ ext_direct.route.collection ]
+        tags:
+            - { name: ext_direct.loader }
+
+    ext_direct.annotation_file.loader:
+        class: Ext\DirectBundle\Router\Loader\AnnotationFileLoader
+        arguments: [ @ext_direct.annotation_class.loader ]
+        tags:
+            - { name: ext_direct.loader }
 
     ext_direct.annotation_class.loader:
         class: Ext\DirectBundle\Router\Loader\AnnotationClass
