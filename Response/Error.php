@@ -2,8 +2,6 @@
 
 namespace Ext\DirectBundle\Response;
 
-use Symfony\Component\Form\Form;
-
 /**
  * @author Semyon Velichko <semyon@velichko.net>
  */
@@ -14,13 +12,14 @@ class Error extends Response implements ResponseInterface
     
     public function formatResponse(array $data)
     {
-        $config = $this->factory->getResolver()->getMethodConfig();
-        $msg = $this->factory
-            ->getContainer()
-            ->get('ext_direct.controller')
-            ->render($this->config['error_template'], array('errors' => $data))
-            ->getContent();
-        return array($config['reader']['successProperty'] => $this->success, 'msg' => $msg);
+        $msg = $this->getFactory()
+            ->getTemplating()
+            ->render($this->getFactory()->getErrorTemplate(), array('errors' => $data));
+        return array($this->getFactory()
+            ->getResolver()
+            ->getCurrentRule()
+            ->getReaderParam('successProperty') => $this->getSuccess(),
+            'msg' => $msg);
     }
     
 }

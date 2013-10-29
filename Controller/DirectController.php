@@ -12,58 +12,45 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 
 use Ext\DirectBundle\Tests\Binder as Test;
-use Ext\DirectBundle\Router\Router;
+use Ext\DirectBundle\Router\RouterDepricated;
 use Ext\DirectBundle\Response\Basic;
 
 /**
+ * Class DirectController
+ * @package Ext\DirectBundle\Controller
+ * @author Otavio Fernandes <otavio@neton.com.br>
  * @author Semyon Velichko <semyon@velichko.net>
  */
 class DirectController extends Controller
 {
-    
-    private $config = array();
-    
-    public function __construct(ContainerInterface $container) {
-            $this->container = $container;
-            $this->response = new HttpFoundation\Response();
-            $this->response->headers->set('Content-Type', 'text/html');
-    }
 
     /**
      * Generate the ExtDirect API.
      * 
      * @return HttpFoundation\Response 
      */
-    public function getApi()
-    {        
-        // instantiate the api object
-        $api = new Api($this->config);
-
-        $this->response->setContent(sprintf('Ext.ns("%1$s"); %1$s.REMOTING_API = %2$s;', $this->config['basic']['namespace'], $api));
-        $this->response->headers->set('Content-Type', 'text/javascript');
-        return $this->response;
+    public function getApiAction()
+    {
+        return new HttpFoundation\Response(
+            (string)$this->get('ext_direct.api'),
+            200,
+            array('Content-Type' => 'text/javascript')
+        );
     }
-    
+
     /**
      * Route the ExtDirect calls.
      *
-     * @param HttpFoundation\Request
+     * @param HttpFoundation\Request $request
      * @return HttpFoundation\Response
      */
-    public function route(HttpFoundation\Request $request)
+    public function routeAction(HttpFoundation\Request $request)
     {
-        // instantiate the router object
-        $router = new Router($this->container);
-        $this->response->setContent($router->route());
-        return $this->response;
+        return new HttpFoundation\Response(
+            (string)$this->get('ext_direct.request_dispatcher')->dispatchHttpRequest($request),
+            200,
+            array('Content-Type' => 'text/html')
+        );
     }
-    
-    public function setConfig($config) {
-        $this->config = array_merge_recursive($config, array('basic' => array('url' => $this->get('router')->generate('ExtDirectBundle_route'))));
-    }
-    
-    public function getConfig()
-    {
-        return $this->config;
-    }
+
 }

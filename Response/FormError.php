@@ -16,7 +16,7 @@ class FormError extends Error implements ResponseInterface
         
         $this->data = $this->compileError($form->getErrors());
         
-        foreach($form->getChildren() as $children)
+        foreach($form->all() as $children)
         {
             $this->data = array_merge($this->data, $this->compileError($children->getErrors()));
         }

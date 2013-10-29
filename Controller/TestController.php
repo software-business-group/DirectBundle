@@ -1,16 +1,31 @@
 <?php
 
 namespace Ext\DirectBundle\Controller;
+use Ext\DirectBundle\Response\ResponseFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ext\DirectBundle\Response\Response;
 use Ext\DirectBundle\Response\FormError;
 use Ext\DirectBundle\Response\ValidatorError;
 use Ext\DirectBundle\Entity\Test;
-use Ext\DirectBundle\Form\Type\TestType;
+use Ext\DirectBundle\Annotation\Route;
+use Ext\DirectBundle\Annotation\Reader;
+use Ext\DirectBundle\Annotation\Writer;
 
-class ForTestingController extends Controller
+/**
+ * Class TestController
+ * @package Ext\DirectBundle\Controller
+ * @author Semyon Velichko <semyon@velichko.net>
+ */
+class TestController extends Controller
 {
+
+    protected $container;
+
+    public function __construct($container = null)
+    {
+        $this->container = $container;
+    }
     
     public function testArrayResponseAction($_data)
     {
@@ -45,7 +60,8 @@ class ForTestingController extends Controller
             ->add('name')
             ->add('count')
             ->getForm();
-        $_data = array_intersect_key($_data, $form->getChildren());
+        $all = $form->all();
+        $_data = array_intersect_key($_data, $all);
         $form->bind($_data);
 
         if($form->isValid())
@@ -67,7 +83,7 @@ class ForTestingController extends Controller
             ->add('name')
             ->add('count')
             ->getForm();
-        $_data = array_intersect_key($_data, $form->getChildren());
+        $_data = array_intersect_key($_data, $form->all());
         $form->bind($_data);
         
         $errors = $this->get('validator')->validate($Entity);
@@ -87,12 +103,6 @@ class ForTestingController extends Controller
     {
         throw new \Exception('Exception from testExceptionAction');
     }
-
-    public function __construct($container = null)
-    {
-        if($container instanceof ContainerInterface)
-            $this->container = $container;
-    }
     
     public function testActionAsService($_data)
     {
@@ -100,5 +110,27 @@ class ForTestingController extends Controller
             ->createResponse(new Response(), $_data)
             ->setSuccess(true);
     }
+
+    /**
+     * @Reader(type = "xml", root = "read", successProperty = "successProperty", totalProperty = "totalProperty")
+     * @Writer(type = "xml", root = "write")
+     * @Route(name="annotation_action_with_name", isWithParams = true)
+     * @param $_data
+     */
+    public function annotationWithNameAction($_data)
+    {
+
+    }
+
+    /**
+     * @Writer(type = "xml", root = "write")
+     * @Route()
+     * @param $_data
+     */
+    public function annotationWithoutNameAction($_data)
+    {
+
+    }
+
     
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Ext\DirectBundle\Router;
+namespace Ext\DirectBundle\Request;
 
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Ext\DirectBundle\Exception\InvalidJsonException;
@@ -8,20 +8,21 @@ use Ext\DirectBundle\Exception\InvalidJsonException;
  * Request encapsule the ExtDirect request call.
  *
  * @author Otavio Fernandes <otavio@neton.com.br>
+ * @author Semyon Velichko <semyon@velichko.net>
  */
 class Request
 {
     /**
      * The Symfony request object taked by DirectBundle controller.
      * 
-     * @var Symfony\Component\HttpFoundation\Request
+     * @var \Symfony\Component\HttpFoundation\Request
      */
     protected $request;
     
     /**
      * The HTTP_RAW_POST_DATA if the Direct call is a batch call.
      * 
-     * @var JSON
+     * @var string
      */
     protected $rawPost;
     
@@ -57,7 +58,7 @@ class Request
     /**
      * Initialize the object.
      * 
-     * @param Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     public function __construct(HttpRequest $request)
     {
@@ -99,6 +100,7 @@ class Request
     /**
      * Extract the ExtDirect calls from request.
      *
+     * @throws \Ext\DirectBundle\Exception\InvalidJsonException
      * @return array
      */
     public function extractCalls()

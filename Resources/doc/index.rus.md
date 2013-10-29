@@ -389,7 +389,7 @@ _Дополнительную информацию по событиям луч�
           $Customer = new Customer();
         
           $form = $this->createForm($this->get('acme_demo.updatecustomer'), $Customer);
-          $_data = array_intersect_key($_data, $form->getChildren());
+          $_data = array_intersect_key($_data, $form->all());
           $form->bind($_data);
                 
           if($form->isValid())
@@ -463,7 +463,7 @@ _Дополнительную информацию по событиям луч�
                 $Customer = $repository->findOneById($customer['id']);
 
                 $form = $this->createForm($this->get('acme_demo.updatecustomer'), $Customer);
-                $form->bind(array_intersect_key($customer, $form->getChildren()));
+                $form->bind(array_intersect_key($customer, $form->all()));
         
                 if($form->isValid())
                 {

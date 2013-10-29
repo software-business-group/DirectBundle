@@ -30,7 +30,7 @@ class KnpPaginator extends Response implements ResponseInterface
     public function extract()
     {
         $event = new ResponseEvent($this, $this->data);
-        $this->dispatcher->dispatch(DirectEvents::POST_QUERY_EXECUTE, $event);
+        $this->getFactory()->getEventDispatcher()->dispatch(DirectEvents::POST_QUERY_EXECUTE, $event);
         $data = $event->getData();
         return $this->formatResponse($data);
     }

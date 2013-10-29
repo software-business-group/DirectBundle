@@ -16,72 +16,166 @@ use Ext\DirectBundle\Event\ResponseEvent;
  */
 class Response implements ResponseInterface
 {
-    
-    protected $config;
-    protected $dispatcher;
-    protected $factroy;
-    
+
+    /**
+     * @var ResponseFactory
+     */
+    protected $factory;
+
+    /**
+     * @var array
+     */
     protected $data = array();
+
+    /**
+     * @var string
+     */
     protected $success;
+
+    /**
+     * @var int
+     */
     protected $total;
-    
+
+    /**
+     * @param ResponseFactory $factory
+     * @return $this
+     */
     public function setFactory(ResponseFactory $factory)
     {
         $this->factory = $factory;
-        $this->config = $factory->getConfig();
-        $this->dispatcher = new EventDispatcher();
         return $this;
     }
-    
+
+    /**
+     * @return \Ext\DirectBundle\Response\ResponseFactory
+     */
+    public function getFactory()
+    {
+        return $this->factory;
+    }
+
+    /**
+     * @param $data
+     * @return $this
+     */
     public function setContent($data)
     {
-        $this->data = $data;
+        $this->setData($data);
         return $this;
     }
-    
+
+    /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuccess()
+    {
+        return $this->success;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    /**
+     * @return array
+     */
     public function extract()
     {
         return $this->formatResponse($this->data);
     }
-    
+
+    /**
+     * @param array $root
+     * @return array
+     */
     public function formatResponse(array $root)
     {
         $data = array();
         
-        $config = $this->factory->getResolver()->getMethodConfig();
-        $config = $config['reader'];
+        $Rule = $this->getFactory()->getResolver()->getCurrentRule();
         
-        if($config['root'])
+        if($Rule->getReaderParam('root'))
         {
-            $data[$config['root']] = $root;
+            $data[$Rule->getReaderParam('root')] = $root;
         } else {
             $data = $root;
         }
         
         if(is_bool($this->success))
-            $data[$config['successProperty']] = $this->success;
+            $data[$Rule->getReaderParam('successProperty')] = $this->success;
         
         if($this->total)
-            $data[$config['totalProperty']] = $this->total;
+            $data[$Rule->getReaderParam('totalProperty')] = $this->total;
         
         return $data;
     }
-    
+
+    /**
+     * @param $success
+     * @return $this
+     */
     public function setSuccess($success)
     {
         $this->success = (bool)$success;
         return $this;
     }
-    
+
+    /**
+     * @param $total
+     * @return $this
+     */
     public function setTotal($total)
     {
         $this->total = $total;
         return $this;
     }
-    
+
+    /**
+     * @param EventSubscriberInterface $subscriber
+     * @return $this
+     */
     public function addEventSubscriber(EventSubscriberInterface $subscriber)
     {
-        $this->dispatcher->addSubscriber($subscriber);
+        $this->getFactory()->getEventDispatcher()->addSubscriber($subscriber);
+        return $this;
+    }
+
+    /**
+     * @param $name
+     * @param $listener
+     * @param int $weight
+     * @return $this
+     */
+    public function addEventListener($name, $listener, $weight = 0)
+    {
+        $this->getFactory()->getEventDispatcher()->addListener($name, $listener, $weight);
+        return $this;
+    }
+
+    public function addEventListener($eventName, $callable)
+    {
+        $this->dispatcher->addListener($eventName, $callable);
         return $this;
     }
 }

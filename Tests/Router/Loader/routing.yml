@@ -1,0 +1,31 @@
+testArrayResponse:
+    defaults: { _controller: ExtDirectBundle:Test:testArrayResponse, params: true }
+
+testObjectResponse:
+    defaults: { _controller: ExtDirectBundle:Test:testObjectResponse, params: true }
+
+testResponseWithConfiguredReader:
+    defaults: { _controller: ExtDirectBundle:Test:testResponseWithConfiguredReader, params: true }
+    reader: { root: root, successProperty: successProperty, totalProperty: totalProperty }
+
+testFormHandlerResponse:
+    defaults: { _controller: ExtDirectBundle:Test:testFormHandlerResponse, params: true, form: true }
+    reader: { root: data }
+
+testFormValidationResponse:
+    defaults: { _controller: ExtDirectBundle:Test:testFormValidationResponse, params: true, form: true }
+
+testFormEntityValidationResponse:
+    defaults: { _controller: ExtDirectBundle:Test:testFormEntityValidationResponse, params: true, form: true }
+
+testServiceAction:
+    defaults: { _controller: ext_direct_test_service:testActionAsService, params: true }
+
+testException:
+    defaults: { _controller: ExtDirectBundle:Test:testException }
+
+testYamlExtendedLoader:
+    resource: "@ExtDirectBundle/Tests/Router/Loader/routing_ext.yml"
+
+testClassLoader:
+    resource: "@ExtDirectBundle/Controller/TestController.php"
