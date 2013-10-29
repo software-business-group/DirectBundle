@@ -15,6 +15,11 @@ class FileLoader
     private $locator;
 
     /**
+     * @var string
+     */
+    private $initialResource;
+
+    /**
      * @param FileLocatorInterface $locator
      */
     public function __construct(FileLocatorInterface $locator)
@@ -76,6 +81,32 @@ class FileLoader
         }
 
         return true;
+    }
+
+    /**
+     * @param $initialResource
+     * @return $this
+     */
+    public function setInitialResource($initialResource)
+    {
+        $this->initialResource = $initialResource;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    private function getInitialResource()
+    {
+        return $this->initialResource;
+    }
+
+    /**
+     * @return bool
+     */
+    public function loadInitialResource()
+    {
+        return $this->load($this->getInitialResource());
     }
 
 }

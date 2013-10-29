@@ -1,6 +1,7 @@
 <?php
 
 namespace Ext\DirectBundle\Controller;
+use Ext\DirectBundle\Response\ResponseFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ext\DirectBundle\Response\Response;
@@ -18,6 +19,13 @@ use Ext\DirectBundle\Annotation\Writer;
  */
 class TestController extends Controller
 {
+
+    protected $container;
+
+    public function __construct($container = null)
+    {
+        $this->container = $container;
+    }
     
     public function testArrayResponseAction($_data)
     {
@@ -94,12 +102,6 @@ class TestController extends Controller
     public function testExceptionAction()
     {
         throw new \Exception('Exception from testExceptionAction');
-    }
-
-    public function __construct($container = null)
-    {
-        if($container instanceof ContainerInterface)
-            $this->container = $container;
     }
     
     public function testActionAsService($_data)

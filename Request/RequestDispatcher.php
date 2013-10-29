@@ -121,7 +121,9 @@ class RequestDispatcher
         $controller = $this->getResolver()->getControllerFromCall($Call);
 
         if (!is_callable($controller)) {
-            throw new NotFoundHttpException('Unable to find the controller for action "%s". Maybe you forgot to add the matching route in your routing configuration?', $Call->getAction());
+            throw new NotFoundHttpException(
+                sprintf('Unable to find the controller for action "%s". Maybe you forgot to add the matching route in your routing configuration?', $Call->getAction())
+            );
         }
 
         $arguments = $this->getResolver()->getArguments($this->getHttpRequest(), $controller);

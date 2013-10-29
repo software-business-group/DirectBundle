@@ -13,12 +13,11 @@ use Ext\DirectBundle\Tests\TestTemplate;
 class TestControllerTest extends TestTemplate
 {
 
-    public function setUp()
+    public function loadResource($client)
     {
-        parent::setUp();
-
-        static::$kernel->getContainer()->get('ext_direct.yml.loader')
-            ->load( __DIR__ . '/../Router/Loader/routing.yml');
+        $client->getKernel()->getContainer()->get('ext_direct.file.loader')
+            ->setInitialResource( __DIR__ . '/../Router/Loader/routing.yml')
+            ->loadInitialResource();
     }
 
     // generic array response
@@ -32,6 +31,7 @@ class TestControllerTest extends TestTemplate
         $postRawData = json_encode($postRawArray);
 
         $client = static::createClient();
+        $this->loadResource($client);
         $crawler = $client->request('POST',
             $this->get('router')->generate('ExtDirectBundle_route'),
             array(),
@@ -61,7 +61,7 @@ class TestControllerTest extends TestTemplate
     // Ext\DirectBundle\Response\Response;
     public function testGeneralObjectResponse()
     {
-        $postRawArray = array('action' => 'ExtDirect_ForTesting',
+        $postRawArray = array('action' => 'ExtDirect_Test',
             'method' => 'testObjectResponse',
             'data' => array(array('page' => rand(1,10), 'start' => rand(10,20), 'limit' => rand(100,9999))),
             'type' => 'rpc',
@@ -69,6 +69,7 @@ class TestControllerTest extends TestTemplate
         $postRawData = json_encode($postRawArray);
 
         $client = static::createClient();
+        $this->loadResource($client);
         $crawler = $client->request('POST',
             $this->get('router')->generate('ExtDirectBundle_route'),
             array(),
@@ -98,7 +99,7 @@ class TestControllerTest extends TestTemplate
     // Ext\DirectBundle\Response\Response;
     public function testObjectResponseWithConfiguredReader()
     {
-        $postRawArray = array('action' => 'ExtDirect_ForTesting',
+        $postRawArray = array('action' => 'ExtDirect_Test',
             'method' => 'testResponseWithConfiguredReader',
             'data' => array(array('page' => rand(1,10), 'start' => rand(10,20), 'limit' => rand(100,9999))),
             'type' => 'rpc',
@@ -106,6 +107,7 @@ class TestControllerTest extends TestTemplate
         $postRawData = json_encode($postRawArray);
 
         $client = static::createClient();
+        $this->loadResource($client);
         $crawler = $client->request('POST',
             $this->get('router')->generate('ExtDirectBundle_route'),
             array(),
@@ -142,7 +144,7 @@ class TestControllerTest extends TestTemplate
     // Ext\DirectBundle\Response\Response;
     public function testFormHandlerResponse()
     {
-        $postArray = array('extAction' => 'ExtDirect_ForTesting',
+        $postArray = array('extAction' => 'ExtDirect_Test',
             'extMethod' => 'testFormHandlerResponse',
             'extType' => 'rpc',
             'extTID' => rand(1, 10),
@@ -153,6 +155,7 @@ class TestControllerTest extends TestTemplate
             'count' => rand(100,200));
 
         $client = static::createClient();
+        $this->loadResource($client);
         $crawler = $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
         $jsonResult = $client->getResponse()->getContent();
         $arrayResult = json_decode($jsonResult, true);
@@ -178,7 +181,7 @@ class TestControllerTest extends TestTemplate
     // Ext\DirectBundle\Response\FormError;
     public function testFormValidationResponse()
     {
-        $postArray = array('extAction' => 'ExtDirect_ForTesting',
+        $postArray = array('extAction' => 'ExtDirect_Test',
             'extMethod' => 'testFormValidationResponse',
             'extType' => 'rpc',
             'extTID' => rand(1, 10),
@@ -189,6 +192,7 @@ class TestControllerTest extends TestTemplate
             'count' => rand(1, 99));
 
         $client = static::createClient();
+        $this->loadResource($client);
         $crawler = $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
         $jsonResult = $client->getResponse()->getContent();
         $arrayResult = json_decode($jsonResult, true);
@@ -205,6 +209,8 @@ class TestControllerTest extends TestTemplate
         $postArray['name'] = '';
         $postArray['count'] = -100;
 
+        $client = static::createClient();
+        $this->loadResource($client);
         $crawler = $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
         $jsonResult = $client->getResponse()->getContent();
         $arrayResult = json_decode($jsonResult, true);
@@ -226,7 +232,7 @@ class TestControllerTest extends TestTemplate
     // Ext\DirectBundle\Response\Validator;
     public function testFormEntityValidationResponse()
     {
-        $postArray = array('extAction' => 'ExtDirect_ForTesting',
+        $postArray = array('extAction' => 'ExtDirect_Test',
             'extMethod' => 'testFormEntityValidationResponse',
             'extType' => 'rpc',
             'extTID' => rand(1, 10),
@@ -237,6 +243,7 @@ class TestControllerTest extends TestTemplate
             'count' => rand(1, 99));
 
         $client = static::createClient();
+        $this->loadResource($client);
         $crawler = $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
         $jsonResult = $client->getResponse()->getContent();
         $arrayResult = json_decode($jsonResult, true);
@@ -253,6 +260,8 @@ class TestControllerTest extends TestTemplate
         $postArray['name'] = '';
         $postArray['count'] = -100;
 
+        $client = static::createClient();
+        $this->loadResource($client);
         $crawler = $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
         $jsonResult = $client->getResponse()->getContent();
         $arrayResult = json_decode($jsonResult, true);
@@ -280,6 +289,7 @@ class TestControllerTest extends TestTemplate
         $postRawData = json_encode($postRawArray);
 
         $client = static::createClient();
+        $this->loadResource($client);
         $crawler = $client->request('POST',
             $this->get('router')->generate('ExtDirectBundle_route'),
             array(),

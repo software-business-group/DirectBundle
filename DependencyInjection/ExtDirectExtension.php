@@ -33,7 +33,7 @@ class ExtDirectExtension extends Extension
             ->addMethodCall('setType', array($config['type']));
 
         $container->getDefinition('ext_direct.file.loader')
-            ->addMethodCall('load', array($config['resource']));
+            ->addMethodCall('setInitialResource', array($config['resource']));
 
         $container->getDefinition('ext_direct')
             ->addMethodCall('setErrorTemplate', array($config['error_template']));

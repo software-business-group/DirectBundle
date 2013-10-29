@@ -24,7 +24,7 @@ class ControllerResolver extends BaseControllerResolver
     /**
      * @var Call
      */
-    private $call;
+    private $currentCall;
 
     /**
      * @var Rule
@@ -68,19 +68,19 @@ class ControllerResolver extends BaseControllerResolver
     }
 
     /**
-     * @param \Ext\DirectBundle\Request\Call $call
+     * @param \Ext\DirectBundle\Request\Call $currentCall
      */
-    public function setCall($call)
+    private function setCurrentCall($currentCall)
     {
-        $this->call = $call;
+        $this->currentCall = $currentCall;
     }
 
     /**
      * @return \Ext\DirectBundle\Request\Call
      */
-    private function getCall()
+    private function getCurrentCall()
     {
-        return $this->call;
+        return $this->currentCall;
     }
 
     /**
@@ -108,7 +108,7 @@ class ControllerResolver extends BaseControllerResolver
     {
         foreach($this->getRouteCollection() as $key => $Rule)
         {
-            if($Rule->getContoller() === $controller)
+            if($Rule->getController() === $controller)
             {
                 $this->setCurrentRule($Rule);
                 return $Rule;
@@ -172,13 +172,14 @@ class ControllerResolver extends BaseControllerResolver
      */
     public function getControllerFromCall(Call $Call)
     {
+        $this->setCurrentCall($Call);
 
         $explodeResult = explode('_', $Call->getAction());
 
         if(count($explodeResult) <> 2)
             return $this->createCallableFromServiceCall($Call);
 
-        $this->createCallableFromControllerMethodCall($Call);
+        return $this->createCallableFromControllerMethodCall($Call);
     }
 
     /**
@@ -206,11 +207,11 @@ class ControllerResolver extends BaseControllerResolver
      */
     protected function doGetArguments(HttpRequest $request, $controller, array $parameters)
     {
-        if(!$this->getCall()) {
-            throw new \LogicException('$this->call is null, run setCall(Call $call) or getControllerFromCall(Call $call) before use getArguments()');
+        if(!$this->getCurrentCall()) {
+            throw new \LogicException('$this->currentCall is null, run setCurrentCall(Call $call) or getControllerFromCall(Call $call) before use getArguments()');
         }
         
-        $attributes = $this->getCall()->getData();
+        $attributes = $this->getCurrentCall()->getData();
         $arguments = array();
         foreach ($parameters as $param) {
             if(in_array($param->getName(), array('_data', '_list'))) {

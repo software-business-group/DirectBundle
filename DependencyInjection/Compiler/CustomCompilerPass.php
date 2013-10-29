@@ -28,12 +28,14 @@ class CustomCompilerPass implements CompilerPassInterface
             'ext_direct.loader'
         );
 
-        foreach ($taggedServices as $id => $attributes) {
+        foreach ($taggedServices as $id => $attributes)
+        {
             $definition->addMethodCall(
                 'addLoader',
                 array(new Reference($id))
             );
         }
+        $definition->addMethodCall('loadInitialResource');
 
     }
 

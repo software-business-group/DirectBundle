@@ -19,7 +19,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('direct');
+        $rootNode = $treeBuilder->root('ext_direct');
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface
                 ->defaultValue('Actions')
             ->end()
             ->scalarNode('resource')
-                ->isRequired()
+                ->defaultNull()
             ->end()
         ->end();
         

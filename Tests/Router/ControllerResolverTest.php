@@ -4,13 +4,14 @@ namespace Ext\DirectBundle\Tests\Router;
 
 use Ext\DirectBundle\Tests\ControllerTest;
 use Ext\DirectBundle\Router\ControllerResolver;
+use Ext\DirectBundle\Tests\TestTemplate;
 
 /**
  * Class ControllerResolverTest
  * @package Ext\DirectBundle\Tests\Router
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class ControllerResolverTest extends ControllerTest
+class ControllerResolverTest extends TestTemplate
 {
 
     /**

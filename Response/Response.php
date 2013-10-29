@@ -113,21 +113,20 @@ class Response implements ResponseInterface
     {
         $data = array();
         
-        $config = $this->factory->getResolver()->getMethodConfig();
-        $config = $config['reader'];
+        $Rule = $this->getFactory()->getResolver()->getCurrentRule();
         
-        if($config['root'])
+        if($Rule->getReaderParam('root'))
         {
-            $data[$config['root']] = $root;
+            $data[$Rule->getReaderParam('root')] = $root;
         } else {
             $data = $root;
         }
         
         if(is_bool($this->success))
-            $data[$config['successProperty']] = $this->success;
+            $data[$Rule->getReaderParam('successProperty')] = $this->success;
         
         if($this->total)
-            $data[$config['totalProperty']] = $this->total;
+            $data[$Rule->getReaderParam('totalProperty')] = $this->total;
         
         return $data;
     }

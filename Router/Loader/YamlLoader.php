@@ -78,7 +78,6 @@ class YamlLoader extends AbstractLoader
                 ->load($params['resource'], (isset($params['type'])?$params['type']:null));
         }
 
-
         if(!isset($params['defaults']))
             throw new \InvalidArgumentException('The defaults params not defined');
 
