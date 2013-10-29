@@ -1,7 +1,7 @@
 services:
     ext_direct.controller_resolver:
         class: Ext\DirectBundle\Router\ControllerResolver
-        arguments: [ @service_container, @controller_name_converter, @monolog.logger.request ]
+        arguments: [ @service_container, @controller_name_converter, @ext_direct.route.collection, @monolog.logger.request ]
         
     ext_direct:
         class: Ext\DirectBundle\Response\ResponseFactory
@@ -21,7 +21,7 @@ services:
 
     ext_direct.yml.loader:
         class: Ext\DirectBundle\Router\Loader\YamlLoader
-        arguments: [ ext_direct.route.collection ]
+        arguments: [ @ext_direct.route.collection ]
         tags:
             - { name: ext_direct.loader }
 

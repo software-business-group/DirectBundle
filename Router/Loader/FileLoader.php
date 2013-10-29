@@ -23,10 +23,11 @@ class FileLoader
     }
 
     /**
-     * @param LoaderInterface $loader
+     * @param AbstractLoader $loader
      */
-    public function addLoader(LoaderInterface $loader)
+    public function addLoader(AbstractLoader $loader)
     {
+        $loader->setFileLoader($this);
         $this->loaders[] = $loader;
     }
 
@@ -40,7 +41,7 @@ class FileLoader
 
     /**
      * @param $index
-     * @return LoaderInterface
+     * @return AbstractLoader
      */
     private function getLoader($index)
     {

@@ -46,11 +46,6 @@ class ResponseFactory
     private $errorTemplate;
 
     /**
-     * @var string
-     */
-    private $successProperty;
-
-    /**
      * @param Request $request
      * @param ControllerResolver $resolver
      * @param EventDispatcher $eventDispatcher
@@ -148,20 +143,4 @@ class ResponseFactory
         return $this->errorTemplate;
     }
 
-    /**
-     * @param string $successProperty
-     */
-    public function setSuccessProperty($successProperty)
-    {
-        $this->successProperty = $successProperty;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSuccessProperty()
-    {
-        return $this->successProperty;
-    }
-    
 }

@@ -25,6 +25,11 @@ class ControllerResolver extends BaseControllerResolver
      * @var Call
      */
     private $call;
+
+    /**
+     * @var Rule
+     */
+    private $currentRule;
     
     public function __construct(
         ContainerInterface $container,
@@ -79,6 +84,22 @@ class ControllerResolver extends BaseControllerResolver
     }
 
     /**
+     * @param \Ext\DirectBundle\Router\Rule $currentRule
+     */
+    private function setCurrentRule($currentRule)
+    {
+        $this->currentRule = $currentRule;
+    }
+
+    /**
+     * @return \Ext\DirectBundle\Router\Rule
+     */
+    public function getCurrentRule()
+    {
+        return $this->currentRule;
+    }
+
+    /**
      * @param string $controller
      * @return Rule
      * @throws \BadMethodCallException
@@ -88,7 +109,11 @@ class ControllerResolver extends BaseControllerResolver
         foreach($this->getRouteCollection() as $key => $Rule)
         {
             if($Rule->getContoller() === $controller)
+            {
+                $this->setCurrentRule($Rule);
                 return $Rule;
+            }
+
         }
         throw new \BadMethodCallException(sprintf('%1$s does not configured, check config.yml', $controller));
     }

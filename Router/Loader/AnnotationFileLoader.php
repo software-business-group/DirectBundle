@@ -7,7 +7,7 @@ namespace Ext\DirectBundle\Router\Loader;
  * @package Ext\DirectBundle\Router\Loader
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class AnnotationFileLoader implements LoaderInterface
+class AnnotationFileLoader extends AbstractLoader
 {
 
     /**

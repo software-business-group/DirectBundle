@@ -15,7 +15,11 @@ class Error extends Response implements ResponseInterface
         $msg = $this->getFactory()
             ->getTemplating()
             ->render($this->getFactory()->getErrorTemplate(), array('errors' => $data));
-        return array($this->getFactory()->getSuccessProperty() => $this->getSuccess(), 'msg' => $msg);
+        return array($this->getFactory()
+            ->getResolver()
+            ->getCurrentRule()
+            ->getReaderParam('successProperty') => $this->getSuccess(),
+            'msg' => $msg);
     }
     
 }

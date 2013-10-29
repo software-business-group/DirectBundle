@@ -29,15 +29,14 @@ class ExtDirectExtension extends Extension
         $loader->load('services.yml');
 
         $container->getDefinition('ext_direct.api')
-            ->addMethodCall('setNamespace', array($config['basic']['namespace']))
-            ->addMethodCall('setType', array($config['basic']['type']));
+            ->addMethodCall('setNamespace', array($config['namespace']))
+            ->addMethodCall('setType', array($config['type']));
 
         $container->getDefinition('ext_direct.file.loader')
-            ->addMethodCall('load', array($config['rules']['resource']));
+            ->addMethodCall('load', array($config['resource']));
 
         $container->getDefinition('ext_direct')
-            ->addMethodCall('setErrorTemplate', array($config['error_template']))
-            ->addMethodCall('setSuccessProperty', array($config['reader']['successProperty']));
+            ->addMethodCall('setErrorTemplate', array($config['error_template']));
     }
 
     /**

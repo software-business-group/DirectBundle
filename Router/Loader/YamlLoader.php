@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Parser as YamlParser;
  * @package Ext\DirectBundle\Router\Loader
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class YamlLoader implements LoaderInterface
+class YamlLoader extends AbstractLoader
 {
 
     /**
@@ -23,16 +23,10 @@ class YamlLoader implements LoaderInterface
      */
     private $parser;
 
-    /**
-     * @var FileLoader
-     */
-    private $loader;
-
-    public function __construct(RouteCollection $collection, FileLoader $loader)
+    public function __construct(RouteCollection $collection)
     {
         $this->parser = new YamlParser();
         $this->collection = $collection;
-        $this->loader = $loader;
     }
 
     /**
@@ -52,25 +46,19 @@ class YamlLoader implements LoaderInterface
     }
 
     /**
-     * @return \Ext\DirectBundle\Router\Loader\FileLoader
-     */
-    public function getLoader()
-    {
-        return $this->loader;
-    }
-
-    /**
      * @param $resource
      * @return bool
+     * @throws \InvalidArgumentException
      */
     public function load($resource)
     {
-        $content = $this->loadFile($resource);
+        if(is_string($resource))
+            $resource = $this->loadFile($resource);
 
-        if(!is_array($content))
-            return false;
+        if(!is_array($resource))
+            throw new \InvalidArgumentException;
 
-        foreach($content as $key => $params)
+        foreach($resource as $key => $params)
             $this->processParams($key, $params);
 
         return true;
@@ -82,11 +70,14 @@ class YamlLoader implements LoaderInterface
      * @return mixed
      * @throws \InvalidArgumentException
      */
-    private function processParams($key, array $params)
+    protected function processParams($key, array $params)
     {
         if(isset($params['resource']))
-            return $this->getLoader()
+        {
+            return $this->getFileLoader()
                 ->load($params['resource'], (isset($params['type'])?$params['type']:null));
+        }
+
 
         if(!isset($params['defaults']))
             throw new \InvalidArgumentException('The defaults params not defined');
@@ -166,7 +157,9 @@ class YamlLoader implements LoaderInterface
     private function loadFile($resource)
     {
         if(!file_exists($resource))
+        {
             throw new \InvalidArgumentException('Resource does not exist');
+        }
 
         return $this->getParser()->parse(
             file_get_contents($resource)

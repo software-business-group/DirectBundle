@@ -16,7 +16,7 @@ use Ext\DirectBundle\Annotation\Writer;
  * @package Ext\DirectBundle\Router\Loader
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class AnnotationClassLoader implements LoaderInterface
+class AnnotationClassLoader extends AbstractLoader
 {
 
     /**
