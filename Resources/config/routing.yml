@@ -1,9 +1,7 @@
 ExtDirectBundle_api:
     pattern:  /api.js
-    defaults: { _controller: ext_direct.controller:getApi }
+    defaults: { _controller: ExtDirectBundle:Direct:getApi }
 
 ExtDirectBundle_route:
     pattern: /route
-    defaults: { _controller: ext_direct.controller:route }
-
-
+    defaults: { _controller: ExtDirectBundle:Direct:route }

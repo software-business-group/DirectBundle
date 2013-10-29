@@ -392,7 +392,7 @@ In code sample for extjs, a window of form displaying and the form itself with t
           $Customer = new Customer();
         
           $form = $this->createForm($this->get('acme_demo.updatecustomer'), $Customer);
-          $_data = array_intersect_key($_data, $form->getChildren());
+          $_data = array_intersect_key($_data, $form->all());
           $form->bind($_data);
                 
           if($form->isValid())
@@ -467,7 +467,7 @@ Similar task can also be solved using DirectBundle.
                 $Customer = $repository->findOneById($customer['id']);
 
                 $form = $this->createForm($this->get('acme_demo.updatecustomer'), $Customer);
-                $form->bind(array_intersect_key($customer, $form->getChildren()));
+                $form->bind(array_intersect_key($customer, $form->all()));
         
                 if($form->isValid())
                 {

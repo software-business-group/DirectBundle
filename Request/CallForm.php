@@ -1,6 +1,6 @@
 <?php
 
-namespace Ext\DirectBundle\Router;
+namespace Ext\DirectBundle\Request;
 
 /**
  * @author Semyon Velichko <semyon@velichko.net>
@@ -22,8 +22,8 @@ class CallForm extends Call
     
     /**
      * Initialize the call properties from a form call.
-     * 
-     * @param array $call
+     *
+     * @throws \Ext\DirectBundle\Exception\InvalidJsonException
      */
     public function initialize($call)
     {

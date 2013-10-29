@@ -19,7 +19,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('direct');
+        $rootNode = $treeBuilder->root('ext_direct');
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
@@ -27,71 +27,20 @@ class Configuration implements ConfigurationInterface
 
         $rootNode->children()
             ->scalarNode('error_template')
-                        ->defaultValue('ExtDirectBundle::extjs_errors.html.twig')
-                    ->end()
-            ->arrayNode('basic')
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->scalarNode('type')
-                        ->defaultValue('remoting')
-                    ->end()
-                    ->scalarNode('namespace')
-                        ->defaultValue('Actions')
-                    ->end()
-                ->end()
+                ->defaultValue('ExtDirectBundle::extjs_errors.html.twig')
+            ->end()
+            ->scalarNode('type')
+                ->defaultValue('remoting')
+            ->end()
+            ->scalarNode('namespace')
+                ->defaultValue('Actions')
+            ->end()
+            ->scalarNode('resource')
+                ->defaultNull()
+            ->end()
         ->end();
-        
-        $this->addRouterSection($rootNode);
         
         return $treeBuilder;
     }
-    
-    private function addRouterSection(ArrayNodeDefinition $rootNode)
-    {
-        $rootNode->children()
-            ->arrayNode('router')
-                ->children()
-                    ->scalarNode('resource')->end()
-                ->end()
-                ->children()
-                    ->arrayNode('rules')
-                        ->useAttributeAsKey('rules')
-                        ->prototype('array')
-                            ->children()
-                                ->arrayNode('defaults')
-                                    ->children()
-                                        ->scalarNode('_controller')
-                                            ->validate()
-                                                ->ifTrue(function($v) {
-                                                    return !preg_match('/^[\w]+(:[\w]+)?:[\w]+$/i', $v);
-                                                })
-                                                ->thenInvalid('This %s format is not supported')
-                                            ->end()
-                                            ->isRequired()
-                                        ->end()
-                                        ->booleanNode('params')->defaultFalse()->end()
-                                        ->booleanNode('form')->defaultFalse()->end()
-                                    ->end()
-                                ->end()
-                                ->arrayNode('reader')
-                                ->addDefaultsIfNotSet()
-                                    ->children()
-                                        ->scalarNode('root')
-                                            ->defaultNull()
-                                        ->end()
-                                        ->scalarNode('successProperty')
-                                            ->defaultValue('success')
-                                        ->end()
-                                        ->scalarNode('totalProperty')
-                                            ->defaultValue('total')
-                                        ->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-            ->end()
-        ->end();
-    }
+
 }

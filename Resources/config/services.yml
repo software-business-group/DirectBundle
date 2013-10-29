@@ -1,23 +1,48 @@
-parameters:
-    ext_direct.controller.class: Ext\DirectBundle\Controller\DirectController
-    ext_direct.response_factory.class: Ext\DirectBundle\Response\ResponseFactory
-    ext_direct.controller_resolver.class : Ext\DirectBundle\Router\ControllerResolver
-    ext_direct_test_service.class: Ext\DirectBundle\Controller\ForTestingController
-    
 services:
-    ext_direct.controller:
-        class: %ext_direct.controller.class%
-        arguments: [ @service_container ]
-        
     ext_direct.controller_resolver:
-        class: %ext_direct.controller_resolver.class%
-        arguments: [ @service_container, @controller_name_converter, @monolog.logger.request ]
+        class: Ext\DirectBundle\Router\ControllerResolver
+        arguments: [ @service_container, @controller_name_converter, @ext_direct.route.collection, @monolog.logger.request ]
         
     ext_direct:
-        class: %ext_direct.response_factory.class%
+        class: Ext\DirectBundle\Response\ResponseFactory
         scope: request
-        arguments: [ @request, @ext_direct.controller_resolver, @service_container ]
-        
+        arguments: [ @request, @ext_direct.controller_resolver, @event_dispatcher, @templating ]
+
     ext_direct_test_service:
-        class: %ext_direct_test_service.class%
+        class: Ext\DirectBundle\Controller\TestController
         arguments: [ @service_container ]
+
+    ext_direct.route.collection:
+        class: Ext\DirectBundle\Router\RouteCollection
+
+    ext_direct.file.loader:
+        class: Ext\DirectBundle\Router\Loader\FileLoader
+        arguments: [ @file_locator, @ext_direct.router.cache ]
+
+    ext_direct.yml.loader:
+        class: Ext\DirectBundle\Router\Loader\YamlLoader
+        arguments: [ @ext_direct.route.collection ]
+        tags:
+            - { name: ext_direct.loader }
+
+    ext_direct.annotation_file.loader:
+        class: Ext\DirectBundle\Router\Loader\AnnotationFileLoader
+        arguments: [ @ext_direct.annotation_class.loader ]
+        tags:
+            - { name: ext_direct.loader }
+
+    ext_direct.annotation_class.loader:
+        class: Ext\DirectBundle\Router\Loader\AnnotationClassLoader
+        arguments: [ @ext_direct.route.collection, @annotation_reader, @ext_direct.controller_resolver ]
+
+    ext_direct.api:
+        class: Ext\DirectBundle\Api\Api
+        arguments: [ @ext_direct.route.collection, @router ]
+
+    ext_direct.request_dispatcher:
+        class: Ext\DirectBundle\Request\RequestDispatcher
+        arguments: [ @ext_direct.controller_resolver, %kernel.debug% ]
+
+    ext_direct.router.cache:
+        class: Ext\DirectBundle\Router\Loader\CacheLoader
+        arguments: [ @ext_direct.route.collection, %kernel.cache_dir%, %kernel.debug% ]
