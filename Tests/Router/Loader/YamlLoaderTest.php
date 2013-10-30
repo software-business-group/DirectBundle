@@ -91,7 +91,7 @@ class YamlLoaderTest extends TestTemplate
         $this->assertTrue($Rule->getIsWithParams());
         $this->assertFalse($Rule->getIsFormHandler());
         $this->assertEquals('json', $Rule->getReaderParam('type'));
-        $this->assertNull($Rule->getReader()['root']);
+        $this->assertNull($Rule->getReaderParam('root'));
         $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
         $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
@@ -109,7 +109,7 @@ class YamlLoaderTest extends TestTemplate
         $this->assertTrue($Rule->getIsWithParams());
         $this->assertFalse($Rule->getIsFormHandler());
         $this->assertEquals('json', $Rule->getReaderParam('type'));
-        $this->assertNull($Rule->getReader()['root']);
+        $this->assertNull($Rule->getReaderParam('root'));
         $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
         $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
