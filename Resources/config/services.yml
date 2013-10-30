@@ -6,7 +6,7 @@ services:
     ext_direct:
         class: Ext\DirectBundle\Response\ResponseFactory
         scope: request
-        arguments: [ @request, @ext_direct.controller_resolver, @event_dispatcher, @templating ]
+        arguments: [ @request, @ext_direct.controller_resolver, @event_dispatcher, @twig ]
 
     ext_direct_test_service:
         class: Ext\DirectBundle\Controller\TestController

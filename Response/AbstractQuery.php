@@ -34,14 +34,16 @@ class AbstractQuery extends Response implements ResponseInterface
             ->setHydrationMode(ORMAbstractQuery::HYDRATE_ARRAY);
             
         $event = new ResponseEvent($this, $data);
-        $this->dispatcher->dispatch(DirectEvents::PRE_QUERY_EXECUTE, $event);
+        $this->getFactory()->getEventDispatcher()
+            ->dispatch(DirectEvents::PRE_QUERY_EXECUTE, $event);
         
         $data = $event->getData();
         if(!is_array($data) && ($data instanceof ORMAbstractQuery))
             $data = $data->execute();
         
         $event = new ResponseEvent($this, $data);
-        $this->dispatcher->dispatch(DirectEvents::POST_QUERY_EXECUTE, $event);
+        $this->getFactory()->getEventDispatcher()
+            ->dispatch(DirectEvents::POST_QUERY_EXECUTE, $event);
         $data = $event->getData();
         
         if(!is_array($data))

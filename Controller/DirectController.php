@@ -31,6 +31,7 @@ class DirectController extends Controller
      */
     public function getApiAction()
     {
+        $this->get('ext_direct.file.loader');
         return new HttpFoundation\Response(
             (string)$this->get('ext_direct.api'),
             200,
@@ -46,6 +47,7 @@ class DirectController extends Controller
      */
     public function routeAction(HttpFoundation\Request $request)
     {
+        $this->get('ext_direct.file.loader');
         return new HttpFoundation\Response(
             (string)$this->get('ext_direct.request_dispatcher')->dispatchHttpRequest($request),
             200,
