@@ -68,6 +68,9 @@ In additional, you can use a controller annotation:
     testClassLoader:
         resource: "@AcmeTestBundle/Controller/TestController.php"
 
+    testDirectoryLoader:
+        resource: "@AcmeTestBundle/Controller"
+
 ##### AcmeController.php #####
 
     namespace Acme\TestBundle\Controller;

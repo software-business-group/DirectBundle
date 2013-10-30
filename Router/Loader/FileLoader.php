@@ -15,7 +15,7 @@ class FileLoader
     private $locator;
 
     /**
-     * @var CacheLoader
+     * @var CacheProvider
      */
     private $cache;
 
@@ -26,9 +26,9 @@ class FileLoader
 
     /**
      * @param FileLocatorInterface $locator
-     * @param CacheLoader $cache
+     * @param CacheProvider $cache
      */
-    public function __construct(FileLocatorInterface $locator, CacheLoader $cache)
+    public function __construct(FileLocatorInterface $locator, CacheProvider $cache)
     {
         $this->locator = $locator;
         $this->cache = $cache;
@@ -69,7 +69,7 @@ class FileLoader
     }
 
     /**
-     * @return \Ext\DirectBundle\Router\Loader\CacheLoader
+     * @return \Ext\DirectBundle\Router\Loader\CacheProvider
      */
     private function getCache()
     {
