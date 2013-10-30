@@ -1,0 +1,2 @@
+ext_direct:
+    resource: "@ExtDirectBundle/Resources/config/routing.yml"

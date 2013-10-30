@@ -83,6 +83,9 @@ class FileLoader
      */
     public function load($resource, $type = null)
     {
+        if(empty($resource))
+            return false;
+
         foreach(array_keys($this->getLoaders()) as $index)
         {
             $resource = $this->getLocator()->locate($resource);

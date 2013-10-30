@@ -172,10 +172,4 @@ class Response implements ResponseInterface
         $this->getFactory()->getEventDispatcher()->addListener($name, $listener, $weight);
         return $this;
     }
-
-    public function addEventListener($eventName, $callable)
-    {
-        $this->dispatcher->addListener($eventName, $callable);
-        return $this;
-    }
 }
