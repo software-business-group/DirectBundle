@@ -13,7 +13,7 @@ class AnnotationFileLoader extends AbstractLoader
     /**
      * @var AnnotationClassLoader
      */
-    private $loader;
+    protected $loader;
 
     /**
      * @param AnnotationClassLoader $loader
@@ -38,7 +38,7 @@ class AnnotationFileLoader extends AbstractLoader
     /**
      * @return \Symfony\Component\Routing\Loader\AnnotationClassLoader
      */
-    private function getLoader()
+    protected function getLoader()
     {
         return $this->loader;
     }

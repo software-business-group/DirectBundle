@@ -8,7 +8,7 @@ use Ext\DirectBundle\Router\RouteCollection;
  * @package Ext\DirectBundle\Router\Loader
  * @author Semyon Velichko <semyon@velichko.net>
  */
-class CacheLoader
+class CacheProvider
 {
 
     /**

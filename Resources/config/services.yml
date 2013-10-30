@@ -44,5 +44,11 @@ services:
         arguments: [ @ext_direct.controller_resolver, %kernel.debug% ]
 
     ext_direct.router.cache:
-        class: Ext\DirectBundle\Router\Loader\CacheLoader
+        class: Ext\DirectBundle\Router\Loader\CacheProvider
         arguments: [ @ext_direct.route.collection, %kernel.cache_dir%, %kernel.debug% ]
+
+    ext_direct.annotation_directory.loader:
+        class: Ext\DirectBundle\Router\Loader\AnnotationDirectoryLoader
+        arguments: [ @ext_direct.annotation_class.loader ]
+        tags:
+            - { name: ext_direct.loader }
