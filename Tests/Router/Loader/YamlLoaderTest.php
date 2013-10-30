@@ -90,10 +90,10 @@ class YamlLoaderTest extends TestTemplate
         );
         $this->assertTrue($Rule->getIsWithParams());
         $this->assertFalse($Rule->getIsFormHandler());
-        $this->assertEquals('json', $Rule->getReader()['type']);
+        $this->assertEquals('json', $Rule->getReaderParam('type'));
         $this->assertNull($Rule->getReader()['root']);
-        $this->assertEquals('success', $Rule->getReader()['successProperty']);
-        $this->assertEquals('total', $Rule->getReader()['totalProperty']);
+        $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
 
     public function testObjectResponse() {
@@ -108,10 +108,10 @@ class YamlLoaderTest extends TestTemplate
         );
         $this->assertTrue($Rule->getIsWithParams());
         $this->assertFalse($Rule->getIsFormHandler());
-        $this->assertEquals('json', $Rule->getReader()['type']);
+        $this->assertEquals('json', $Rule->getReaderParam('type'));
         $this->assertNull($Rule->getReader()['root']);
-        $this->assertEquals('success', $Rule->getReader()['successProperty']);
-        $this->assertEquals('total', $Rule->getReader()['totalProperty']);
+        $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
 
     public function testResponseWithConfiguredReader()
@@ -127,10 +127,10 @@ class YamlLoaderTest extends TestTemplate
         );
         $this->assertTrue($Rule->getIsWithParams());
         $this->assertFalse($Rule->getIsFormHandler());
-        $this->assertEquals('json', $Rule->getReader()['type']);
-        $this->assertEquals('root', $Rule->getReader()['root']);
-        $this->assertEquals('successProperty', $Rule->getReader()['successProperty']);
-        $this->assertEquals('totalProperty', $Rule->getReader()['totalProperty']);
+        $this->assertEquals('json', $Rule->getReaderParam('type'));
+        $this->assertEquals('root', $Rule->getReaderParam('root'));
+        $this->assertEquals('successProperty', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('totalProperty', $Rule->getReaderParam('totalProperty'));
     }
 
     public function testFormHandlerResponse()
@@ -146,10 +146,10 @@ class YamlLoaderTest extends TestTemplate
         );
         $this->assertTrue($Rule->getIsWithParams());
         $this->assertTrue($Rule->getIsFormHandler());
-        $this->assertEquals('json', $Rule->getReader()['type']);
-        $this->assertEquals('data', $Rule->getReader()['root']);
-        $this->assertEquals('success', $Rule->getReader()['successProperty']);
-        $this->assertEquals('total', $Rule->getReader()['totalProperty']);
+        $this->assertEquals('json', $Rule->getReaderParam('type'));
+        $this->assertEquals('data', $Rule->getReaderParam('root'));
+        $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
 
     public function testFormValidationResponse()
@@ -165,10 +165,10 @@ class YamlLoaderTest extends TestTemplate
         );
         $this->assertTrue($Rule->getIsWithParams());
         $this->assertTrue($Rule->getIsFormHandler());
-        $this->assertEquals('json', $Rule->getReader()['type']);
-        $this->assertNull($Rule->getReader()['root']);
-        $this->assertEquals('success', $Rule->getReader()['successProperty']);
-        $this->assertEquals('total', $Rule->getReader()['totalProperty']);
+        $this->assertEquals('json', $Rule->getReaderParam('type'));
+        $this->assertNull($Rule->getReaderParam('root'));
+        $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
 
     public function testFormEntityValidationResponse()
@@ -184,10 +184,10 @@ class YamlLoaderTest extends TestTemplate
         );
         $this->assertTrue($Rule->getIsWithParams());
         $this->assertTrue($Rule->getIsFormHandler());
-        $this->assertEquals('json', $Rule->getReader()['type']);
-        $this->assertNull($Rule->getReader()['root']);
-        $this->assertEquals('success', $Rule->getReader()['successProperty']);
-        $this->assertEquals('total', $Rule->getReader()['totalProperty']);
+        $this->assertEquals('json', $Rule->getReaderParam('type'));
+        $this->assertNull($Rule->getReaderParam('root'));
+        $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
 
     public function testServiceAction()
@@ -203,10 +203,10 @@ class YamlLoaderTest extends TestTemplate
         );
         $this->assertTrue($Rule->getIsWithParams());
         $this->assertTrue($Rule->getIsFormHandler());
-        $this->assertEquals('json', $Rule->getReader()['type']);
-        $this->assertNull($Rule->getReader()['root']);
-        $this->assertEquals('success', $Rule->getReader()['successProperty']);
-        $this->assertEquals('total', $Rule->getReader()['totalProperty']);
+        $this->assertEquals('json', $Rule->getReaderParam('type'));
+        $this->assertNull($Rule->getReaderParam('root'));
+        $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
 
     public function testException()
@@ -222,10 +222,10 @@ class YamlLoaderTest extends TestTemplate
         );
         $this->assertFalse($Rule->getIsWithParams());
         $this->assertFalse($Rule->getIsFormHandler());
-        $this->assertEquals('json', $Rule->getReader()['type']);
-        $this->assertNull($Rule->getReader()['root']);
-        $this->assertEquals('success', $Rule->getReader()['successProperty']);
-        $this->assertEquals('total', $Rule->getReader()['totalProperty']);
+        $this->assertEquals('json', $Rule->getReaderParam('type'));
+        $this->assertNull($Rule->getReaderParam('root'));
+        $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
 
     public function testLoadFromExternalYaml()
@@ -241,10 +241,10 @@ class YamlLoaderTest extends TestTemplate
         );
         $this->assertFalse($Rule->getIsWithParams());
         $this->assertFalse($Rule->getIsFormHandler());
-        $this->assertEquals('json', $Rule->getReader()['type']);
-        $this->assertNull($Rule->getReader()['root']);
-        $this->assertEquals('success', $Rule->getReader()['successProperty']);
-        $this->assertEquals('total', $Rule->getReader()['totalProperty']);
+        $this->assertEquals('json', $Rule->getReaderParam('type'));
+        $this->assertNull($Rule->getReaderParam('root'));
+        $this->assertEquals('success', $Rule->getReaderParam('successProperty'));
+        $this->assertEquals('total', $Rule->getReaderParam('totalProperty'));
     }
 
 }
