@@ -107,7 +107,7 @@ class Request
     {
         $calls = array();
 
-        if ((bool)$this->request->request->keys()) {
+        if ($this->request->request->count() > 0) {
             $calls[] = new CallForm($this->post, $this);
         } elseif ($this->rawPost) {
             $decoded = json_decode($this->rawPost);

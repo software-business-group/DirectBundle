@@ -34,7 +34,7 @@ class CallForm extends Call
                       'isUpload' => 'extUpload') as $key => $value)
         {
             if(!isset($call[$value]))
-                throw new \Ext\DirectBundle\Exception\InvalidJsonException(sprintf('%s key does not exist', $value));
+                throw new \Ext\DirectBundle\Exception\InvalidJsonException(sprintf('%s key does not exist: ' . var_export($call, true), $value));
             
             $this->$key = $call[$value];
             unset($call[$value]);
