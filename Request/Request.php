@@ -67,7 +67,6 @@ class Request
         $this->rawPost = str_replace(array('[undefined]'),
                                      array('null'),
                                      $request->getContent());
-        $this->post = $request->request->all();
         
         foreach($request->files->keys() as $key)
             $this->files[$key] = $request->files->get($key, array());
@@ -106,25 +105,24 @@ class Request
     public function extractCalls()
     {
         $calls = array();
-
-        if ($this->request->request->count() > 0) {
-            $calls[] = new CallForm($this->post, $this);
-        } elseif ($this->rawPost) {
-            $decoded = json_decode($this->rawPost);
+        $decoded = json_decode($this->rawPost);
+        if (!empty($this->rawPost) && json_last_error() === JSON_ERROR_NONE)
+        {
             $decoded = !is_array($decoded) ? array($decoded) : $decoded;
-            
             array_walk_recursive($decoded, array($this, 'parseRawToArray'));
             // @todo: check utf8 config option from bundle
             //array_walk_recursive($decoded, array($this, 'decode'));
 
-            if(is_null($decoded) || !is_array($decoded))
-                throw new InvalidJsonException(sprintf('I can\'t parse input json: "%s"', $this->rawPost));
-            
             foreach ($decoded as $call) {
                 $calls[] = new Call((array)$call, $this);
             }
+        } elseif ($this->request->request->count() > 0)
+        {
+            $calls[] = new CallForm($this->request->request->all(), $this);
+        } else {
+            throw new InvalidJsonException(sprintf('I can\'t parse input json: "%s"', $this->rawPost));
         }
-        
+
         return $calls;
     }
 

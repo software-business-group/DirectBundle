@@ -3,6 +3,7 @@ namespace Ext\DirectBundle\Request;
 
 use Ext\DirectBundle\Response\ResponseInterface;
 use Ext\DirectBundle\Response\Exception as ExceptionResponse;
+use Ext\DirectBundle\Exception\InvalidJsonException;
 
 /**
  * Call encapsule an single ExtDirect call.
@@ -122,6 +123,14 @@ class Call
     }
 
     /**
+     * @return int
+     */
+    public function getTid()
+    {
+        return $this->tid;
+    }
+
+    /**
      * Return a result wrapper to ExtDirect method call.
      * 
      * @param  array $result
@@ -158,8 +167,8 @@ class Call
     {
         foreach(array('action', 'method', 'type', 'tid') as $key)
         {
-            if(!isset($call[$key]))
-                throw new \Ext\DirectBundle\Exception\InvalidJsonException(sprintf('%s key does not exist ' . var_export($call, true), $key));
+            if(!array_key_exists($key, $call))
+                $this->throwNewKeyDoesNotExistException($key);
             
             $this->$key = $call[$key];
         }
@@ -169,5 +178,14 @@ class Call
         if(is_array($call['data']) && !empty($call['data']))
             $this->data   = array_shift($call['data']);
     }
-    
+
+    /**
+     * @param $key
+     * @throws \Ext\DirectBundle\Exception\InvalidJsonException
+     */
+    protected function throwNewKeyDoesNotExistException($key)
+    {
+        throw new InvalidJsonException(sprintf('%s key does not exist', $key));
+    }
+
 }
