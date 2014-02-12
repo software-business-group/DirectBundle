@@ -12,28 +12,42 @@ use Ext\DirectBundle\Event\DirectEvents;
 use Ext\DirectBundle\Event\ResponseEvent;
 
 /**
- * @author Semyon Velichko <semyon@velichko.net>
+ * Class KnpPaginator
+ *
+ * @package Ext\DirectBundle\Response
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class KnpPaginator extends Response implements ResponseInterface
 {
-    
+
+    /**
+     * @param SlidingPagination $paginator
+     *
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
     public function setContent($paginator)
     {
-        if(!($paginator instanceof SlidingPagination))
+        if (!($paginator instanceof SlidingPagination)) {
             throw new \InvalidArgumentException('$paginator must be instance of Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination');
-        
+        }
+
         $this->data = $paginator->getItems();
         $this->setTotal($paginator->getTotalItemCount());
+
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function extract()
     {
         $event = new ResponseEvent($this, $this->data);
         $this->getFactory()->getEventDispatcher()->dispatch(DirectEvents::POST_QUERY_EXECUTE, $event);
         $data = $event->getData();
+
         return $this->formatResponse($data);
     }
-    
 }
-

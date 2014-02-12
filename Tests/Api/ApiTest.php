@@ -8,8 +8,10 @@ use Ext\DirectBundle\Tests\TestTemplate;
 
 /**
  * Class ApiTest
+ *
  * @package Ext\DirectBundle\Tests\Api
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class ApiTest extends TestTemplate
 {
@@ -24,6 +26,9 @@ class ApiTest extends TestTemplate
      */
     private $collection;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         parent::setUp();
@@ -50,18 +55,23 @@ class ApiTest extends TestTemplate
         return $this->api;
     }
 
+    /**
+     * Setup route collection
+     */
     public function setUpRouteCollection()
     {
         $this->collection = new RouteCollection();
 
-        foreach($this->getRules() as $Rule)
-        {
-            $this->collection->add($Rule[0]);
+        foreach ($this->getRules() as $rule) {
+            $this->collection->add($rule[0]);
         }
 
         return;
     }
 
+    /**
+     * Testing api.js source
+     */
     public function testCreateApi()
     {
         $this->jsonResponseTest(
@@ -76,10 +86,9 @@ class ApiTest extends TestTemplate
     {
         $apiJsHeader = 'Ext.ns("Actions"); Actions.REMOTING_API = ';
         $client = static::createClient();
-        foreach($this->getRules() as $Rule)
-        {
+        foreach ($this->getRules() as $rule) {
             static::$kernel->getContainer()->get('ext_direct.route.collection')
-                ->add($Rule[0]);
+                ->add($rule[0]);
         }
 
         $client->request('GET', $this->get('router')->generate('ExtDirectBundle_api'));
@@ -93,7 +102,7 @@ class ApiTest extends TestTemplate
 
     /**
      * @param array $array
-     * @param Api $api
+     * @param Api   $api
      */
     public function jsonResponseTest($array, Api $api)
     {

@@ -5,8 +5,10 @@ namespace Ext\DirectBundle\Router;
 
 /**
  * Class Rule
+ *
  * @package Ext\DirectBundle\Router
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class Rule extends Serializable
 {
@@ -52,8 +54,8 @@ class Rule extends Serializable
     /**
      * @param string $alias
      * @param string $controller
-     * @param bool $isWithParams
-     * @param bool $isFormHandler
+     * @param bool   $isWithParams
+     * @param bool   $isFormHandler
      */
     public function __construct($alias, $controller, $isWithParams = true, $isFormHandler = false)
     {
@@ -64,13 +66,15 @@ class Rule extends Serializable
     }
 
     /**
-     * @param $alias
+     * @param string $alias
+     *
      * @throws \InvalidArgumentException
      */
     public function setAlias($alias)
     {
-        if(!is_string($alias))
+        if (!is_string($alias)) {
             throw new \InvalidArgumentException('Argument must be a string');
+        }
 
         $this->alias = $alias;
     }
@@ -84,13 +88,15 @@ class Rule extends Serializable
     }
 
     /**
-     * @param $controller
+     * @param mixed $controller
+     *
      * @throws \InvalidArgumentException
      */
     public function setController($controller)
     {
-        if(!is_string($controller))
+        if (!is_string($controller)) {
             throw new \InvalidArgumentException('Argument must be a string');
+        }
 
         $this->controller = $controller;
     }
@@ -120,7 +126,7 @@ class Rule extends Serializable
     }
 
     /**
-     * @param $isWithParams
+     * @param bool $isWithParams
      */
     public function setIsWithParams($isWithParams)
     {
@@ -152,7 +158,8 @@ class Rule extends Serializable
     }
 
     /**
-     * @param $key
+     * @param string $key
+     *
      * @return bool
      */
     public function hasReaderParam($key)
@@ -161,25 +168,29 @@ class Rule extends Serializable
     }
 
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @throws \InvalidArgumentException
      */
     public function setReaderParam($key, $value)
     {
-        if(is_null($value))
+        if (is_null($value)) {
             return;
+        }
 
-        if(!$this->hasReaderParam($key))
+        if (!$this->hasReaderParam($key)) {
             throw new \InvalidArgumentException(
                 sprintf('This (%s) reader param does not supported', $key)
             );
+        }
 
         $this->reader[$key] = $value;
     }
 
     /**
-     * @param $key
+     * @param string $key
+     *
      * @return bool
      */
     public function hasWriterParam($key)
@@ -188,52 +199,58 @@ class Rule extends Serializable
     }
 
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @throws \InvalidArgumentException
      */
     public function setWriterParam($key, $value)
     {
-        if(!$this->hasWriterParam($key))
+        if (!$this->hasWriterParam($key)) {
             throw new \InvalidArgumentException(
                 sprintf('This (%s) writer param does not supported', $key)
             );
+        }
 
         $this->writer[$key] = $value;
     }
 
     /**
-     * @param $key
+     * @param mixed $key
+     *
      * @return mixed
      * @throws \InvalidArgumentException
      */
     public function getReaderParam($key)
     {
-        if(!$this->hasReaderParam($key))
+        if (!$this->hasReaderParam($key)) {
             throw new \InvalidArgumentException(
                 sprintf('This (%s) reader param  not exist', $key)
             );
+        }
 
         return $this->reader[$key];
     }
 
     /**
-     * @param $key
+     * @param string $key
+     *
      * @return mixed
      * @throws \InvalidArgumentException
      */
     public function getWriterParam($key)
     {
-        if(!$this->hasWriterParam($key))
+        if (!$this->hasWriterParam($key)) {
             throw new \InvalidArgumentException(
                 sprintf('This (%s) writer param  not exist', $key)
             );
+        }
 
         return $this->writer[$key];
     }
 
     /**
-     * @param $root
+     * @param string $root
      */
     public function setReaderRoot($root)
     {
@@ -241,7 +258,7 @@ class Rule extends Serializable
     }
 
     /**
-     * @param $property
+     * @param mixed $property
      */
     public function setReaderSuccessProperty($property)
     {
@@ -249,7 +266,7 @@ class Rule extends Serializable
     }
 
     /**
-     * @param $property
+     * @param mixed $property
      */
     public function setReaderTotalProperty($property)
     {

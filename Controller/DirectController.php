@@ -17,9 +17,11 @@ use Ext\DirectBundle\Response\Basic;
 
 /**
  * Class DirectController
+ *
  * @package Ext\DirectBundle\Controller
- * @author Otavio Fernandes <otavio@neton.com.br>
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Otavio Fernandes <otavio@neton.com.br>
+ * @author  Semyon Velichko  <semyon@velichko.net>
  */
 class DirectController extends Controller
 {
@@ -32,7 +34,7 @@ class DirectController extends Controller
     public function getApiAction()
     {
         return new HttpFoundation\Response(
-            (string)$this->get('ext_direct.api'),
+            (string) $this->get('ext_direct.api'),
             200,
             array('Content-Type' => 'text/javascript')
         );
@@ -42,12 +44,13 @@ class DirectController extends Controller
      * Route the ExtDirect calls.
      *
      * @param HttpFoundation\Request $request
+     *
      * @return HttpFoundation\Response
      */
     public function routeAction(HttpFoundation\Request $request)
     {
         return new HttpFoundation\Response(
-            (string)$this->get('ext_direct.request_dispatcher')->dispatchHttpRequest($request),
+            (string) $this->get('ext_direct.request_dispatcher')->dispatchHttpRequest($request),
             200,
             array('Content-Type' => 'text/html')
         );

@@ -4,6 +4,13 @@ namespace Ext\DirectBundle\Router\Loader;
 
 use Symfony\Component\Config\FileLocatorInterface;
 
+/**
+ * Class FileLoader
+ *
+ * @package Ext\DirectBundle\Router\Loader
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
+ */
 class FileLoader
 {
 
@@ -26,7 +33,7 @@ class FileLoader
 
     /**
      * @param FileLocatorInterface $locator
-     * @param CacheLoader $cache
+     * @param CacheLoader          $cache
      */
     public function __construct(FileLocatorInterface $locator, CacheLoader $cache)
     {
@@ -52,7 +59,8 @@ class FileLoader
     }
 
     /**
-     * @param $index
+     * @param mixed $index
+     *
      * @return AbstractLoader
      */
     private function getLoader($index)
@@ -77,22 +85,22 @@ class FileLoader
     }
 
     /**
-     * @param $resource
-     * @param null $type
+     * @param mixed $resource
+     * @param null  $type
+     *
      * @return bool
      */
     public function load($resource, $type = null)
     {
-        if(empty($resource))
+        if (empty($resource)) {
             return false;
+        }
 
-        foreach(array_keys($this->getLoaders()) as $index)
-        {
+        foreach (array_keys($this->getLoaders()) as $index) {
             $resource = $this->getLocator()->locate($resource);
 
             $loader = $this->getLoader($index);
-            if($loader->supports($resource, $type))
-            {
+            if ($loader->supports($resource, $type)) {
                 $loader->load($resource);
                 continue;
             }
@@ -102,12 +110,14 @@ class FileLoader
     }
 
     /**
-     * @param $initialResource
+     * @param mixed $initialResource
+     *
      * @return $this
      */
     public function setInitialResource($initialResource)
     {
         $this->initialResource = $initialResource;
+
         return $this;
     }
 
@@ -124,8 +134,7 @@ class FileLoader
      */
     public function loadInitialResource()
     {
-        if(!$this->getCache()->load($this->getInitialResource()))
-        {
+        if (!$this->getCache()->load($this->getInitialResource())) {
             $this->load($this->getInitialResource());
             $this->getCache()->write();
         }

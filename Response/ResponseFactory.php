@@ -9,8 +9,10 @@ use Ext\DirectBundle\Router\ControllerResolver;
 
 /**
  * Class ResponseFactory
+ *
  * @package Ext\DirectBundle\Response
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class ResponseFactory
 {
@@ -46,10 +48,10 @@ class ResponseFactory
     private $errorTemplate;
 
     /**
-     * @param Request $request
+     * @param Request            $request
      * @param ControllerResolver $resolver
-     * @param EventDispatcher $eventDispatcher
-     * @param TwigEngine $templating
+     * @param EventDispatcher    $eventDispatcher
+     * @param TwigEngine         $templating
      */
     public function __construct(
         Request $request,
@@ -66,16 +68,19 @@ class ResponseFactory
 
     /**
      * @param ResponseInterface $response
-     * @param null $data
+     * @param mixed             $data
+     *
      * @return ResponseInterface
      */
     public function createResponse(ResponseInterface $response, $data = null)
     {
         $this->response = $response;
         $this->response->setFactory($this);
-        if($data !== null)
+
+        if ($data !== null) {
             $this->response->setContent($data);
-        
+        }
+
         return $this->response;
     }
 

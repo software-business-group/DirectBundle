@@ -9,8 +9,10 @@ use Ext\DirectBundle\Tests\TestTemplate;
 
 /**
  * Class AnnotationFileLoaderTest
+ *
  * @package Ext\DirectBundle\Tests\Router\Loader
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class AnnotationFileLoaderTest extends TestTemplate
 {
@@ -30,6 +32,9 @@ class AnnotationFileLoaderTest extends TestTemplate
      */
     private $classLoader;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         parent::setUp();
@@ -67,6 +72,9 @@ class AnnotationFileLoaderTest extends TestTemplate
         return $this->loader;
     }
 
+    /**
+     * Testing find class annotation in file
+     */
     public function testFindClassAnnotationFile()
     {
         $file = $this->get('file_locator')->locate('@ExtDirectBundle/Controller/TestController.php');
@@ -89,8 +97,9 @@ class AnnotationFileLoaderTest extends TestTemplate
     }
 
     /**
-     * @param $resource
+     * @param mixed       $resource
      * @param null|string $type
+     *
      * @dataProvider getSupportedResources
      */
     public function testIsSupported($resource, $type = null)
@@ -100,6 +109,9 @@ class AnnotationFileLoaderTest extends TestTemplate
         );
     }
 
+    /**
+     * @return array
+     */
     public function getNotSupportedResources()
     {
         return array(
@@ -111,8 +123,9 @@ class AnnotationFileLoaderTest extends TestTemplate
     }
 
     /**
-     * @param $resource
+     * @param mixed       $resource
      * @param null|string $type
+     *
      * @dataProvider getNotSupportedResources
      */
     public function testIsNotSupported($resource, $type = null)

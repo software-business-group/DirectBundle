@@ -17,7 +17,7 @@ class ExtDirectExtension extends Extension
     /**
      * Loads the Direct configuration.
      *
-     * @param array $config An array of configuration settings
+     * @param array            $configs   An array of configuration settings
      * @param ContainerBuilder $container A ContainerBuilder instance
      */
     public function load(array $configs, ContainerBuilder $container)
@@ -49,6 +49,9 @@ class ExtDirectExtension extends Extension
         return __DIR__.'/../Resources/config/schema';
     }
 
+    /**
+     * @return string
+     */
     public function getNamespace()
     {
         return 'http://www.neton.com.br/schema/dic/direct';

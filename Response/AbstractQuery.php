@@ -12,41 +12,62 @@ use Ext\DirectBundle\Event\DirectEvents;
 use Ext\DirectBundle\Event\ResponseEvent;
 
 /**
- * @author Semyon Velichko <semyon@velichko.net>
+ * Class AbstractQuery
+ *
+ * @package Ext\DirectBundle\Response
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class AbstractQuery extends Response implements ResponseInterface
 {
-    
+
+    /**
+     * @var
+     */
     protected $query;
-    
+
+    /**
+     * @param ORMAbstractQuery $query
+     *
+     * @return $this
+     * @throws \InvalidArgumentException
+     */
     public function setContent($query)
     {
-        if(!($query instanceof ORMAbstractQuery))
+        if (!($query instanceof ORMAbstractQuery)) {
             throw new \InvalidArgumentException('$query must be instance of AbstractQuery');
-        
+        }
+
         $this->query = $query;
+
         return $this;
     }
-    
+
+    /**
+     * @return array
+     * @throws \InvalidArgumentException
+     */
     public function extract()
     {
         $data = $this->query
             ->setHydrationMode(ORMAbstractQuery::HYDRATE_ARRAY);
-            
+
         $event = new ResponseEvent($this, $data);
         $this->dispatcher->dispatch(DirectEvents::PRE_QUERY_EXECUTE, $event);
-        
+
         $data = $event->getData();
-        if(!is_array($data) && ($data instanceof ORMAbstractQuery))
+        if (!is_array($data) && ($data instanceof ORMAbstractQuery)) {
             $data = $data->execute();
-        
+        }
+
         $event = new ResponseEvent($this, $data);
         $this->dispatcher->dispatch(DirectEvents::POST_QUERY_EXECUTE, $event);
         $data = $event->getData();
-        
-        if(!is_array($data))
+
+        if (!is_array($data)) {
             throw new \InvalidArgumentException('Final result should be an array');
-            
+        }
+
         return $this->formatResponse($data);
     }
 }

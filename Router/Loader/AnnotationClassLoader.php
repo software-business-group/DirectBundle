@@ -12,9 +12,11 @@ use Ext\DirectBundle\Annotation\Reader;
 use Ext\DirectBundle\Annotation\Writer;
 
 /**
- * Class ControllerAnnotationLoader
+ * Class AnnotationClassLoader
+ *
  * @package Ext\DirectBundle\Router\Loader
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class AnnotationClassLoader extends AbstractLoader
 {
@@ -35,8 +37,8 @@ class AnnotationClassLoader extends AbstractLoader
     private $resolver;
 
     /**
-     * @param RouteCollection $collection
-     * @param AnnotationsReader $reader
+     * @param RouteCollection    $collection
+     * @param AnnotationsReader  $reader
      * @param ControllerResolver $resolver
      */
     public function __construct(RouteCollection $collection, AnnotationsReader $reader, ControllerResolver $resolver)
@@ -71,15 +73,16 @@ class AnnotationClassLoader extends AbstractLoader
     }
 
     /**
-     * @param $resource
+     * @param mixed $resource
      */
     public function load($resource)
     {
         $class = new \ReflectionClass($resource);
         $methods = $class->getMethods();
 
-        foreach($methods as $method)
+        foreach ($methods as $method) {
             $this->processMethod($method);
+        }
     }
 
     /**
@@ -89,44 +92,45 @@ class AnnotationClassLoader extends AbstractLoader
     {
         $annotations = $this->getReader()->getMethodAnnotations($method);
 
-        if(count($annotations) === 0)
+        if (count($annotations) === 0) {
             return;
+        }
 
         $this->sortAnnotations($annotations);
 
-        foreach($annotations as $annotation)
-        {
-            if($annotation instanceof Route)
-            {
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Route) {
                 $controller = $this->getResolver()->genAction($method);
 
                 $name = $annotation->getName();
-                if(!$name)
+                if (!$name) {
                     $name = $this->getDefaultRouteName($controller);
-                $Rule = new Rule($name, $controller, $annotation->getIsWithParams(), $annotation->getIsFormHandler());
+                }
+
+                $rule = new Rule($name, $controller, $annotation->getIsWithParams(), $annotation->getIsFormHandler());
             }
 
-            if($annotation instanceof Reader && isset($Rule))
-            {
-                $Rule->setReaderRoot($annotation->getRoot());
-                $Rule->setReaderSuccessProperty($annotation->getSuccessProperty());
-                $Rule->setReaderTotalProperty($annotation->getTotalProperty());
-                $Rule->setReaderParam('type', $annotation->getType());
+            if ($annotation instanceof Reader && isset($rule)) {
+                $rule->setReaderRoot($annotation->getRoot());
+                $rule->setReaderSuccessProperty($annotation->getSuccessProperty());
+                $rule->setReaderTotalProperty($annotation->getTotalProperty());
+                $rule->setReaderParam('type', $annotation->getType());
             }
 
-            if($annotation instanceof Writer && isset($Rule))
-            {
-                $Rule->setWriterParam('type', $annotation->getType());
-                $Rule->setWriterParam('root', $annotation->getRoot());
+            if ($annotation instanceof Writer && isset($rule)) {
+                $rule->setWriterParam('type', $annotation->getType());
+                $rule->setWriterParam('root', $annotation->getRoot());
             }
         }
 
-        if(isset($Rule))
-            $this->getRouteCollection()->add($Rule);
+        if (isset($rule)) {
+            $this->getRouteCollection()->add($rule);
+        }
     }
 
     /**
-     * @param $annotations
+     * @param array &$annotations
+     *
      * @return bool
      */
     private function sortAnnotations(&$annotations)
@@ -137,21 +141,25 @@ class AnnotationClassLoader extends AbstractLoader
     /**
      * @param Base $a
      * @param Base $b
+     *
      * @return int
      */
     private function sortFunction(Base $a, Base $b)
     {
-        if($a === $b)
+        if ($a === $b) {
             return 0;
+        }
 
-        if($a instanceof Route)
+        if ($a instanceof Route) {
             return -1;
+        }
 
         return 1;
     }
 
     /**
      * @param string $controller
+     *
      * @return string
      */
     private function getDefaultRouteName($controller)
@@ -160,14 +168,16 @@ class AnnotationClassLoader extends AbstractLoader
     }
 
     /**
-     * @param $resource
-     * @param null $type
+     * @param mixed $resource
+     * @param mixed $type
+     *
      * @return bool
      */
     public function supports($resource, $type = null)
     {
-        if($type === 'annotation')
+        if ($type === 'annotation') {
             return true;
+        }
 
         return false;
     }

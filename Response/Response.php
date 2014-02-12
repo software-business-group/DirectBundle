@@ -8,11 +8,12 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Ext\DirectBundle\Event\DirectEvents;
-use Ext\DirectBundle\Event\ResponseEvent;
-
 /**
- * @author Semyon Velichko <semyon@velichko.net>
+ * Class Response
+ *
+ * @package Ext\DirectBundle\Response
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class Response implements ResponseInterface
 {
@@ -39,11 +40,13 @@ class Response implements ResponseInterface
 
     /**
      * @param ResponseFactory $factory
+     *
      * @return $this
      */
     public function setFactory(ResponseFactory $factory)
     {
         $this->factory = $factory;
+
         return $this;
     }
 
@@ -56,12 +59,14 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param $data
+     * @param mixed $data
+     *
      * @return $this
      */
     public function setContent($data)
     {
         $this->setData($data);
+
         return $this;
     }
 
@@ -107,69 +112,79 @@ class Response implements ResponseInterface
 
     /**
      * @param array $root
+     *
      * @return array
      */
     public function formatResponse(array $root)
     {
         $data = array();
-        
-        $Rule = $this->getFactory()->getResolver()->getCurrentRule();
-        
-        if($Rule->getReaderParam('root'))
-        {
-            $data[$Rule->getReaderParam('root')] = $root;
+
+        $rule = $this->getFactory()->getResolver()->getCurrentRule();
+
+        if ($rule->getReaderParam('root')) {
+            $data[$rule->getReaderParam('root')] = $root;
         } else {
             $data = $root;
         }
-        
-        if(is_bool($this->success))
-            $data[$Rule->getReaderParam('successProperty')] = $this->success;
-        
-        if($this->total)
-            $data[$Rule->getReaderParam('totalProperty')] = $this->total;
-        
+
+        if (is_bool($this->success)) {
+            $data[$rule->getReaderParam('successProperty')] = $this->success;
+        }
+
+        if ($this->total) {
+            $data[$rule->getReaderParam('totalProperty')] = $this->total;
+        }
+
         return $data;
     }
 
     /**
-     * @param $success
+     * @param boolean $success
+     *
      * @return $this
      */
     public function setSuccess($success)
     {
-        $this->success = (bool)$success;
+        $this->success = (bool) $success;
+
         return $this;
     }
 
     /**
-     * @param $total
+     * @param int $total
+     *
      * @return $this
      */
     public function setTotal($total)
     {
         $this->total = $total;
+
         return $this;
     }
 
     /**
      * @param EventSubscriberInterface $subscriber
+     *
      * @return $this
      */
     public function addEventSubscriber(EventSubscriberInterface $subscriber)
     {
         $this->getFactory()->getEventDispatcher()->addSubscriber($subscriber);
+
         return $this;
     }
 
     /**
-     * @param $name
-     * @param $listener
-     * @param int $weight
+     * @param string   $name
+     * @param callable $listener
+     * @param int      $weight
+     *
      * @return $this
      */
     public function addEventListener($name, $listener, $weight = 0)
     {
         $this->getFactory()->getEventDispatcher()->addListener($name, $listener, $weight);
+
         return $this;
     }
 }

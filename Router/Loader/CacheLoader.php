@@ -1,12 +1,15 @@
 <?php
 
 namespace Ext\DirectBundle\Router\Loader;
+
 use Ext\DirectBundle\Router\RouteCollection;
 
 /**
  * Class CacheLoader
+ *
  * @package Ext\DirectBundle\Router\Loader
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class CacheLoader
 {
@@ -26,6 +29,11 @@ class CacheLoader
      */
     private $collection;
 
+    /**
+     * @param RouteCollection $collection
+     * @param string          $cacheDir
+     * @param boolean         $isDebug
+     */
     public function __construct(RouteCollection $collection, $cacheDir, $isDebug)
     {
         $this->cacheDir = $cacheDir;
@@ -41,10 +49,14 @@ class CacheLoader
         return $this->collection;
     }
 
+    /**
+     * @param array $collection
+     */
     private function mergeRouterCollection($collection)
     {
-        foreach($collection as $Rule)
-            $this->getRouterCollection()->add($Rule);
+        foreach ($collection as $rule) {
+            $this->getRouterCollection()->add($rule);
+        }
     }
 
     /**
@@ -69,16 +81,17 @@ class CacheLoader
     }
 
     /**
-     * @param string $resource
-     * @return bool|void
+     * @param mixed $resource
+     *
+     * @return bool
      */
     public function load($resource)
     {
-        if(!$this->getIsDebug() && file_exists( $this->getCacheFileName() ))
-        {
+        if (!$this->getIsDebug() && file_exists($this->getCacheFileName())) {
             $this->mergeRouterCollection(
-                unserialize(file_get_contents( $this->getCacheFileName() ))
+                unserialize(file_get_contents($this->getCacheFileName()))
             );
+
             return true;
         }
 
@@ -98,4 +111,4 @@ class CacheLoader
         return true;
     }
 
-} 
+}

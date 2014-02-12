@@ -10,9 +10,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class RequestDispatcher
+ *
  * @package Ext\DirectBundle\Request
- * @author Otavio Fernandes <otavio@neton.com.br>
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Otavio Fernandes <otavio@neton.com.br>
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class RequestDispatcher
 {
@@ -37,6 +39,10 @@ class RequestDispatcher
      */
     private $isKernelDebug;
 
+    /**
+     * @param ControllerResolver $resolver
+     * @param boolean            $isKernelDebug
+     */
     public function __construct(ControllerResolver $resolver, $isKernelDebug)
     {
         $this->resolver = $resolver;
@@ -93,55 +99,57 @@ class RequestDispatcher
 
     /**
      * @param HttpRequest $request
+     *
      * @return string
      */
     public function dispatchHttpRequest(HttpRequest $request = null)
     {
-        if(!$this->getHttpRequest() && $request instanceof HttpRequest)
+        if (!$this->getHttpRequest() && $request instanceof HttpRequest) {
             $this->setHttpRequest($request);
+        }
 
         $this->setExtRequest(
             new ExtRequest($this->getHttpRequest())
         );
 
         $batch = array();
-        foreach ($this->getExtRequest()->getCalls() as $Call) {
-            $batch[] = $this->dispatchCall($Call);
+        foreach ($this->getExtRequest()->getCalls() as $call) {
+            $batch[] = $this->dispatchCall($call);
         }
+
         return json_encode($batch);
     }
 
     /**
-     * @param Call $Call
+     * @param Call $call
+     *
      * @return array
      * @throws NotFoundHttpException
      */
-    private function dispatchCall(Call $Call)
+    private function dispatchCall(Call $call)
     {
-        $controller = $this->getResolver()->getControllerFromCall($Call);
+        $controller = $this->getResolver()->getControllerFromCall($call);
 
         if (!is_callable($controller)) {
             throw new NotFoundHttpException(
-                sprintf('Unable to find the controller for action "%s". Maybe you forgot to add the matching route in your routing configuration?', $Call->getAction())
+                sprintf('Unable to find the controller for action "%s". Maybe you forgot to add the matching route in your routing configuration?', $call->getAction())
             );
         }
 
         $arguments = $this->getResolver()->getArguments($this->getHttpRequest(), $controller);
 
-        if($this->isKernelDebug())
-        {
+        if ($this->isKernelDebug()) {
             try {
                 $result = call_user_func_array($controller, $arguments);
-            } catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $result = new ExceptionResponse($e);
-                $Call->setType('exception');
+                $call->setType('exception');
             }
         } else {
             $result = call_user_func_array($controller, $arguments);
         }
 
-        return $Call->getResponse($result);
+        return $call->getResponse($result);
     }
 
-} 
+}

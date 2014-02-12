@@ -1,6 +1,7 @@
 <?php
 namespace Ext\DirectBundle\Api;
 
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\Loader\FileLoader;
 
 /**
@@ -25,30 +26,26 @@ class ControllerApi
     protected $api;
 
     /**
-     * The application container.
-     *
-     * @var Symfony\Component\DependencyInjection\Container
+     * @var Container
      */
     protected $container;
 
     /**
-     * Initialize the object.
-     * 
-     * @param \Symfony\Component\Container $container
-     * @param string $controller
+     * @param Container $container
+     * @param string    $controller
      */
-    public function __construct($container, $controller)
+    public function __construct(Container $container, $controller)
     {
         try {
             $this->reflection = new \ReflectionClass($controller);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // @todo: throw an exception
         }
-        
+
         $this->container = $container;
         $this->remoteAttribute = $container->getParameter('direct.api.remote_attribute');
         $this->formAttribute = $container->getParameter('direct.api.form_attribute');
-        $this->api = $this->createApi();        
+        $this->api = $this->createApi();
     }
 
     /**
@@ -57,7 +54,7 @@ class ControllerApi
      * @return Boolean true if has exposed, otherwise return false
      */
     public function isExposed()
-    {        
+    {
         return (null != $this->api) ? true : false;
     }
 
@@ -67,7 +64,7 @@ class ControllerApi
      * @return array
      */
     public function getApi()
-    {        
+    {
         return $this->api;
     }
 
@@ -77,10 +74,9 @@ class ControllerApi
      * @return string
      */
     public function getActionName()
-    {        
-        return str_replace('Controller','',$this->reflection->getShortName());
+    {
+        return str_replace('Controller', '', $this->reflection->getShortName());
     }
-    
     /**
      * Try create the controller api.
      *
@@ -89,7 +85,7 @@ class ControllerApi
     protected function createApi()
     {
         $api = null;
-        
+
         // get public methods from controller
         $methods = $this->reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
 
@@ -101,7 +97,7 @@ class ControllerApi
             }
         }
 
-        return $api;        
+        return $api;
     }
 
     /**
@@ -113,8 +109,6 @@ class ControllerApi
      */
     private function getMethodApi($method)
     {
-        $class = $method->class;
-        
         $api = false;
 
         if (strlen($method->getDocComment()) > 0) {
@@ -123,10 +117,10 @@ class ControllerApi
             $isRemote = !!preg_match('/' . $this->remoteAttribute . '/', $doc);
 
             if ($isRemote) {
-                $api['name'] = str_replace('Action','',$method->getName());
+                $api['name'] = str_replace('Action', '', $method->getName());
                 $api['len'] = 1;//$method->getNumberOfParameters();
 
-                if(!!preg_match('/' . $this->formAttribute . '/', $doc)) {
+                if (preg_match('/' . $this->formAttribute . '/', $doc)) {
                     $api['formHandler'] = true;
                 }
             }

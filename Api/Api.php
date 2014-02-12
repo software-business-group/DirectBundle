@@ -35,9 +35,13 @@ class Api
      */
     private $router;
 
-    const Bundle_Action_Regex = '/^([\w]+)Bundle:([\w]+):([\w]+)$/i';
-    const Service_Regex = '/^([\w]+):([\w]+)$/i';
+    const ACTION_REGEX = '/^([\w]+)Bundle:([\w]+):([\w]+)$/i';
+    const SERVICE_REGEX = '/^([\w]+):([\w]+)$/i';
 
+    /**
+     * @param RouteCollection $collection
+     * @param Router          $router
+     */
     public function __construct(RouteCollection $collection, Router $router)
     {
         $this->collection = $collection;
@@ -118,24 +122,29 @@ class Api
         );
 
         $actions = array();
-        
-        foreach($this->getRouteCollection() as $Rule) {
-            if(preg_match($this::Bundle_Action_Regex, $Rule->getController(), $match)) {
+
+        foreach ($this->getRouteCollection() as $rule) {
+            if (preg_match($this::ACTION_REGEX, $rule->getController(), $match)) {
                 list($all, $shortBundleName, $controllerName, $methodName) = $match;
                 $key = sprintf('%s_%s', $shortBundleName, $controllerName);
-            } elseif(preg_match($this::Service_Regex, $Rule->getController(), $match)) {
+            } elseif (preg_match($this::SERVICE_REGEX, $rule->getController(), $match)) {
                 list($all, $key, $methodName) = $match;
             } else {
                 throw new \InvalidArgumentException();
             }
 
-            if(!array_key_exists($key, $actions) or !is_array($actions[$key]))
+            if (!array_key_exists($key, $actions) or !is_array($actions[$key])) {
                 $actions[$key] = array();
-                
-            $methodParams = array('name' => $methodName, 'len' => (integer)$Rule->getIsWithParams());
-            
-            if($Rule->getIsFormHandler())
+            }
+
+            $methodParams = array(
+                'name' => $methodName,
+                'len' => (integer) $rule->getIsWithParams()
+            );
+
+            if ($rule->getIsFormHandler()) {
                 $methodParams['formHandler'] = true;
+            }
 
             $actions[$key][] = $methodParams;
         }

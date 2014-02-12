@@ -1,2 +1,3 @@
 .komodotools
 vendor/
+Tests/app/cache/

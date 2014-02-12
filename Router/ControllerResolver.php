@@ -30,7 +30,13 @@ class ControllerResolver extends BaseControllerResolver
      * @var Rule
      */
     private $currentRule;
-    
+
+    /**
+     * @param ContainerInterface   $container
+     * @param ControllerNameParser $parser
+     * @param RouteCollection      $collection
+     * @param LoggerInterface      $logger
+     */
     public function __construct(
         ContainerInterface $container,
         ControllerNameParser $parser,
@@ -101,17 +107,17 @@ class ControllerResolver extends BaseControllerResolver
 
     /**
      * @param string $controller
-     * @return Rule
+     *
+     * @return $rule
      * @throws \BadMethodCallException
      */
     private function findRuleByController($controller)
     {
-        foreach($this->getRouteCollection() as $key => $Rule)
-        {
-            if($Rule->getController() === $controller)
-            {
-                $this->setCurrentRule($Rule);
-                return $Rule;
+        foreach ($this->getRouteCollection() as $key => $rule) {
+            if ($rule->getController() === $controller) {
+                $this->setCurrentRule($rule);
+
+                return $rule;
             }
 
         }
@@ -119,37 +125,38 @@ class ControllerResolver extends BaseControllerResolver
     }
 
     /**
-     * @param Call $Call
+     * @param Call $call
+     *
      * @return array
-     * @throw ServiceNotFoundException
      */
-    private function createCallableFromServiceCall(Call $Call)
+    private function createCallableFromServiceCall(Call $call)
     {
-        $fullPath = sprintf('%1$s:%2$s', $Call->getAction(), $Call->getMethod());
+        $fullPath = sprintf('%1$s:%2$s', $call->getAction(), $call->getMethod());
         $this->findRuleByController($fullPath);
 
-        $controller = $this->getContainer()->get($Call->getAction());
-        $method = $Call->getMethod();
+        $controller = $this->getContainer()->get($call->getAction());
+        $method = $call->getMethod();
 
         return $this->createCallable($controller, $method);
     }
 
     /**
-     * @param Call $Call
+     * @param Call $call
+     *
      * @return array
      */
-    private function createCallableFromControllerMethodCall(Call $Call)
+    private function createCallableFromControllerMethodCall(Call $call)
     {
-        $explodeResult = explode('_', $Call->getAction());
+        $explodeResult = explode('_', $call->getAction());
 
         list($bundle, $controller) = $explodeResult;
-        $fullPath = sprintf('%1$sBundle:%2$s:%3$s', $bundle, $controller, $Call->getMethod());
+        $fullPath = sprintf('%1$sBundle:%2$s:%3$s', $bundle, $controller, $call->getMethod());
 
         $this->findRuleByController($fullPath);
 
         $bundle = $this->getKernel()->getBundle(sprintf('%sBundle', $bundle));
 
-        $controller = sprintf('%s\\Controller\\%sController::%sAction', $bundle->getNamespace(), $controller, $Call->getMethod());
+        $controller = sprintf('%s\\Controller\\%sController::%sAction', $bundle->getNamespace(), $controller, $call->getMethod());
 
         if (is_array($controller) || (is_object($controller) && method_exists($controller, '__invoke'))) {
             return $controller;
@@ -165,26 +172,27 @@ class ControllerResolver extends BaseControllerResolver
     }
 
     /**
-     * @param Call $Call
+     * @param Call $call
+     *
      * @return array
-     * @throws \InvalidArgumentException
-     * @throws \BadMethodCallException
      */
-    public function getControllerFromCall(Call $Call)
+    public function getControllerFromCall(Call $call)
     {
-        $this->setCurrentCall($Call);
+        $this->setCurrentCall($call);
 
-        $explodeResult = explode('_', $Call->getAction());
+        $explodeResult = explode('_', $call->getAction());
 
-        if(count($explodeResult) <> 2)
-            return $this->createCallableFromServiceCall($Call);
+        if (count($explodeResult) <> 2) {
+            return $this->createCallableFromServiceCall($call);
+        }
 
-        return $this->createCallableFromControllerMethodCall($Call);
+        return $this->createCallableFromControllerMethodCall($call);
     }
 
     /**
-     * @param $controller
-     * @param $method
+     * @param mixed  $controller
+     * @param string $method
+     *
      * @return array
      * @throws \BadMethodCallException
      */
@@ -199,24 +207,25 @@ class ControllerResolver extends BaseControllerResolver
 
     /**
      * @param HttpRequest $request
-     * @param $controller
-     * @param array $parameters
+     * @param mixed       $controller
+     * @param array       $parameters
+     *
      * @return array
      * @throws \LogicException
      * @throws \RuntimeException
      */
     protected function doGetArguments(HttpRequest $request, $controller, array $parameters)
     {
-        if(!$this->getCurrentCall()) {
+        if (!$this->getCurrentCall()) {
             throw new \LogicException('$this->currentCall is null, run setCurrentCall(Call $call) or getControllerFromCall(Call $call) before use getArguments()');
         }
-        
+
         $attributes = $this->getCurrentCall()->getData();
         $arguments = array();
         foreach ($parameters as $param) {
-            if(in_array($param->getName(), array('_data', '_list'))) {
+            if (in_array($param->getName(), array('_data', '_list'))) {
                 $arguments[] = $attributes;
-                if('_list' === $param->getName() && !isset($attributes[0])) {
+                if ('_list' === $param->getName() && !isset($attributes[0])) {
                     array_pop($arguments);
                     $arguments[] = array($attributes);
                 }
@@ -244,22 +253,25 @@ class ControllerResolver extends BaseControllerResolver
 
     /**
      * @param \ReflectionMethod $method
+     *
      * @return string
      * @throws \InvalidArgumentException
      */
     public function genAction(\ReflectionMethod $method)
     {
-        if(!preg_match('/^(.+)\\\(.+Bundle)\\\Controller\\\(.+)Controller$/', $method->class, $cMatch))
+        if (!preg_match('/^(.+)\\\(.+Bundle)\\\Controller\\\(.+)Controller$/', $method->class, $cMatch)) {
             throw new \InvalidArgumentException();
+        }
+
         unset($cMatch[0]);
 
-        if(!preg_match('/^(.+)Action$/', $method->name, $mMatch))
+        if (!preg_match('/^(.+)Action$/', $method->name, $mMatch)) {
             throw new \InvalidArgumentException();
+        }
 
         $cMatch[4] = $cMatch[3];
         $cMatch[3] = ':';
 
         return implode('', $cMatch) . ':' . $mMatch[1];
     }
-    
 }

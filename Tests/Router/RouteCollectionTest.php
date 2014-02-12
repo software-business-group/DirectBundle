@@ -7,11 +7,12 @@ use Ext\DirectBundle\Router\Rule;
 use Ext\DirectBundle\Router\RouteCollection;
 use Ext\DirectBundle\Tests\TestTemplate;
 
-
 /**
- * Class RouteCollection
+ * Class RouteCollectionTest
+ *
  * @package Ext\DirectBundle\Tests\Router
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class RouteCollectionTest extends TestTemplate
 {
@@ -21,6 +22,9 @@ class RouteCollectionTest extends TestTemplate
      */
     private $collection;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         parent::setUp();
@@ -28,28 +32,33 @@ class RouteCollectionTest extends TestTemplate
     }
 
     /**
-     * @param Rule $Rule
+     * @param Rule $rule
+     *
      * @dataProvider getRules
      */
-    public function testAddAndRemove(Rule $Rule)
+    public function testAddAndRemove(Rule $rule)
     {
-        $this->collection->add($Rule);
+        $this->collection->add($rule);
         $this->assertEquals(1, count($this->collection));
-        $this->assertTrue($this->collection->has($Rule->getAlias()));
-        $this->assertTrue($this->collection->offsetExists($Rule->getAlias()));
-        $this->assertEquals($Rule, $this->collection->get($Rule->getAlias()));
+        $this->assertTrue($this->collection->has($rule->getAlias()));
+        $this->assertTrue($this->collection->offsetExists($rule->getAlias()));
+        $this->assertEquals($rule, $this->collection->get($rule->getAlias()));
 
-        $this->collection->remove($Rule);
-        $this->assertFalse($this->collection->has($Rule->getAlias()));
-        $this->assertFalse($this->collection->offsetExists($Rule->getAlias()));
+        $this->collection->remove($rule);
+        $this->assertFalse($this->collection->has($rule->getAlias()));
+        $this->assertFalse($this->collection->offsetExists($rule->getAlias()));
     }
 
+    /**
+     * Testing RouteCollection serialize and unserialize
+     */
     public function testSerializeAndUnserialize()
     {
-        foreach($this->getRules() as $Rule)
-            $this->collection->add($Rule[0]);
+        foreach ($this->getRules() as $rule) {
+            $this->collection->add($rule[0]);
+        }
 
         $unserCollection = unserialize(serialize($this->collection));
         $this->assertEquals($this->collection, $unserCollection);
     }
-} 
+}

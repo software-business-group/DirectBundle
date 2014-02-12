@@ -8,12 +8,17 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class CustomCompilerPass
+ *
  * @package Ext\DirectBundle\DependencyInjection\Compiler
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class CustomCompilerPass implements CompilerPassInterface
 {
 
+    /**
+     * @param ContainerBuilder $container
+     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('ext_direct.file.loader')) {
@@ -28,8 +33,7 @@ class CustomCompilerPass implements CompilerPassInterface
             'ext_direct.loader'
         );
 
-        foreach ($taggedServices as $id => $attributes)
-        {
+        foreach ($taggedServices as $id => $attributes) {
             $definition->addMethodCall(
                 'addLoader',
                 array(new Reference($id))
@@ -39,4 +43,4 @@ class CustomCompilerPass implements CompilerPassInterface
 
     }
 
-} 
+}

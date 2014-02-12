@@ -7,22 +7,26 @@ use Ext\DirectBundle\Tests\TestTemplate;
 
 /**
  * Class RuleTest
+ *
  * @package Ext\DirectBundle\Tests\Router
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class RuleTest extends TestTemplate
 {
 
     /**
+     * @param Rule $rule
+     *
      * @dataProvider getRules
      */
-    public function testSerializeAndUnserialize(Rule $Rule)
+    public function testSerializeAndUnserialize(Rule $rule)
     {
 
-        $serialized = serialize($Rule);
+        $serialized = serialize($rule);
         $unserRule = unserialize($serialized);
 
-        $this->assertEquals($Rule, $unserRule);
+        $this->assertEquals($rule, $unserRule);
     }
 
-} 
+}

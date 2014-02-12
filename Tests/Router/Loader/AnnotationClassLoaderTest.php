@@ -4,9 +4,15 @@ namespace Ext\DirectBundle\Tests\Router\Loader;
 
 use Ext\DirectBundle\Router\Loader\AnnotationClassLoader;
 use Ext\DirectBundle\Router\RouteCollection;
-use Ext\DirectBundle\Router\Rule;
 use Ext\DirectBundle\Tests\TestTemplate;
 
+/**
+ * Class AnnotationClassLoaderTest
+ *
+ * @package Ext\DirectBundle\Tests\Router\Loader
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
+ */
 class AnnotationClassLoaderTest extends TestTemplate
 {
 
@@ -20,6 +26,9 @@ class AnnotationClassLoaderTest extends TestTemplate
      */
     private $loader;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         parent::setUp();

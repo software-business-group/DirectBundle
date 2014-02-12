@@ -8,8 +8,10 @@ use Ext\DirectBundle\Tests\TestTemplate;
 
 /**
  * Class ControllerResolverTest
+ *
  * @package Ext\DirectBundle\Tests\Router
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class ControllerResolverTest extends TestTemplate
 {
@@ -19,6 +21,9 @@ class ControllerResolverTest extends TestTemplate
      */
     private $resolver;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         parent::setUp();
@@ -33,14 +38,16 @@ class ControllerResolverTest extends TestTemplate
         return $this->resolver;
     }
 
+    /**
+     * Testing action generator
+     */
     public function testGetActionForRouter()
     {
         $data = array(
             'ExtDirectBundle:Direct:route' => new \ReflectionMethod('Ext\DirectBundle\Controller\DirectController', 'routeAction'),
             'ExtDirectBundle:Test:annotationWithName' => new \ReflectionMethod('Ext\DirectBundle\Controller\TestController', 'annotationWithNameAction')
         );
-        foreach($data as $result => $method)
-        {
+        foreach ($data as $result => $method) {
             $this->assertEquals($result, $this->getResolver()->genAction($method));
         }
     }

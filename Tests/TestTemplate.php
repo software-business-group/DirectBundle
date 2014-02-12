@@ -1,23 +1,34 @@
 <?php
 
 namespace Ext\DirectBundle\Tests;
+
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Ext\DirectBundle\Router\Rule;
 
 /**
  * Class TestTemplate
+ *
  * @package Ext\DirectBundle\Tests
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class TestTemplate extends WebTestCase
 {
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         static::$kernel = static::createKernel();
         static::$kernel->boot();
     }
 
+    /**
+     * @param string $alias
+     *
+     * @return object
+     */
     public function get($alias)
     {
         return static::$kernel->getContainer()->get($alias);
@@ -63,19 +74,20 @@ class TestTemplate extends WebTestCase
             array(new Rule('actionInOtherController', 'ExtDirectBundle:Other:action', false, false))
         );
 
-        foreach($rules as $Rule)
-        {
-            $Rule = $Rule[0];
+        foreach ($rules as $rule) {
+            $rule = $rule[0];
             $readerParams = $this->getReaderParams();
-            foreach($readerParams[0] as $key => $value)
-                $Rule->setReaderParam($key, $value);
+            foreach ($readerParams[0] as $key => $value) {
+                $rule->setReaderParam($key, $value);
+            }
 
             $writerParams = $this->getWriterParams();
-            foreach($writerParams[0] as $key => $value)
-                $Rule->setWriterParam($key, $value);
+            foreach ($writerParams[0] as $key => $value) {
+                $rule->setWriterParam($key, $value);
+            }
         }
 
         return $rules;
     }
 
-} 
+}

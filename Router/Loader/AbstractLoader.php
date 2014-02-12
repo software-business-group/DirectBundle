@@ -4,8 +4,10 @@ namespace Ext\DirectBundle\Router\Loader;
 
 /**
  * Class AbstractLoader
- * @package Ext\DirectBundle\Router
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @package Ext\DirectBundle\Router\Loader
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 abstract class AbstractLoader
 {
@@ -15,7 +17,17 @@ abstract class AbstractLoader
      */
     protected $fileLoader;
 
+    /**
+     * @param mixed $resource
+     * @param mixed $type
+     *
+     * @return mixed
+     */
     abstract public function supports($resource, $type = null);
+
+    /**
+     * @param mixed $resource
+     */
     abstract public function load($resource);
 
     /**

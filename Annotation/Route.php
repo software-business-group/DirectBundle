@@ -4,8 +4,10 @@ namespace Ext\DirectBundle\Annotation;
 
 /**
  * Class Route
+ *
  * @package Ext\DirectBundle\Annotation
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  * @Annotation
  * @Target("METHOD")
  */

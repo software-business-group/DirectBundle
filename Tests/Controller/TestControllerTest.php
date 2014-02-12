@@ -7,32 +7,39 @@ use Ext\DirectBundle\Tests\TestTemplate;
 
 /**
  * Class TestControllerTest
+ *
  * @package Ext\DirectBundle\Tests\Controller
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class TestControllerTest extends TestTemplate
 {
 
+    /**
+     * @param object $client
+     */
     public function loadResource($client)
     {
         $client->getKernel()->getContainer()->get('ext_direct.file.loader')
-            ->setInitialResource( __DIR__ . '/../Router/Loader/routing.yml')
+            ->setInitialResource(__DIR__ . '/../Router/Loader/routing.yml')
             ->loadInitialResource();
     }
 
-    // generic array response
+    /**
+     * Test generic array response
+     */
     public function testGeneralArrayResponse()
     {
         $postRawArray = array('action' => 'ExtDirect_Test',
             'method' => 'testArrayResponse',
-            'data' => array(array('page' => rand(1,10), 'start' => rand(10,20), 'limit' => rand(100,9999))),
+            'data' => array(array('page' => rand(1, 10), 'start' => rand(10, 20), 'limit' => rand(100, 9999))),
             'type' => 'rpc',
             'tid' => rand(1, 10));
         $postRawData = json_encode($postRawArray);
 
         $client = static::createClient();
         $this->loadResource($client);
-        $crawler = $client->request('POST',
+        $client->request('POST',
             $this->get('router')->generate('ExtDirectBundle_route'),
             array(),
             array(),
@@ -58,19 +65,21 @@ class TestControllerTest extends TestTemplate
         $this->assertEquals($postRawArray['data'][0]['limit'], $arrayResult['result']['limit']);
     }
 
-    // Ext\DirectBundle\Response\Response;
+    /**
+     * Ext\DirectBundle\Response\Response;
+     */
     public function testGeneralObjectResponse()
     {
         $postRawArray = array('action' => 'ExtDirect_Test',
             'method' => 'testObjectResponse',
-            'data' => array(array('page' => rand(1,10), 'start' => rand(10,20), 'limit' => rand(100,9999))),
+            'data' => array(array('page' => rand(1, 10), 'start' => rand(10, 20), 'limit' => rand(100, 9999))),
             'type' => 'rpc',
             'tid' => rand(1, 10));
         $postRawData = json_encode($postRawArray);
 
         $client = static::createClient();
         $this->loadResource($client);
-        $crawler = $client->request('POST',
+        $client->request('POST',
             $this->get('router')->generate('ExtDirectBundle_route'),
             array(),
             array(),
@@ -96,19 +105,21 @@ class TestControllerTest extends TestTemplate
         $this->assertEquals($postRawArray['data'][0]['limit'], $arrayResult['result']['limit']);
     }
 
-    // Ext\DirectBundle\Response\Response;
+    /**
+     * Ext\DirectBundle\Response\Response;
+     */
     public function testObjectResponseWithConfiguredReader()
     {
         $postRawArray = array('action' => 'ExtDirect_Test',
             'method' => 'testResponseWithConfiguredReader',
-            'data' => array(array('page' => rand(1,10), 'start' => rand(10,20), 'limit' => rand(100,9999))),
+            'data' => array(array('page' => rand(1, 10), 'start' => rand(10, 20), 'limit' => rand(100, 9999))),
             'type' => 'rpc',
             'tid' => rand(1, 10));
         $postRawData = json_encode($postRawArray);
 
         $client = static::createClient();
         $this->loadResource($client);
-        $crawler = $client->request('POST',
+        $client->request('POST',
             $this->get('router')->generate('ExtDirectBundle_route'),
             array(),
             array(),
@@ -141,7 +152,9 @@ class TestControllerTest extends TestTemplate
         $this->assertEquals(100, $arrayResult['result']['totalProperty']);
     }
 
-    // Ext\DirectBundle\Response\Response;
+    /**
+     * Ext\DirectBundle\Response\Response;
+     */
     public function testFormHandlerResponse()
     {
         $postArray = array('extAction' => 'ExtDirect_Test',
@@ -150,13 +163,13 @@ class TestControllerTest extends TestTemplate
             'extTID' => rand(1, 10),
             'extUpload' => false,
 
-            'id' => rand(1,99),
+            'id' => rand(1, 99),
             'name' => 'Joker',
-            'count' => rand(100,200));
+            'count' => rand(100, 200));
 
         $client = static::createClient();
         $this->loadResource($client);
-        $crawler = $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
+        $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
         $jsonResult = $client->getResponse()->getContent();
         $arrayResult = json_decode($jsonResult, true);
 
@@ -170,15 +183,17 @@ class TestControllerTest extends TestTemplate
         $this->assertArrayHasKey('success', $arrayResult['result']);
         $this->assertEquals(true, $arrayResult['result']['success']);
 
-        foreach(array('id', 'name', 'count') as $key) {
+        foreach (array('id', 'name', 'count') as $key) {
             $this->assertArrayHasKey($key, $arrayResult['result']['data']);
             $this->assertEquals($postArray[$key], $arrayResult['result']['data'][$key]);
         }
 
     }
 
-    // Ext\DirectBundle\Response\Response;
-    // Ext\DirectBundle\Response\FormError;
+    /**
+     * Ext\DirectBundle\Response\Response;
+     * Ext\DirectBundle\Response\FormError;
+     */
     public function testFormValidationResponse()
     {
         $postArray = array('extAction' => 'ExtDirect_Test',
@@ -187,13 +202,13 @@ class TestControllerTest extends TestTemplate
             'extTID' => rand(1, 10),
             'extUpload' => false,
 
-            'id' => rand(1,99),
+            'id' => rand(1, 99),
             'name' => 'Joker',
             'count' => rand(1, 99));
 
         $client = static::createClient();
         $this->loadResource($client);
-        $crawler = $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
+        $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
         $jsonResult = $client->getResponse()->getContent();
         $arrayResult = json_decode($jsonResult, true);
 
@@ -211,7 +226,7 @@ class TestControllerTest extends TestTemplate
 
         $client = static::createClient();
         $this->loadResource($client);
-        $crawler = $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
+        $client->request('POST', $this->get('router')->generate('ExtDirectBundle_route'), $postArray);
         $jsonResult = $client->getResponse()->getContent();
         $arrayResult = json_decode($jsonResult, true);
 
@@ -228,8 +243,10 @@ class TestControllerTest extends TestTemplate
         $this->assertRegExp('/This value should be 0 or more/', $arrayResult['result']['msg']);
     }
 
-    // Ext\DirectBundle\Response\Response;
-    // Ext\DirectBundle\Response\Validator;
+    /**
+     * Ext\DirectBundle\Response\Response;
+     * Ext\DirectBundle\Response\Validator;
+     */
     public function testFormEntityValidationResponse()
     {
         $postArray = array('extAction' => 'ExtDirect_Test',
@@ -238,7 +255,7 @@ class TestControllerTest extends TestTemplate
             'extTID' => rand(1, 10),
             'extUpload' => false,
 
-            'id' => rand(1,99),
+            'id' => rand(1, 99),
             'name' => 'Joker',
             'count' => rand(1, 99));
 
@@ -279,11 +296,14 @@ class TestControllerTest extends TestTemplate
         $this->assertRegExp('/This value should be 0 or more/', $arrayResult['result']['msg']);
     }
 
-    public function testActionAsService()
+    /**
+     * Testing service as action
+     */
+    public function testServiceAsAction()
     {
         $postRawArray = array('action' => 'ext_direct_test_service',
             'method' => 'testActionAsService',
-            'data' => array(array('page' => rand(1,10), 'start' => rand(10,20), 'limit' => rand(100,9999))),
+            'data' => array(array('page' => rand(1, 10), 'start' => rand(10, 20), 'limit' => rand(100, 9999))),
             'type' => 'rpc',
             'tid' => rand(1, 10));
         $postRawData = json_encode($postRawArray);
@@ -315,5 +335,4 @@ class TestControllerTest extends TestTemplate
         $this->assertArrayHasKey('limit', $arrayResult['result']);
         $this->assertEquals($postRawArray['data'][0]['limit'], $arrayResult['result']['limit']);
     }
-
-} 
+}

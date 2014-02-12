@@ -1,14 +1,17 @@
 <?php
 
 namespace Ext\DirectBundle\Router\Loader;
+
 use Ext\DirectBundle\Router\RouteCollection;
 use Ext\DirectBundle\Router\Rule;
 use Symfony\Component\Yaml\Parser as YamlParser;
 
 /**
  * Class YamlLoader
+ *
  * @package Ext\DirectBundle\Router\Loader
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class YamlLoader extends AbstractLoader
 {
@@ -23,6 +26,9 @@ class YamlLoader extends AbstractLoader
      */
     private $parser;
 
+    /**
+     * @param RouteCollection $collection
+     */
     public function __construct(RouteCollection $collection)
     {
         $this->parser = new YamlParser();
@@ -46,56 +52,66 @@ class YamlLoader extends AbstractLoader
     }
 
     /**
-     * @param $resource
+     * @param mixed $resource
+     *
      * @return bool
      * @throws \InvalidArgumentException
      */
     public function load($resource)
     {
-        if(is_string($resource))
+        if (is_string($resource)) {
             $resource = $this->loadFile($resource);
+        }
 
-        if(!is_array($resource))
+        if (!is_array($resource)) {
             throw new \InvalidArgumentException;
+        }
 
-        foreach($resource as $key => $params)
+        foreach ($resource as $key => $params) {
             $this->processParams($key, $params);
+        }
 
         return true;
     }
 
     /**
-     * @param $key
-     * @param array $params
+     * @param string $key
+     * @param array  $params
+     *
      * @return mixed
      * @throws \InvalidArgumentException
      */
     protected function processParams($key, array $params)
     {
-        if(isset($params['resource']))
-        {
-            return $this->getFileLoader()
+        if (isset($params['resource'])) {
+            $this->getFileLoader()
                 ->load($params['resource'], (isset($params['type'])?$params['type']:null));
+
+            return;
         }
 
-        if(!isset($params['defaults']))
+        if (!isset($params['defaults'])) {
             throw new \InvalidArgumentException('The defaults params not defined');
+        }
 
-        $Rule = $this->processDefaults($key, $params['defaults']);
+        $rule = $this->processDefaults($key, $params['defaults']);
 
-        if(isset($params['reader']))
-            $this->processReader($Rule, $params['reader']);
+        if (isset($params['reader'])) {
+            $this->processReader($rule, $params['reader']);
+        }
 
-        if(isset($params['writer']))
-            $this->processWriter($Rule, $params['writer']);
+        if (isset($params['writer'])) {
+            $this->processWriter($rule, $params['writer']);
+        }
 
         $this->getRouteCollection()
-            ->add($Rule);
+            ->add($rule);
     }
 
     /**
-     * @param $key
-     * @param array $params
+     * @param string $key
+     * @param array  $params
+     *
      * @return Rule
      * @throws \InvalidArgumentException
      */
@@ -104,59 +120,68 @@ class YamlLoader extends AbstractLoader
         $isWithParams = null;
         $isFormHandler = null;
 
-        if(!isset($params['_controller']))
+        if (!isset($params['_controller'])) {
             throw new \InvalidArgumentException('The _controller does not defined');
+        }
 
-        if(isset($params['params']))
+        if (isset($params['params'])) {
             $isWithParams = $params['params'];
+        }
 
-        if(isset($params['form']))
+        if (isset($params['form'])) {
             $isFormHandler = $params['form'];
+        }
 
         return new Rule($key, $params['_controller'], $isWithParams, $isFormHandler);
     }
 
     /**
-     * @param Rule $Rule
+     * @param Rule  $rule
      * @param array $params
      */
-    private function processReader(Rule $Rule, array $params)
+    private function processReader(Rule $rule, array $params)
     {
-        if(array_key_exists('root', $params))
-            $Rule->setReaderRoot($params['root']);
+        if (array_key_exists('root', $params)) {
+            $rule->setReaderRoot($params['root']);
+        }
 
-        if(array_key_exists('type', $params))
-            $Rule->setReaderParam('type', $params['type']);
+        if (array_key_exists('type', $params)) {
+            $rule->setReaderParam('type', $params['type']);
+        }
 
-        if(array_key_exists('successProperty', $params))
-            $Rule->setReaderSuccessProperty($params['successProperty']);
+        if (array_key_exists('successProperty', $params)) {
+            $rule->setReaderSuccessProperty($params['successProperty']);
+        }
 
-        if(array_key_exists('totalProperty', $params))
-            $Rule->setReaderTotalProperty($params['totalProperty']);
+        if (array_key_exists('totalProperty', $params)) {
+            $rule->setReaderTotalProperty($params['totalProperty']);
+        }
     }
 
     /**
-     * @param Rule $Rule
-     * @param array $params
+     * @param Rule   $rule
+     * @param array  $params
      */
-    private function processWriter(Rule $Rule, array $params)
+    private function processWriter(Rule $rule, array $params)
     {
-        if(array_key_exists('root', $params))
-            $Rule->setWriterParam('root', $params['root']);
+        if (array_key_exists('root', $params)) {
+            $rule->setWriterParam('root', $params['root']);
+        }
 
-        if(array_key_exists('type', $params['type']))
-            $Rule->setWriterParam('type', $params['type']);
+        if (array_key_exists('type', $params['type'])) {
+            $rule->setWriterParam('type', $params['type']);
+        }
     }
 
     /**
-     * @param $resource
-     * @return mixed
+     * @param mixed $resource
+     *
+     * @return array|bool|float|int|mixed|null|number|string
      * @throws \InvalidArgumentException
      */
     private function loadFile($resource)
     {
-        if(!file_exists($resource))
-        {
+        if (!file_exists($resource)) {
             throw new \InvalidArgumentException('Resource does not exist');
         }
 
@@ -165,12 +190,18 @@ class YamlLoader extends AbstractLoader
         );
     }
 
+    /**
+     * @param mixed $resource
+     * @param null  $type
+     *
+     * @return bool|mixed
+     */
     public function supports($resource, $type = null)
     {
-        if($type === 'yml' || $type === 'yaml' || preg_match('/\.yml$/', $resource))
+        if ($type === 'yml' || $type === 'yaml' || preg_match('/\.yml$/', $resource)) {
             return true;
+        }
 
         return false;
     }
-
 }

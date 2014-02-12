@@ -1,13 +1,14 @@
 <?php
 
-
 namespace Ext\DirectBundle\Router;
 use Ext\DirectBundle\Exception\RouteNotFoundException;
 
 /**
  * Class Router
+ *
  * @package Ext\DirectBundle\Router
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class RouteCollection extends Serializable implements \ArrayAccess, \Iterator, \Countable
 {
@@ -28,27 +29,41 @@ class RouteCollection extends Serializable implements \ArrayAccess, \Iterator, \
     public function current()
     {
         $keys = array_keys($this->rules);
+
         return $this->rules[$keys[$this->position]];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function rewind()
     {
         $this->position = 0;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function key()
     {
         return $this->position;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function next()
     {
         $this->position++;
     }
 
+    /**
+     * @return bool
+     */
     public function valid()
     {
         $keys = array_keys($this->rules);
+
         return (array_key_exists($this->position, $keys) && array_key_exists($keys[$this->position], $this->rules));
     }
 
@@ -61,7 +76,8 @@ class RouteCollection extends Serializable implements \ArrayAccess, \Iterator, \
     }
 
     /**
-     * @param $alias
+     * @param string $alias
+     *
      * @return bool
      */
     public function has($alias)
@@ -71,25 +87,29 @@ class RouteCollection extends Serializable implements \ArrayAccess, \Iterator, \
 
     /**
      * @param string $alias
-     * @param Rule $Rule
+     * @param Rule   $rule
      */
-    public function set($alias, Rule $Rule)
+    public function set($alias, Rule $rule)
     {
-        $this->rules[$alias] = $Rule;
-    }
-
-    public function offsetSet($alias, $Rule)
-    {
-        if(is_null($alias))
-        {
-            $this->add($Rule);
-        } else {
-            $this->set($alias, $Rule);
-        }
+        $this->rules[$alias] = $rule;
     }
 
     /**
      * @param mixed $alias
+     * @param mixed $rule
+     */
+    public function offsetSet($alias, $rule)
+    {
+        if (is_null($alias)) {
+            $this->add($rule);
+        } else {
+            $this->set($alias, $rule);
+        }
+    }
+
+    /**
+     * @param string $alias
+     *
      * @return bool
      */
     public function offsetExists($alias)
@@ -97,6 +117,9 @@ class RouteCollection extends Serializable implements \ArrayAccess, \Iterator, \
         return $this->has($alias);
     }
 
+    /**
+     * @param mixed $alias
+     */
     public function offsetUnset($alias)
     {
         $this->remove($alias);
@@ -104,6 +127,7 @@ class RouteCollection extends Serializable implements \ArrayAccess, \Iterator, \
 
     /**
      * @param mixed $alias
+     *
      * @return Rule|mixed
      */
     public function offsetGet($alias)
@@ -112,33 +136,36 @@ class RouteCollection extends Serializable implements \ArrayAccess, \Iterator, \
     }
 
     /**
-     * @param string|Rule $rule
+     * @param Rule|string $rule
      */
     public function remove($rule)
     {
-        if($rule instanceof Rule)
+        if ($rule instanceof Rule) {
             $rule = $rule->getAlias();
+        }
 
         unset($this->rules[$rule]);
     }
 
     /**
-     * @param Rule $Rule
+     * @param Rule $rule
      */
-    public function add(Rule $Rule)
+    public function add(Rule $rule)
     {
-        $this->set($Rule->getAlias(), $Rule);
+        $this->set($rule->getAlias(), $rule);
     }
 
     /**
-     * @param $alias
-     * @return Rule
+     * @param string $alias
+     *
+     * @return mixed
      * @throws \Ext\DirectBundle\Exception\RouteNotFoundException
      */
     public function get($alias)
     {
-        if(!$this->has($alias))
+        if (!$this->has($alias)) {
             throw new RouteNotFoundException();
+        }
 
         return $this->rules[$alias];
     }
