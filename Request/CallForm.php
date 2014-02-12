@@ -2,8 +2,6 @@
 
 namespace Ext\DirectBundle\Request;
 
-use \Ext\DirectBundle\Exception\InvalidJsonException;
-
 /**
  * Class CallForm
  *
@@ -42,9 +40,10 @@ class CallForm extends Call
                       'method' => 'extMethod',
                       'type' => 'extType',
                       'tid' => 'extTID',
-                      'isUpload' => 'extUpload') as $key => $value) {
-            if (!isset($call[$value])) {
-                throw new InvalidJsonException(sprintf('%s key does not exist', $value));
+                      'isUpload' => 'extUpload') as $key => $value)
+        {
+            if (!array_key_exists($value, $call)) {
+                $this->throwNewKeyDoesNotExistException($value);
             }
 
             $this->$key = $call[$value];

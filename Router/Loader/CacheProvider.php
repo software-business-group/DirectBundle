@@ -11,7 +11,7 @@ use Ext\DirectBundle\Router\RouteCollection;
  *
  * @author  Semyon Velichko <semyon@velichko.net>
  */
-class CacheLoader
+class CacheProvider
 {
 
     /**

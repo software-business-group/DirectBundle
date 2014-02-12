@@ -2,7 +2,6 @@
 
 namespace Ext\DirectBundle\Response;
 
-use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Ext\DirectBundle\Router\ControllerResolver;
@@ -51,13 +50,13 @@ class ResponseFactory
      * @param Request            $request
      * @param ControllerResolver $resolver
      * @param EventDispatcher    $eventDispatcher
-     * @param TwigEngine         $templating
+     * @param \Twig_Environment  $templating
      */
     public function __construct(
         Request $request,
         ControllerResolver $resolver,
         EventDispatcher $eventDispatcher,
-        TwigEngine $templating
+        \Twig_Environment $templating
     )
     {
         $this->request = $request;
@@ -125,7 +124,7 @@ class ResponseFactory
     }
 
     /**
-     * @return \Symfony\Bundle\TwigBundle\TwigEngine
+     * @return \Twig_Environment
      */
     public function getTemplating()
     {

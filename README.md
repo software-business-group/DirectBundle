@@ -2,40 +2,19 @@ DirectBundle
 ============
 
 DirectBundle is an implementation of ExtDirect specification for symfony2.
-Tested on: symfony 2.0.16, doctrine 2.2.2.
+
+[![Build Status](https://travis-ci.org/ghua/DirectBundle.png?branch=master)](https://travis-ci.org/ghua/DirectBundle)
 
 Installation
 ---------
 
-##### By adding a submodule to your current project #####
-The best way to install is by adding a submodule to your git repository.
-
-    $ git submodule add git://github.com/ghua/DirectBundle.git vendor/bundles/Ext/DirectBundle
-
-##### Using deps file #####
-Alternative way, add to deps file:
-
-    [ExtDirectBundle]
-    git=git://github.com/ghua/DirectBundle.git
-    target=/bundles/Ext/DirectBundle
-    
 #### Using composer #####
     {
         require: {
             "ghua/ext-direct-bundle": "dev-master"
         }
     }
-    
-### Add namespace to autoloader ###
 
-    <?php
-    // app/autoload.php
-    $loader->registerNamespaces(array(
-        // ...
-        'Ext'           => __DIR__.'/../vendor/bundles',
-        // ...
-    ));
-    
 ### Register DirectBundle in AppKernel ###
 
     <?php
@@ -60,41 +39,63 @@ Alternative way, add to deps file:
 ### Configuration Example ###
 
 * error_template - template of validation errors array;
-  * basic - basic parameters (optional);
-  * defaults - basic parameters;
-    * _controller - NodeName:Controller:method or service\_name:methodName;
-    * params – method has parameters;
-    * form – formHandler method;
-  * reader – analogue of store.reader in extjs, it supports:
-      * root, 
-      * successProperty,
-      * totalProperty.
+* resource -  routing configuration file, example:
+    `resource: "%kernel.root_dir%/config/extdirect_routing.yml"`
 
-<pre>
-    ext_direct:
-        basic:
-          error_template: ExtDirectBundle::extjs_errors.html.twig
-    router:
-        rules:
-            getCustomers:
-                defaults: { _controller: AcmeDemoBundle:Demo:getCustomers, params: true }
-                reader: { root: root }
-            
-            getCountries:
-                defaults: { _controller: AcmeDemoBundle:Demo:getCountries }
-                
-            getRoles:
-                defaults: { _controller: AcmeDemoBundle:Demo:getRoles }
-                
-            updateCustomer:
-                defaults: { _controller: AcmeDemoBundle:Demo:updateCustomer, params: true }
-                
-            createCustomer:
-                defaults: { _controller: AcmeDemoBundle:Demo:createCustomer, params: true, form: true }
-                
-            chat:
-                defaults: { _controller: chat_service:chat, params: true, form: true }
-</pre>
+#### extdirect_routing.yml ####
+
+    getCustomers:
+        defaults: { _controller: AcmeDemoBundle:Demo:getCustomers, params: true }
+        reader: { root: root }
+
+    getCountries:
+        defaults: { _controller: AcmeDemoBundle:Demo:getCountries }
+
+    getRoles:
+        defaults: { _controller: AcmeDemoBundle:Demo:getRoles }
+
+    updateCustomer:
+        defaults: { _controller: AcmeDemoBundle:Demo:updateCustomer, params: true }
+
+    createCustomer:
+        defaults: { _controller: AcmeDemoBundle:Demo:createCustomer, params: true, form: true }
+
+    chat:
+        defaults: { _controller: chat_service:chat, params: true, form: true }
+
+In additional, you can use a controller annotation:
+
+    testClassLoader:
+        resource: "@AcmeTestBundle/Controller/TestController.php"
+
+    testDirectoryLoader:
+        resource: "@AcmeTestBundle/Controller"
+
+##### AcmeController.php #####
+
+    namespace Acme\TestBundle\Controller;
+
+    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+    use Ext\DirectBundle\Annotation\Route;
+    use Ext\DirectBundle\Annotation\Reader;
+    use Ext\DirectBundle\Annotation\Writer;
+
+    class TestController extends Controller
+    {
+        /**
+         * @Route(name="acmeTest", isWithParams = true)
+         */
+         public function testAction($_data)
+         {
+             // code
+         }
+
+Annotation parameters:
+
+* Route - name, isWithParams, isFormHandler
+* Reader - root, successProperty, totalProperty, type
+* Writer - root, type
 
 ### Add to the template ###
 
@@ -536,50 +537,6 @@ Development
 ---------
 
 #### Testing ####
-For testing add to config_test.yml:
 
-    ext_direct:
-      router:
-        rules:
-            testArrayResponse:
-                defaults: { _controller: ExtDirectBundle:ForTesting:testArrayResponse, params: true }
-        
-            testObjectResponse:
-                defaults: { _controller: ExtDirectBundle:ForTesting:testObjectResponse, params: true }
-            
-            testResponseWithConfiguredReader:
-                defaults: { _controller: ExtDirectBundle:ForTesting:testResponseWithConfiguredReader, params: true }
-                reader: { root: root, successProperty: successProperty, totalProperty: totalProperty }
-                
-            testFormHandlerResponse:
-                defaults: { _controller: ExtDirectBundle:ForTesting:testFormHandlerResponse, params: true, form: true }
-                reader: { root: data }
-            
-            testFormValidationResponse:
-                defaults: { _controller: ExtDirectBundle:ForTesting:testFormValidationResponse, params: true, form: true }
-
-            testFormEntityValidationResponse:
-                defaults: { _controller: ExtDirectBundle:ForTesting:testFormEntityValidationResponse, params: true, form: true }
-                
-            testServiceAction:
-                defaults: { _controller: ext_direct_test_service:testActionAsService, params: true }
-                
-            testException:
-                defaults: { _controller: ExtDirectBundle:ForTesting:testException }
-
-Also you should add to the configuration of phpunit.xml the following:
-      
-      <directory>../vendor/bundles/Ext/DirectBundle/Tests</directory>
-
-The result of running the tests should be approximately as follows:
-
-    $ phpunit -v
-    PHPUnit 3.6.10 by Sebastian Bergmann.
-
-    Configuration read from symfony2sandbox/app/phpunit.xml
-
-    .......
-
-    Time: 1 second, Memory: 46.75Mb
-
-    OK (7 tests, 78 assertions)
+    composer.phar install
+    phpunit

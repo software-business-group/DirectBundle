@@ -126,6 +126,14 @@ class Call
     }
 
     /**
+     * @return int
+     */
+    public function getTid()
+    {
+        return $this->tid;
+    }
+
+    /**
      * Return a result wrapper to ExtDirect method call.
      * 
      * @param array $result
@@ -164,7 +172,7 @@ class Call
     {
         foreach (array('action', 'method', 'type', 'tid') as $key) {
             if (!isset($call[$key])) {
-                throw new InvalidJsonException(sprintf('%s key does not exist', $key));
+                $this->throwNewKeyDoesNotExistException($key);
             }
 
             $this->$key = $call[$key];
@@ -176,4 +184,15 @@ class Call
             $this->data = array_shift($call['data']);
         }
     }
+
+    /**
+     * @param string $key
+     * 
+     * @throws \Ext\DirectBundle\Exception\InvalidJsonException
+     */
+    protected function throwNewKeyDoesNotExistException($key)
+    {
+        throw new InvalidJsonException(sprintf('%s key does not exist', $key));
+    }
+
 }

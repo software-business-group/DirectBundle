@@ -123,6 +123,11 @@ class Request
             foreach ($decoded as $call) {
                 $calls[] = new Call((array) $call, $this);
             }
+        } elseif ($this->request->request->count() > 0)
+        {
+            $calls[] = new CallForm($this->request->request->all(), $this);
+        } else {
+            throw new InvalidJsonException(sprintf('I can\'t parse input json: "%s"', $this->rawPost));
         }
 
         return $calls;
