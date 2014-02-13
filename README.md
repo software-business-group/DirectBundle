@@ -11,7 +11,7 @@ Installation
 #### Using composer #####
     {
         require: {
-            "ghua/ext-direct-bundle": "dev-master"
+            "ghua/ext-direct-bundle": "v2.4.0"
         }
     }
 
