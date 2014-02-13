@@ -2,7 +2,7 @@
 
 namespace Ext\DirectBundle\Response;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Ext\DirectBundle\Router\ControllerResolver;
 
@@ -32,7 +32,7 @@ class ResponseFactory
     private $resolver;
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     private $eventDispatcher;
 
@@ -47,15 +47,15 @@ class ResponseFactory
     private $errorTemplate;
 
     /**
-     * @param Request            $request
-     * @param ControllerResolver $resolver
-     * @param EventDispatcher    $eventDispatcher
-     * @param \Twig_Environment  $templating
+     * @param Request                  $request
+     * @param ControllerResolver       $resolver
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param \Twig_Environment        $templating
      */
     public function __construct(
         Request $request,
         ControllerResolver $resolver,
-        EventDispatcher $eventDispatcher,
+        EventDispatcherInterface $eventDispatcher,
         \Twig_Environment $templating
     )
     {
