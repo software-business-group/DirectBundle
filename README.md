@@ -36,6 +36,11 @@ Installation
     ext_direct:
         resource: "@ExtDirectBundle/Resources/config/routing.yml"
     
+### Modify app/config/config.yml ###
+
+    ext_direct:
+        resource: "%kernel.root_dir%/config/extdirect_routing.yml"
+    
 ### Configuration Example ###
 
 * error_template - template of validation errors array;
