@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ext\DirectBundle\Response\Response;
 use Ext\DirectBundle\Response\FormError;
 use Ext\DirectBundle\Response\ValidatorError;
-use Ext\DirectBundle\Entity\Test;
+use Ext\DirectBundle\Model\Test;
 use Ext\DirectBundle\Annotation\Route;
 use Ext\DirectBundle\Annotation\Reader;
 use Ext\DirectBundle\Annotation\Writer;

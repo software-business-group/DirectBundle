@@ -1,6 +1,6 @@
 <?php
 
-namespace Ext\DirectBundle\Entity;
+namespace Ext\DirectBundle\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
