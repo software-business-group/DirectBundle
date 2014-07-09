@@ -1,16 +1,14 @@
 <?php
 
-namespace Ext\DirectBundle\Event\Subscriber;
+namespace Ext\DirectBundle\Event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Doctrine\ORM\AbstractQuery as ORMAbstractQuery;
-use Ext\DirectBundle\Event\DirectEvents;
-use Ext\DirectBundle\Event\ResponseEvent;
 
 /**
  * Class GetSingleResultSubscriber
  *
- * @package Ext\DirectBundle\Event\Subscriber
+ * @package Ext\DirectBundle\Event
  *
  * @author  Semyon Velichko <semyon@velichko.net>
  */

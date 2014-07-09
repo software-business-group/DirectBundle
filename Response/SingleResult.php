@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Ext\DirectBundle\Event\Subscriber\GetSingleResultSubscriber;
+use Ext\DirectBundle\Event\GetSingleResultSubscriber;
 
 /**
  * Class SingleResult
