@@ -42,6 +42,9 @@ services:
     ext_direct.request_dispatcher:
         class: Ext\DirectBundle\Request\RequestDispatcher
         arguments: [ @ext_direct.controller_resolver, %kernel.debug% ]
+        calls:
+          - [ setEventDispatcher, [ @event_dispatcher ] ]
+          - [ setKernel, [ @kernel ] ]
 
     ext_direct.router.cache:
         class: Ext\DirectBundle\Router\Loader\CacheProvider

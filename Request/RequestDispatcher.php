@@ -6,7 +6,11 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Ext\DirectBundle\Router\ControllerResolver;
 use Ext\DirectBundle\Request\Request as ExtRequest;
 use Ext\DirectBundle\Response\Exception as ExceptionResponse;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Class RequestDispatcher
@@ -38,6 +42,33 @@ class RequestDispatcher
      * @var boolean
      */
     private $isKernelDebug;
+
+    /**
+     * @var EventDispatcher $eventDispatcher
+     */
+    private $eventDispatcher;
+
+    private $kernel;
+
+    /**
+     * @param \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher
+     *
+     * @return $this
+     */
+    public function setEventDispatcher($eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+
+        return $this;
+    }
+
+    /**
+     * @return \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
+    }
 
     /**
      * @param ControllerResolver $resolver
@@ -98,11 +129,31 @@ class RequestDispatcher
     }
 
     /**
+     * @param mixed $kernel
+     *
+     * @return $this
+     */
+    public function setKernel($kernel)
+    {
+        $this->kernel = $kernel;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKernel()
+    {
+        return $this->kernel;
+    }
+
+    /**
      * @param HttpRequest $request
      *
      * @return string
      */
-    public function dispatchHttpRequest(HttpRequest $request = null)
+    public function dispatchHttpRequest(HttpRequest $request)
     {
         if (!$this->getHttpRequest() && $request instanceof HttpRequest) {
             $this->setHttpRequest($request);
@@ -114,19 +165,20 @@ class RequestDispatcher
 
         $batch = array();
         foreach ($this->getExtRequest()->getCalls() as $call) {
-            $batch[] = $this->dispatchCall($call);
+            $batch[] = $this->dispatchCall($call, $request);
         }
 
         return json_encode($batch);
     }
 
     /**
-     * @param Call $call
+     * @param Call        $call
+     * @param HttpRequest $request
      *
      * @return array
-     * @throws NotFoundHttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    private function dispatchCall(Call $call)
+    private function dispatchCall(Call $call, HttpRequest $request)
     {
         $controller = $this->getResolver()->getControllerFromCall($call);
 
@@ -137,6 +189,10 @@ class RequestDispatcher
         }
 
         $arguments = $this->getResolver()->getArguments($this->getHttpRequest(), $controller);
+
+        $event = new FilterControllerEvent($this->getKernel(), $controller, $request, HttpKernelInterface::SUB_REQUEST);
+        $this->getEventDispatcher()->dispatch(KernelEvents::CONTROLLER, $event);
+        $controller = $event->getController();
 
         if ($this->isKernelDebug()) {
             try {
