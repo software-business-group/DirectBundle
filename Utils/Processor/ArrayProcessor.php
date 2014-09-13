@@ -24,7 +24,7 @@ class ArrayProcessor extends AbstractProcessor
         $fullField = $this->getAlias().'.'.$field;
         $valueAlias = ':'.$field;
 
-        $this->getHelper()->where[$field] = $qb->expr()->in($fullField, $valueAlias);
+        $this->getHelper()->setWherePart($field, $qb->expr()->in($fullField, $valueAlias));
 
         $qb->setParameter($valueAlias, $value);
     }

@@ -4,8 +4,10 @@ namespace Ext\DirectBundle\Router\Loader;
 
 /**
  * Class AnnotationDirectoryLoader
+ *
  * @package Ext\DirectBundle\Router\Loader
- * @author Semyon Velichko <semyon@velichko.net>
+ *
+ * @author  Semyon Velichko <semyon@velichko.net>
  */
 class AnnotationDirectoryLoader extends AnnotationFileLoader
 {
@@ -19,16 +21,17 @@ class AnnotationDirectoryLoader extends AnnotationFileLoader
     }
 
     /**
-     * @param $resource
+     * @param string $resource
+     *
      * @return bool|\Symfony\Component\Routing\RouteCollection|void
      */
     public function load($resource)
     {
         $ls = scandir($resource);
-        foreach($ls as $file)
-        {
-            if(!preg_match('/\.php$/', $file))
+        foreach ($ls as $file) {
+            if (!preg_match('/\.php$/', $file)) {
                 continue;
+            }
 
             $class = $this->findClass($resource . '/' . $file);
             $this->getLoader()->load($class);
@@ -36,8 +39,9 @@ class AnnotationDirectoryLoader extends AnnotationFileLoader
     }
 
     /**
-     * @param string $resource
+     * @param string      $resource
      * @param string|null $type
+     *
      * @return bool
      */
     public function supports($resource, $type = null)
