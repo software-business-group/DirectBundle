@@ -53,11 +53,13 @@ class PrepareFilterDataSubscriber implements  EventSubscriberInterface
      */
     public function preSubmit(FormEvent $event)
     {
-        $event->setData(
-            $this->prepare(
-                $event->getData()
-            )
-        );
+        $prepared = $this->prepare($event->getData());
+
+        if (isset($prepared[$event->getForm()->getName()])) {
+            $prepared = $prepared[$event->getForm()->getName()];
+        }
+
+        $event->setData($prepared);
     }
 
     /**

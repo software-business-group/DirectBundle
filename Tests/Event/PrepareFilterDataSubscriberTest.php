@@ -2,6 +2,7 @@
 
 
 namespace Ext\DirectBundle\Tests\Event\Listener;
+
 use Ext\DirectBundle\Event\PrepareFilterDataSubscriber;
 
 /**
@@ -26,6 +27,7 @@ class PrepareFilterDataSubscriberTest extends \PHPUnit_Framework_TestCase
 
         return array(
             array(
+                'form_name',
                 array(
                     array('property' => 'form_name[collection][first]', 'value' => 'first_value'),
                     array('property' => 'form_name[collection][second]', 'value' => 'second_value'),
@@ -33,16 +35,20 @@ class PrepareFilterDataSubscriberTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param array $filter
-     * @param array $result
+     * @param string $formName
+     * @param array  $filter
+     * @param array  $result
      *
      * @dataProvider getFilter
      */
-    public function testTransform(array $filter, array $result)
+    public function testTransform($formName, array $filter, array $result)
     {
         $listener = new PrepareFilterDataSubscriber();
 
-        $this->assertEquals($result, $listener->prepare($filter));
+        $prepared = $listener->prepare($filter);
+
+        $this->assertArrayHasKey($formName, $prepared);
+        $this->assertEquals($result, $prepared);
     }
 
 }
