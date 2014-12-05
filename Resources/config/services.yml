@@ -54,3 +54,30 @@ services:
         arguments: [ @ext_direct.annotation_class.loader ]
         tags:
             - { name: ext_direct.loader }
+
+    ext_direct.search.helper:
+        class: Ext\DirectBundle\Utils\SearchByEntityHelper
+        calls:
+          - [ setEntityManager, [ @doctrine.orm.entity_manager ]]
+          - [ setAnnotationReader, [ @annotation_reader ] ]
+          - [ setAssociationProcessor, [ @ext_direct.utils.processor.association_processor ] ]
+
+    ext_direct.utils.processor.association_processor:
+        class: Ext\DirectBundle\Utils\Processor\AssociationProcessor
+
+    ext_direct.utils.processor.array_processor:
+        class: Ext\DirectBundle\Utils\Processor\ArrayProcessor
+        tags:
+            - { name: ext_direct.search.field_processor }
+
+    ext_direct.utils.processor.scalar_processor:
+        class: Ext\DirectBundle\Utils\Processor\ScalarProcessor
+        tags:
+            - { name: ext_direct.search.field_processor }
+
+    ext_direct.utils.processor.between_processor:
+        class: Ext\DirectBundle\Utils\Processor\BetweenProcessor
+        tags:
+            - { name: ext_direct.search.field_processor }
+
+
