@@ -8,6 +8,7 @@ use Ext\DirectBundle\Request\Request as ExtRequest;
 use Ext\DirectBundle\Response\Exception as ExceptionResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializationContext;
 
 /**
  * Class RequestDispatcher
@@ -44,6 +45,11 @@ class RequestDispatcher
      * @var Serializer
      */
     private $serializer;
+
+    /**
+     * @param SerializationContext $serializationContext
+     */
+    private $serializationContext;
 
     /**
      * @param ControllerResolver $resolver
@@ -124,6 +130,27 @@ class RequestDispatcher
     }
 
     /**
+     * @return SerializationContext
+     */
+    public function getSerializationContext()
+    {
+        return $this->serializationContext;
+    }
+
+    /**
+     * @param SerializationContext $serializationContext
+     *
+     * @return $this
+     */
+    public function setSerializationContext(SerializationContext $serializationContext)
+    {
+        $this->serializationContext = $serializationContext;
+
+        return $this;
+    }
+
+
+    /**
      * @param HttpRequest $request
      *
      * @return string
@@ -143,7 +170,7 @@ class RequestDispatcher
             $batch[] = $this->dispatchCall($call);
         }
 
-        return $this->getSerializer()->serialize($batch, 'json');
+        return $this->getSerializer()->serialize($batch, 'json', $this->getSerializationContext());
     }
 
     /**
