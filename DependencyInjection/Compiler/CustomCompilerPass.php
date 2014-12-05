@@ -41,6 +41,14 @@ class CustomCompilerPass implements CompilerPassInterface
         }
         $definition->addMethodCall('loadInitialResource');
 
+        $definition = $container->getDefinition('ext_direct.search.helper');
+        foreach ($container->findTaggedServiceIds('ext_direct.search.field_processor') as $id => $attributes) {
+            $definition->addMethodCall(
+                'addFieldProcessor',
+                array(new Reference($id) )
+            );
+        }
+
     }
 
 }

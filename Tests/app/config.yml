@@ -8,3 +8,13 @@ framework:
     validation:      { enable_annotations: true }
     templating:
         engines: ['twig']
+
+doctrine:
+    dbal:
+        driver:   pdo_sqlite
+        path: %kernel.root_dir%/cache/test/test.db
+        dbname: %kernel.root_dir%/cache/test/test.db
+        charset:  UTF8
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true
