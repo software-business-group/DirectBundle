@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \JMS\SerializerBundle\JMSSerializerBundle(),
             new Ext\DirectBundle\ExtDirectBundle(),
         );
 

@@ -42,6 +42,8 @@ services:
     ext_direct.request_dispatcher:
         class: Ext\DirectBundle\Request\RequestDispatcher
         arguments: [ @ext_direct.controller_resolver, %kernel.debug% ]
+        calls:
+            - [ setSerializer, [ @jms_serializer.serializer ] ]
 
     ext_direct.router.cache:
         class: Ext\DirectBundle\Router\Loader\CacheProvider

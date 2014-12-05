@@ -2,7 +2,12 @@
     "name": "ghua/ext-direct-bundle",
     "type": "symfony-bundle",
     "description": "ExtDirect implementation for Symfony2",
-    "keywords": ["extjs", "extdirect", "symfony2", "bundle"],
+    "keywords": [
+        "extjs",
+        "extdirect",
+        "symfony2",
+        "bundle"
+    ],
     "homepage": "https://github.com/ghua/DirectBundle",
     "license": "MIT",
     "authors": [
@@ -18,13 +23,14 @@
         "symfony/assetic-bundle": "~2.3",
         "doctrine/doctrine-bundle": "~1.2",
         "doctrine/orm": "~2.2",
-        "knplabs/knp-paginator-bundle": ">=2.3.1"
+        "knplabs/knp-paginator-bundle": ">=2.3.1",
+        "jms/serializer-bundle": "~0.13"
     },
     "require-dev": {
         "mockery/mockery": "dev-master"
     },
     "autoload": {
-        "psr-0": { "Ext\\DirectBundle": "" }
+        "psr-0": {"Ext\\DirectBundle": ""}
     },
     "target-dir": "Ext/DirectBundle"
 }

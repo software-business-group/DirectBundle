@@ -7,6 +7,7 @@ use Ext\DirectBundle\Router\ControllerResolver;
 use Ext\DirectBundle\Request\Request as ExtRequest;
 use Ext\DirectBundle\Response\Exception as ExceptionResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use JMS\Serializer\Serializer;
 
 /**
  * Class RequestDispatcher
@@ -38,6 +39,11 @@ class RequestDispatcher
      * @var boolean
      */
     private $isKernelDebug;
+
+    /**
+     * @var Serializer
+     */
+    private $serializer;
 
     /**
      * @param ControllerResolver $resolver
@@ -98,6 +104,26 @@ class RequestDispatcher
     }
 
     /**
+     * @return Serializer
+     */
+    public function getSerializer()
+    {
+        return $this->serializer;
+    }
+
+    /**
+     * @param Serializer $serializer
+     *
+     * @return $this
+     */
+    public function setSerializer($serializer)
+    {
+        $this->serializer = $serializer;
+
+        return $this;
+    }
+
+    /**
      * @param HttpRequest $request
      *
      * @return string
@@ -117,7 +143,7 @@ class RequestDispatcher
             $batch[] = $this->dispatchCall($call);
         }
 
-        return json_encode($batch);
+        return $this->getSerializer()->serialize($batch, 'json');
     }
 
     /**
