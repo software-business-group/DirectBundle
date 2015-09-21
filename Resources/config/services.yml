@@ -79,3 +79,12 @@ services:
             - { name: ext_direct.search.field_processor }
 
 
+    ext_direct.utils.search_by_entity.helper:
+        class: Ext\DirectBundle\Utils\SearchByEntityHelper
+        calls:
+          - [ setEntityManager, [ @doctrine.orm.entity_manager ]]
+          - [ setAnnotationReader, [ @annotation_reader ] ]
+          - [ setAssociationProcessor, [ @ext_direct.utils.processor.association_processor ] ]
+
+    ext_direct.utils.processor.association_processor:
+        class: Ext\DirectBundle\Utils\Processor\AssociationProcessor
