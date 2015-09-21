@@ -8,8 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class AssociationProcessor
  *
  * @package Ext\DirectBundle\Utils\Processor
- *
- * @author  Semyon Velichko <semyon@velichko.net>
  */
 class AssociationProcessor extends AbstractProcessor
 {
