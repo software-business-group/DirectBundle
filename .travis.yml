@@ -8,6 +8,7 @@ php:
 
 before_script:
   - phpenv config-rm xdebug.ini
+  - phpenv config-add travis.php.ini
   - composer install --dev --prefer-source
 
 branches:
