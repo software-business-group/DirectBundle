@@ -5,10 +5,9 @@ use Ext\DirectBundle\Request\Call;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerResolver as BaseControllerResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
-use AppKernel;
 
 /**
  * @author Semyon Velichko <semyon@velichko.net>
@@ -30,6 +29,11 @@ class ControllerResolver extends BaseControllerResolver
      * @var Rule
      */
     private $currentRule;
+
+    /**
+     * @var KernelInterface
+     */
+    private $kernel;
 
     /**
      * @param ContainerInterface   $container
@@ -66,7 +70,7 @@ class ControllerResolver extends BaseControllerResolver
     }
 
     /**
-     * @return AppKernel
+     * @return KernelInterface
      */
     private function getKernel()
     {

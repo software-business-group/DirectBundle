@@ -1,66 +1,66 @@
 services:
     ext_direct.controller_resolver:
         class: Ext\DirectBundle\Router\ControllerResolver
-        arguments: [ @service_container, @controller_name_converter, @ext_direct.route.collection, @monolog.logger.request ]
+        arguments: [ '@service_container', '@controller_name_converter', '@ext_direct.route.collection', '@monolog.logger' ]
         
     ext_direct:
         class: Ext\DirectBundle\Response\ResponseFactory
         scope: request
-        arguments: [ @request, @ext_direct.controller_resolver, @event_dispatcher, @twig ]
+        arguments: [ '@request_stack', '@ext_direct.controller_resolver', '@event_dispatcher', '@twig' ]
 
     ext_direct_test_service:
         class: Ext\DirectBundle\Controller\TestController
-        arguments: [ @service_container ]
+        arguments: [ '@service_container' ]
 
     ext_direct.route.collection:
         class: Ext\DirectBundle\Router\RouteCollection
 
     ext_direct.file.loader:
         class: Ext\DirectBundle\Router\Loader\FileLoader
-        arguments: [ @file_locator, @ext_direct.router.cache ]
+        arguments: [ '@file_locator', '@ext_direct.router.cache' ]
 
     ext_direct.yml.loader:
         class: Ext\DirectBundle\Router\Loader\YamlLoader
-        arguments: [ @ext_direct.route.collection ]
+        arguments: [ '@ext_direct.route.collection' ]
         tags:
             - { name: ext_direct.loader }
 
     ext_direct.annotation_file.loader:
         class: Ext\DirectBundle\Router\Loader\AnnotationFileLoader
-        arguments: [ @ext_direct.annotation_class.loader ]
+        arguments: [ '@ext_direct.annotation_class.loader' ]
         tags:
             - { name: ext_direct.loader }
 
     ext_direct.annotation_class.loader:
         class: Ext\DirectBundle\Router\Loader\AnnotationClassLoader
-        arguments: [ @ext_direct.route.collection, @annotation_reader, @ext_direct.controller_resolver ]
+        arguments: [ '@ext_direct.route.collection', '@annotation_reader', '@ext_direct.controller_resolver' ]
 
     ext_direct.api:
         class: Ext\DirectBundle\Api\Api
-        arguments: [ @ext_direct.route.collection, @router ]
+        arguments: [ '@ext_direct.route.collection', '@router' ]
 
     ext_direct.request_dispatcher:
         class: Ext\DirectBundle\Request\RequestDispatcher
-        arguments: [ @ext_direct.controller_resolver, %kernel.debug% ]
+        arguments: [ '@ext_direct.controller_resolver', '%kernel.debug%' ]
         calls:
-            - [ setSerializer, [ @jms_serializer.serializer ] ]
+            - [ setSerializer, [ '@jms_serializer.serializer' ] ]
 
     ext_direct.router.cache:
         class: Ext\DirectBundle\Router\Loader\CacheProvider
-        arguments: [ @ext_direct.route.collection, %kernel.cache_dir%, %kernel.debug% ]
+        arguments: [ '@ext_direct.route.collection', '%kernel.cache_dir%', '%kernel.debug%' ]
 
     ext_direct.annotation_directory.loader:
         class: Ext\DirectBundle\Router\Loader\AnnotationDirectoryLoader
-        arguments: [ @ext_direct.annotation_class.loader ]
+        arguments: [ '@ext_direct.annotation_class.loader' ]
         tags:
             - { name: ext_direct.loader }
 
     ext_direct.search.helper:
         class: Ext\DirectBundle\Utils\SearchByEntityHelper
         calls:
-          - [ setEntityManager, [ @doctrine.orm.entity_manager ]]
-          - [ setAnnotationReader, [ @annotation_reader ] ]
-          - [ setAssociationProcessor, [ @ext_direct.utils.processor.association_processor ] ]
+          - [ setEntityManager, [ '@doctrine.orm.entity_manager' ]]
+          - [ setAnnotationReader, [ '@annotation_reader' ] ]
+          - [ setAssociationProcessor, [ '@ext_direct.utils.processor.association_processor' ] ]
 
     ext_direct.utils.processor.association_processor:
         class: Ext\DirectBundle\Utils\Processor\AssociationProcessor
@@ -84,9 +84,6 @@ services:
     ext_direct.utils.search_by_entity.helper:
         class: Ext\DirectBundle\Utils\SearchByEntityHelper
         calls:
-          - [ setEntityManager, [ @doctrine.orm.entity_manager ]]
-          - [ setAnnotationReader, [ @annotation_reader ] ]
-          - [ setAssociationProcessor, [ @ext_direct.utils.processor.association_processor ] ]
-
-    ext_direct.utils.processor.association_processor:
-        class: Ext\DirectBundle\Utils\Processor\AssociationProcessor
+          - [ setEntityManager, [ '@doctrine.orm.entity_manager' ]]
+          - [ setAnnotationReader, [ '@annotation_reader' ] ]
+          - [ setAssociationProcessor, [ '@ext_direct.utils.processor.association_processor' ] ]

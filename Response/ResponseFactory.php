@@ -5,6 +5,7 @@ namespace Ext\DirectBundle\Response;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Ext\DirectBundle\Router\ControllerResolver;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class ResponseFactory
@@ -47,19 +48,19 @@ class ResponseFactory
     private $errorTemplate;
 
     /**
-     * @param Request                  $request
+     * @param RequestStack             $requestStack
      * @param ControllerResolver       $resolver
      * @param EventDispatcherInterface $eventDispatcher
      * @param \Twig_Environment        $templating
      */
     public function __construct(
-        Request $request,
+        RequestStack $requestStack,
         ControllerResolver $resolver,
         EventDispatcherInterface $eventDispatcher,
         \Twig_Environment $templating
     )
     {
-        $this->request = $request;
+        $this->request = $requestStack->getCurrentRequest();
         $this->resolver = $resolver;
         $this->eventDispatcher = $eventDispatcher;
         $this->templating = $templating;
@@ -84,7 +85,7 @@ class ResponseFactory
     }
 
     /**
-     * @return \Symfony\Component\EventDispatcher\EventDispatcher
+     * @return EventDispatcherInterface
      */
     public function getEventDispatcher()
     {

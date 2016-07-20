@@ -39,8 +39,7 @@ class ExampleTypeTest extends TypeTestCase
      */
     public function testPrepareFilterDataListener($filter, $result)
     {
-        $type = new ExampleType();
-        $form = $this->factory->create($type);
+        $form = $this->factory->create('\Ext\DirectBundle\Tests\Type\ExampleType');
 
         // submit the data to the form directly
         $form->submit($filter);

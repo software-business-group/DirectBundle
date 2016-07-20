@@ -5,8 +5,9 @@ namespace Ext\DirectBundle\Tests\Type;
 
 use Ext\DirectBundle\Event\PrepareFilterDataSubscriber;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvents;
 
 /**
  * Class ExampleType
@@ -24,9 +25,9 @@ class ExampleType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $collection = $builder->create('collection', 'form');
-        $collection->add('first', 'text');
-        $collection->add('second', 'text');
+        $collection = $builder->create('collection', FormType::class);
+        $collection->add('first', TextType::class);
+        $collection->add('second', TextType::class);
         $builder->add($collection);
         $subscriber = new PrepareFilterDataSubscriber();
         $builder->addEventSubscriber($subscriber);

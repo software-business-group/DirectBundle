@@ -23,7 +23,7 @@ class TestController extends Controller
 {
 
     /**
-     * @var
+     * @var ContainerInterface
      */
     protected $container;
 
@@ -95,7 +95,7 @@ class TestController extends Controller
             ->getForm();
         $all = $form->all();
         $_data = array_intersect_key($_data, $all);
-        $form->bind($_data);
+        $form->submit($_data);
 
         if ($form->isValid()) {
             return $this->get('ext_direct')
@@ -121,7 +121,7 @@ class TestController extends Controller
             ->add('count')
             ->getForm();
         $_data = array_intersect_key($_data, $form->all());
-        $form->bind($_data);
+        $form->submit($_data);
 
         $errors = $this->get('validator')->validate($entity);
 
