@@ -38,6 +38,9 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('resource')
                 ->defaultNull()
             ->end()
+            ->scalarNode('param_converter')
+                ->defaultValue(false)
+            ->end()
         ->end();
         
         return $treeBuilder;

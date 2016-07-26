@@ -2,12 +2,13 @@
 
 namespace Ext\DirectBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ext\DirectBundle\Response\Response;
 use Ext\DirectBundle\Response\FormError;
 use Ext\DirectBundle\Response\ValidatorError;
-use Ext\DirectBundle\Model\Test;
+use Ext\DirectBundle\Tests\Model\Test;
 use Ext\DirectBundle\Annotation\Route;
 use Ext\DirectBundle\Annotation\Reader;
 use Ext\DirectBundle\Annotation\Writer;
@@ -133,6 +134,16 @@ class TestController extends Controller
             return $this->get('ext_direct')
                 ->createResponse(new ValidatorError(), $errors);
         }
+    }
+
+    /**
+     * @param Test $test
+     *
+     * @ParamConverter("test", converter="fos_rest.request_body")
+     */
+    public function testParamConverterAction(Test $test)
+    {
+        return;
     }
 
     /**

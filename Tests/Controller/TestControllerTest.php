@@ -335,4 +335,32 @@ class TestControllerTest extends TestTemplate
         $this->assertArrayHasKey('limit', $arrayResult['result']);
         $this->assertEquals($postRawArray['data'][0]['limit'], $arrayResult['result']['limit']);
     }
+
+    public function testParamConverterAction()
+    {
+        $postRawArray = array('action' => 'ExtDirect_Test',
+            'method' => 'testParamConverter',
+            'data' => array(array('page' => rand(1, 10), 'start' => rand(10, 20), 'limit' => rand(100, 9999))),
+            'type' => 'rpc',
+            'tid' => rand(1, 10));
+        $postRawData = json_encode($postRawArray);
+
+        $client = static::createClient();
+        $this->loadResource($client);
+        $crawler = $client->request('POST',
+            $this->get('router')->generate('ExtDirectBundle_route'),
+            array(),
+            array(),
+            array(),
+            $postRawData);
+
+
+        $jsonResult = $client->getResponse()->getContent();
+        $arrayResult = json_decode($jsonResult, true);
+        $this->assertInternalType('array', $arrayResult);
+
+
+    }
+
+
 }

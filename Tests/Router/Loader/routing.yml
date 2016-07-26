@@ -21,6 +21,9 @@ testFormEntityValidationResponse:
 testServiceAction:
     defaults: { _controller: ext_direct_test_service:testActionAsService, params: true }
 
+testParamConverterAction:
+    defaults: { _controller: ExtDirectBundle:Test:testParamConverter, params: true }
+
 testException:
     defaults: { _controller: ExtDirectBundle:Test:testException }
 

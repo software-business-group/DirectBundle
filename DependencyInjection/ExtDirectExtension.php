@@ -37,6 +37,8 @@ class ExtDirectExtension extends Extension
 
         $container->getDefinition('ext_direct')
             ->addMethodCall('setErrorTemplate', array($config['error_template']));
+
+        $container->setParameter('ext_direct.param_converter', $config['param_converter']);
     }
 
     /**

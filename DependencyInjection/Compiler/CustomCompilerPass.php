@@ -2,8 +2,10 @@
 
 namespace Ext\DirectBundle\DependencyInjection\Compiler;
 
+use Ext\DirectBundle\Event\ParamConverterListener;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -47,6 +49,24 @@ class CustomCompilerPass implements CompilerPassInterface
                 'addFieldProcessor',
                 array(new Reference($id) )
             );
+        }
+
+        if (true === $container->getParameter('ext_direct.param_converter')) {
+            if (false === $container->hasDefinition('sensio_framework_extra.converter.listener')) {
+                throw new \LogicException('SensioFrameworkExtraBundle should be installed');
+            }
+
+            $container->addDefinitions(
+                array('ext_direct.param_converter.listener' => new Definition(ParamConverterListener::class,
+                        array($container->findDefinition('sensio_framework_extra.converter.manager'), true)
+                    )
+                )
+            );
+
+            $container->findDefinition('event_dispatcher')
+                ->addMethodCall('addSubscriberService',
+                    array('ext_direct.param_converter.listener', ParamConverterListener::class)
+                );
         }
 
     }

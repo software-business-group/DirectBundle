@@ -14,3 +14,7 @@ AnnotationRegistry::registerFile( __DIR__ . "/../Annotation/Writer.php");
 AnnotationRegistry::registerFile( __DIR__ . "/../Annotation/Route.php");
 AnnotationRegistry::registerFile( __DIR__ . "/../vendor/symfony/symfony/src/Symfony/Component/Validator/Constraints/NotBlank.php");
 AnnotationRegistry::registerFile( __DIR__ . "/../vendor/symfony/symfony/src/Symfony/Component/Validator/Constraints/Range.php");
+AnnotationRegistry::registerFile( __DIR__ . "/../vendor/sensio/framework-extra-bundle/Configuration/ParamConverter.php");
+AnnotationRegistry::registerFile( __DIR__ . "/../vendor/jms/serializer/src/JMS/Serializer/Annotation/ExclusionPolicy.php");
+AnnotationRegistry::registerFile( __DIR__ . "/../vendor/jms/serializer/src/JMS/Serializer/Annotation/Expose.php");
+AnnotationRegistry::registerFile( __DIR__ . "/../vendor/jms/serializer/src/JMS/Serializer/Annotation/ReadOnly.php");

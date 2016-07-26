@@ -2,13 +2,18 @@
 
 namespace Ext\DirectBundle\Request;
 
+use Ext\DirectBundle\Event\DirectEvents;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Ext\DirectBundle\Router\ControllerResolver;
 use Ext\DirectBundle\Request\Request as ExtRequest;
 use Ext\DirectBundle\Response\Exception as ExceptionResponse;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializationContext;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Class RequestDispatcher
@@ -47,9 +52,19 @@ class RequestDispatcher
     private $serializer;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * @param SerializationContext $serializationContext
      */
     private $serializationContext;
+
+    /**
+     * @var HttpKernelInterface
+     */
+    private $httpKernel;
 
     /**
      * @param ControllerResolver $resolver
@@ -149,6 +164,29 @@ class RequestDispatcher
         return $this;
     }
 
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     *
+     * @return $this;
+     */
+    public function setEventDispatcher($eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+
+        return $this;
+    }
+
+    /**
+     * @param HttpKernelInterface $httpKernel
+     *
+     * @return $this;
+     */
+    public function setHttpKernel($httpKernel)
+    {
+        $this->httpKernel = $httpKernel;
+
+        return $this;
+    }
 
     /**
      * @param HttpRequest $request
@@ -182,6 +220,11 @@ class RequestDispatcher
     private function dispatchCall(Call $call)
     {
         $controller = $this->getResolver()->getControllerFromCall($call);
+
+        $event = new FilterControllerEvent($this->httpKernel, $controller, $this->getHttpRequest(), HttpKernelInterface::SUB_REQUEST);
+        $this->eventDispatcher->dispatch(DirectEvents::CONTROLLER, $event);
+        $controller = $event->getController();
+        $this->httpRequest = $event->getRequest();
 
         if (!is_callable($controller)) {
             throw new NotFoundHttpException(

@@ -23,6 +23,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
             new Ext\DirectBundle\ExtDirectBundle(),
+            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
         );
 
         return $bundles;

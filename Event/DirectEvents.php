@@ -12,8 +12,10 @@ namespace Ext\DirectBundle\Event;
 final class DirectEvents
 {
 
-    const PRE_QUERY_EXECUTE = 'direct.pre_query_execute';
+    const PRE_QUERY_EXECUTE = 'ext_direct.pre_query_execute';
 
-    const POST_QUERY_EXECUTE = 'direct.post_query_execute';
+    const POST_QUERY_EXECUTE = 'ext_direct.post_query_execute';
+
+    const CONTROLLER = 'ext_direct.controller';
 
 }
