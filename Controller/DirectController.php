@@ -50,6 +50,12 @@ class DirectController extends Controller
      */
     public function routeAction(HttpFoundation\Request $request)
     {
+
+        foreach ($request->request as $k => $v) {
+
+                $request->request->set($k, filter_var($v, FILTER_SANITIZE_STRING));
+
+        }
         $this->get('ext_direct.file.loader');
         return new HttpFoundation\Response(
             (string) $this->get('ext_direct.request_dispatcher')->dispatchHttpRequest($request),

@@ -143,7 +143,7 @@ class Call
     public function getResponse($result)
     {
         $return =
-            array('type' => $this->type,
+            array('type' => filter_var($this->type, FILTER_SANITIZE_STRING),
                   'tid' => $this->tid,
                   'action' => $this->action,
                   'method' => $this->method);
