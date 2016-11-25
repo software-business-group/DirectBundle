@@ -143,7 +143,7 @@ class Request
             }
 
             if ($json) {
-                $value = $json;
+                $json = filter_var($value, FILTER_SANITIZE_STRING);
             }
         }
 
