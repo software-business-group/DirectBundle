@@ -1,5 +1,5 @@
 {
-    "name": "software-business-group/ext-direct-bundle",
+    "name": "zen/ext-direct-bundle",
     "type": "symfony-bundle",
     "description": "ExtDirect implementation for Symfony2",
     "keywords": ["extjs", "extdirect", "symfony2", "bundle"],
